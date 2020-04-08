@@ -29,7 +29,7 @@ const App = () => {
             <NavbarHeading>GEM</NavbarHeading>
             <NavbarDivider />
              <Link to="/"><Button className={Classes.MINIMAL} icon="wrench" text="Configure Groups" /></Link>
-             <Link to="/files"><Button className={Classes.MINIMAL} icon="document" text="FileList" /></Link>
+             <Link to="/files"><Button className={Classes.MINIMAL} icon="document" text="Browse Files" /></Link>
               <Button className={Classes.MINIMAL} icon="cut" text="Extract" />
           </NavbarGroup>
         </Navbar>

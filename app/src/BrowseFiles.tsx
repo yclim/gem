@@ -34,18 +34,23 @@ const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
     }
 
     return (
-        <div className="horizontal-container">
-            <div className="left-nav-section">
-                <ButtonGroup vertical={true}>
-                    <Button intent={currentType === ALL ? Intent.PRIMARY : Intent.NONE}  onClick={() => handleChangeType(ALL)}> {ALL} </Button>
-                    {renderTypeButton()}
-                </ButtonGroup>
+        <div className="vertical-container">
+            <div>
+                <Button icon="refresh" text="Synchronize"/>
             </div>
-            <div className="stretch">
-                <FileList files={files} setFiles={setFiles}/>
+            <div className="horizontal-container">
+                <div className="left-nav-section">
+                    <ButtonGroup vertical={true}>
+                        <Button intent={currentType === ALL ? Intent.PRIMARY : Intent.NONE}  onClick={() => handleChangeType(ALL)}> {ALL} </Button>
+                        {renderTypeButton()}
+                    </ButtonGroup>
+                </div>
+                <div className="stretch">
+                    <FileList files={files} setFiles={setFiles}/>
+                </div>
             </div>
-
         </div>
+
 
     )
 }

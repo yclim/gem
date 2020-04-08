@@ -57,14 +57,14 @@
 .file-details {
     flex-grow: 1;
 }
-
+.keyval-table {
+    width: 100%;
+}
 .keyval-table>tbody>tr>:nth-child(1) {
-    width: 180px;
+    width: 150px;
 }
 
-
 .keyval-table>tbody>tr>:nth-child(2) {
-    width:100%;
     text-align: left;
 }
 

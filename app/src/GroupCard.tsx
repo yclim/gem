@@ -28,7 +28,6 @@ const GroupCard: FunctionComponent<IProps> = ({ group, updateGroups, focusGrp, s
         return (
             <Menu>
                 <MenuItem text="Edit" icon="edit" />
-                <MenuItem text="Move To" icon="move" />
                 <MenuItem text="Delete" icon="trash" />
             </Menu>
         );

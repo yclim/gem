@@ -142,8 +142,39 @@ const FileList: FunctionComponent<IProps> = ({files, setFiles}) => {
                       <Card elevation={Elevation.ZERO}>
                         <pre>{currentFile?.rawText}</pre>
                       </Card>
-
-} />
+                    } />
+                    <Tab id="csv" title="CSV Details" panel={<table className="bp3-html-table bp3-html-table-striped keyval-table">
+                        <tbody>
+                        <tr>
+                            <td>Header Column Count</td>
+                            <td>17</td>
+                        </tr>
+                        <tr>
+                            <td>Header values</td>
+                            <td>Timestamp, Name, Address</td>
+                        </tr>
+                        </tbody>
+                    </table>} />
+                    <Tab id="xls" title="EXCEL Details" panel={<table className="bp3-html-table bp3-html-table-striped keyval-table">
+                        <tbody>
+                        <tr>
+                            <td>Header Column Count</td>
+                            <td>17</td>
+                        </tr>
+                        <tr>
+                            <td>Header values</td>
+                            <td>Timestamp, Name, Address</td>
+                        </tr>
+                        <tr>
+                            <td>Sheets count</td>
+                            <td>3</td>
+                        </tr>
+                        <tr>
+                            <td>Sheets values</td>
+                            <td>sheet1, sheet2, sheet3</td>
+                        </tr>
+                        </tbody>
+                    </table>} />
                     <Tabs.Expander />
                 </Tabs>
             </div>

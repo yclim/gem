@@ -180,16 +180,16 @@ function getLabel(group: Group, alias: string) {
   return (
     <div>
       <ButtonGroup vertical={true} alignText={Alignment.LEFT} large={false} minimal={true}>
-          <h4> FILE DETAIL TARGET</h4>
+          <h4> FILE DETAIL RULES</h4>
           <Divider/>
         {rules.filter(r => r.target.startsWith("file")).map(r => renderButton(r))}
-          <h4> TIKA TARGET</h4>
+          <h4> TIKA RULES</h4>
           <Divider/>
           {rules.filter(r => r.target.startsWith("tika")).map(r => renderButton(r))}
-          <h4> CSV TARGET</h4>
+          <h4> CSV RULES</h4>
           <Divider/>
           {rules.filter(r => r.target.startsWith("csv")).map(r => renderButton(r))}
-          <h4> EXCEL TARGET</h4>
+          <h4> EXCEL RULES</h4>
           <Divider/>
           {rules.filter(r => r.target.startsWith("xls")).map(r => renderButton(r))}
 
