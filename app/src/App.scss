@@ -1,0 +1,169 @@
+@import "node_modules/@blueprintjs/core/lib/scss/variables";
+@import "./variables.scss";
+
+
+.container {
+    display: flex;
+    width: 1600px;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+}
+
+.horizontal-container {
+    display: flex;
+    flex-direction: row;
+    margin-top: #{$gap}px;
+}
+
+.top-nav-section {
+    flex-grow: 1;
+}
+
+.left-nav-section {
+    margin-right: #{$gap}px;
+    min-width:fit-content;
+}
+
+.right-main-section {
+    width: #{$group-card-width }px;
+    margin-right: #{$gap}px;
+}
+
+.stretch {
+    flex-grow: 1;
+}
+
+.vertical-container {
+    display: flex;
+    flex-direction: column;
+    margin-top: #{$gap}px;
+}
+
+.bottom-gap {
+    margin-bottom: #{$gap}px;
+}
+
+.files-section {
+    display:flex;
+}
+
+.file-list {
+    width: #{$group-card-width + 20}px;
+    min-width: #{$group-card-width + 20}px;
+    margin-right: #{$gap}px;
+}
+
+.file-details {
+    flex-grow: 1;
+}
+
+.keyval-table>tbody>tr>:nth-child(1) {
+    width: 180px;
+}
+
+
+.keyval-table>tbody>tr>:nth-child(2) {
+    width:100%;
+    text-align: left;
+}
+
+
+// migrated from GroupList from Group.scss
+
+
+.flex-container-vertical {
+    display:flex;
+    flex-direction: column;
+}
+
+.flex-container-vertical .toolbar {
+    margin-bottom: #{$gap}px;
+}
+
+.flex-wrap {
+    display:flex;
+    flex-wrap: wrap;
+}
+
+.flex-wrap .card {
+    width: #{$group-card-width}px;
+    margin-bottom: #{$gap}px;
+}
+
+.flex-wrap .rule {
+    font-size: 12px;
+    width: 155px;
+    margin-bottom: #{$gap}px;
+}
+
+.rule-spacer {
+    width: #{30 / (round(($group-card-width - 40) /  140) -1)}px;
+}
+
+.rule-topbar {
+    position: relative;
+    padding-top: 5px;
+    right: -14px;
+    text-align: right;
+    color: $gray3;
+}
+
+.rule-header {
+    display:flex;
+}
+.rule-header .label {
+    font-weight: bold;
+    flex-grow: 1;
+    margin-bottom: 10px;
+}
+.rule-header .counter {
+}
+
+.no-group-card {
+    //background-color: $light-gray5;
+}
+
+.group-card {
+    padding-top: 0px;
+}
+
+.group-card:hover {
+    cursor: pointer;
+}
+
+.group-card-focus {
+    background-color: $light-gray5;
+}
+
+.add-right-margin {
+    margin-right: #{$gap}px;
+}
+
+// migrate from rulelist
+
+.dialog-input {
+    display: inline-block;
+    font-family: Consolas,Arial,"Helvetica Neue";
+    width: 310px;
+}
+
+.dialog-body {
+    margin:10px;
+}
+
+.dialog-input-group {
+    margin-bottom: #{$gap}px;
+}
+
+.dialog-label {
+    display: inline-block;
+    width: 100px;
+    text-align: right;
+    margin-right:10px;
+}
+
+.dialog-input-icon {
+    padding-top:7px;
+    padding-right:7px;
+}

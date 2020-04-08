@@ -1,0 +1,10 @@
+app/node
+app/node_modules
+app/yarn.lock
+dist
+.cache
+.idea
+*.iml
+target
+yarn.lock
+yarn-error.log
