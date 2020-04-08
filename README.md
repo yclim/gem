@@ -1,4 +1,4 @@
-# Group Extract Monitor System
+# Group Extract Monitor
 
 # Quick Start
 #### Start React App backed by mock api
