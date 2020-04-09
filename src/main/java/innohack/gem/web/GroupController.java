@@ -11,7 +11,7 @@ import innohack.gem.entity.Group;
 import innohack.gem.service.GroupService;
 
 @RestController
-@RequestMapping("/group")
+@RequestMapping("/api/group")
 public class GroupController {
 	
 	@Autowired
