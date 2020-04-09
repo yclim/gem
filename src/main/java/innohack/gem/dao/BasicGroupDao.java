@@ -24,7 +24,7 @@ public class BasicGroupDao implements IGroupDao {
 	
 	private Collection<Group> mockGroups() {
 		Group g = new Group();
-		g.setId("test");
+		g.setGroupName("test");
 		return Lists.newArrayList(g);
 	}
 	

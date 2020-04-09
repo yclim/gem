@@ -4,18 +4,17 @@ import java.util.Collection;
 
 public class Group {
 	
-	private String id;
+	private String groupName;
 
 	private Collection<Rule> rules;
 	
-	
 
-	public String getId() {
-		return id;
+	public String getGroupName() {
+		return groupName;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
 	}
 
 	public Collection<Rule> getRules() {
