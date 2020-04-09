@@ -14,7 +14,9 @@ yarn dev:mock
     * Node Version: v12.16.1
     * Yarn Version: v1.22.4
 * Prettier format on save
-    * ensure prettier and file watcher plugin is installed & follow instruction from https://prettier.io/docs/en/webstorm.html
+    * ensure prettier and file watcher plugin is installed & follow instruction from [here](https://prettier.io/docs/en/webstorm.html)
+* Live Reload
+    * Install Live Reload plugin (e.g [for Chrome](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei?hl=en)) on your browser for yarn watch to work
     
 ### Backend development
 * start a yarn watch to "compile" the frontend scripts
