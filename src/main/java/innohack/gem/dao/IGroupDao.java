@@ -13,5 +13,11 @@ import innohack.gem.entity.Group;
 public interface IGroupDao {
 
 	Collection<Group> getGroups();
+
+	Group getGroup(String groupName);
+
+	boolean saveGroup(Group group);
+
+	boolean deleteGroup(String groupName);
 	
 }

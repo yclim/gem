@@ -21,11 +21,26 @@ public class BasicGroupDao implements IGroupDao {
 	public Collection<Group> getGroups() {
 		return mockGroups();
 	}
-	
+
+	@Override
+	public Group getGroup(String groupName) {
+		return null;
+	}
+
+	@Override
+	public boolean saveGroup(Group group) {
+		return false;
+	}
+
+	@Override
+	public boolean deleteGroup(String groupName) {
+		return false;
+	}
+
 	private Collection<Group> mockGroups() {
 		Group g = new Group();
 		g.setGroupName("test");
 		return Lists.newArrayList(g);
 	}
-	
+
 }
