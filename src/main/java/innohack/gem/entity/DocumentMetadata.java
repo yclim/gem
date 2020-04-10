@@ -10,7 +10,6 @@ public class DocumentMetadata {
     private String contentType;
     private Long size;
     private String extension;
-    private Date createDate;
     private String filePath;
 
     public DocumentMetadata() {
@@ -20,9 +19,7 @@ public class DocumentMetadata {
         this.name = file.getOriginalFilename();
         this.size = file.getSize();
         this.extension = FilenameUtils.getExtension(file.getOriginalFilename());
-        this.createDate = new Date();
         this.contentType = file.getContentType();
-        // todo: use tika to get mimetype
     }
 
     public String getName() {
@@ -57,14 +54,6 @@ public class DocumentMetadata {
         this.extension = extension;
     }
 
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
-
     public String getFilePath() {
         return filePath;
     }
@@ -80,7 +69,6 @@ public class DocumentMetadata {
                 ", contentType='" + contentType + '\'' + "\n" +
                 ", size=" + size + "\n" +
                 ", extension='" + extension + '\'' + "\n" +
-                ", createDate=" + createDate + "\n" +
                 ", filePath='" + filePath + '\'' + "\n" +
                 '}';
     }
