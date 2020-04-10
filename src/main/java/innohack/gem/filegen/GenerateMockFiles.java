@@ -27,5 +27,7 @@ public class GenerateMockFiles {
 
         PdfFileGenerator.generateProductsPdfFiles(numOfFiles, dest);
         CsvFileGenerator.generateCustomerCsvFiles(numOfFiles, dest);
+        ExcelFileGenerator.generateCarsExcelFiles(numOfFiles, dest);
     }
+
 }
