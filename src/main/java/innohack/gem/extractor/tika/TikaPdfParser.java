@@ -28,7 +28,7 @@ public class TikaPdfParser {
         System.out.println("Contents of the PDF :" + handler.toString());
 
         //getting metadata of the document
-        System.out.println("Metadata of the PDF:");
+        // System.out.println("Metadata of the PDF:");
         String[] metadataNames = metadata.names();
 
         for(String name : metadataNames) {
