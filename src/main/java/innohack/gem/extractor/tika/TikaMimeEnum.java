@@ -5,6 +5,7 @@ public enum TikaMimeEnum {
     PDF("pdf"),
     MSEXCEL("vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
     MSWORD("vnd.openxmlformats-officedocument.wordprocessingml.document"),
+    CSV("csv"),
     UNKNOWN("unknown");
 
     private String mimeType;

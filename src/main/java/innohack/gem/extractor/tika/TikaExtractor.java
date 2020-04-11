@@ -96,6 +96,15 @@ public class TikaExtractor {
         }else if (mediaType.getSubtype().equals(TikaMimeEnum.MSEXCEL.getMimeType())) {
             return TikaMimeEnum.MSEXCEL;
 
+        }else if (mediaType.getSubtype().equals(TikaMimeEnum.CSV.getMimeType())) {
+            TikaTextAndCsvParser csvParser = new TikaTextAndCsvParser(path);
+                //this is usng tika
+                // csvParser.parseTextAndCsv();
+                // this is using opencsv
+                csvParser.parseUsingOpenCsv();
+
+            return TikaMimeEnum.CSV;
+
         }else
             return TikaMimeEnum.UNKNOWN;
 
