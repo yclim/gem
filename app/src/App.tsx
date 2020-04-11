@@ -28,15 +28,27 @@ const App = () => {
           <NavbarGroup align={Alignment.LEFT}>
             <NavbarHeading>GEM</NavbarHeading>
             <NavbarDivider />
-             <Link to="/"><Button className={Classes.MINIMAL} icon="wrench" text="Configure Groups" /></Link>
-             <Link to="/files"><Button className={Classes.MINIMAL} icon="document" text="Browse Files" /></Link>
-              <Button className={Classes.MINIMAL} icon="cut" text="Extract" />
+            <Link to="/">
+              <Button
+                className={Classes.MINIMAL}
+                icon="wrench"
+                text="Configure Groups"
+              />
+            </Link>
+            <Link to="/files">
+              <Button
+                className={Classes.MINIMAL}
+                icon="document"
+                text="Browse Files"
+              />
+            </Link>
+            <Button className={Classes.MINIMAL} icon="cut" text="Extract" />
           </NavbarGroup>
         </Navbar>
       </div>
       <Router>
-          <EditGroups path="/"/>
-          <BrowseFiles path="/files" />
+        <EditGroups path="/" />
+        <BrowseFiles path="/files" />
       </Router>
     </div>
   );
