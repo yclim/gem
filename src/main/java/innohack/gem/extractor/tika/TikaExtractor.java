@@ -9,6 +9,7 @@ import org.apache.tika.exception.TikaException;
 import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
+import org.xml.sax.SAXException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,9 +25,6 @@ public class TikaExtractor {
 
     private TikaConfig tika;
 
-    private static final String PDF = "pdf";
-    private static final String MSEXCEL = "vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-    private static final String MSWORD = "vnd.openxmlformats-officedocument.wordprocessingml.document";
 
     public TikaExtractor() {
         try {
@@ -62,43 +60,45 @@ public class TikaExtractor {
 
             for (Path result : results) {
                 System.out.println("each result is " + result.toAbsolutePath());
-                try (InputStream inputStream = Files.newInputStream(result.toAbsolutePath())) {
-
                     Metadata metadata = new Metadata();
                     metadata.set(Metadata.RESOURCE_NAME_KEY, result.toString());
                     MediaType mimetype = tika.getDetector().detect(
                             TikaInputStream.get(result), metadata);
 
-                    determineMimeType(mimetype);
+                    TikaMimeEnum mimeType = determineMimeTypeAndParser(mimetype, result);
+                    System.out.println("result is " + result.toAbsolutePath() + " mimeType is " + mimeType.getMimeType());
 
-                    /*
-                    String docType = detectDocTypeUsingFacade(inputStream);
-                    System.out.println("filename is " + result.toString() + " doctype is : " +
-                            docType + " mineType is 1. " + mimetype.getSubtype() + "2. " + mimetype.getBaseType()
-                            + "3. " + mimetype.toString());
-
-                     */
-                } catch (IOException io) {
-                    System.out.println(io.toString());
-                }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void determineMimeType (MediaType mediaType) {
+    public TikaMimeEnum determineMimeTypeAndParser (MediaType mediaType, Path path) {
         // need to force find all the type here
-        switch (mediaType.getSubtype()) {
-            case PDF: System.out.println("This is PDF");
-                break;
-            case MSEXCEL: System.out.println("This is MS EXCEL");
-                break;
-            case MSWORD: System.out.println("This is MS WORD");
-                break;
-            default: System.out.println("UNKNOWN");
 
-        }
+        if (mediaType.getSubtype().equals(TikaMimeEnum.PDF.getMimeType())) {
+            TikaPdfParser pdfParser = new TikaPdfParser(path);
+            try {
+                pdfParser.parsePDF();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (TikaException e) {
+                e.printStackTrace();
+            } catch (SAXException e) {
+                e.printStackTrace();
+            }
+            return TikaMimeEnum.PDF;
+
+        }else if (mediaType.getSubtype().equals(TikaMimeEnum.MSWORD.getMimeType())) {
+            return TikaMimeEnum.MSWORD;
+
+        }else if (mediaType.getSubtype().equals(TikaMimeEnum.MSEXCEL.getMimeType())) {
+            return TikaMimeEnum.MSEXCEL;
+
+        }else
+            return TikaMimeEnum.UNKNOWN;
+
     }
 
     public String detectDocTypeUsingDetector(InputStream stream)

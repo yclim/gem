@@ -10,14 +10,21 @@ import org.xml.sax.SAXException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Path;
 
 public class TikaPdfParser {
+    private Path filePath;
 
-    public static void parsePDF(final String[] args) throws IOException, TikaException, SAXException {
+    public TikaPdfParser(Path filePath) {
+        this.filePath = filePath;
+    }
 
-        BodyContentHandler handler = new BodyContentHandler();
+    public void parsePDF() throws IOException, TikaException, SAXException {
+
+        // this is to set the limit to unlimited
+        BodyContentHandler handler = new BodyContentHandler(-1);
         Metadata metadata = new Metadata();
-        FileInputStream inputstream = new FileInputStream(new File("example.pdf"));
+        FileInputStream inputstream = new FileInputStream(new File(String.valueOf(this.filePath.toAbsolutePath())));
         ParseContext pcontext = new ParseContext();
 
         //parsing the document using PDF parser
