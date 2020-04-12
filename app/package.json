@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
+    "build": "parcel build src/index.html",
     "dev": "parcel src/index.html",
     "dev:mock": "cross-env gem_API=mock yarn run dev",
     "mock": "cross-env gem_API=mock",
@@ -10,7 +11,7 @@
     "clear-build-cache": "rm -rf .cache/ dist/",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
     "lint": "tslint --project .",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"Error: no test specified\"",
     "typecheck": "tsc --noEmit"
   },
   "author": "",
