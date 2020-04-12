@@ -1,5 +1,10 @@
 package innohack.gem.filegen;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 import java.util.Random;
 
 public class GenUtil {
@@ -22,12 +27,31 @@ public class GenUtil {
             " the field after it, and fortunately was just in time to see it pop down a large rabbit-hole")
             .split("\\s+");
 
+    static String[] names = ("OLIVIA RUBY EMILY GRACE JESSICA CHLOE SOPHIE LILY AMELIA EVIE MIA ELLA " +
+            "CHARLOT LUCY MEGAN ELLIE ISABELL ISABELL HANNAH KATIE AVA HOLLY SUMMER MILLIE DAISY PHOEBE " +
+            "FREYA ABIGAIL POPPY ERIN EMMA MOLLY IMOGEN AMY JASMINE ISLA SCARLET LEAH SOPHIA ELIZABE EVA " +
+            "BROOKE MATILDA CAITLIN KEIRA ALICE LOLA LILLY AMBER ISABEL LAUREN GEORGIA GRACIE ELEANOR " +
+            "BETHANY MADISON AMELIE ISOBEL PAIGE LACEY SIENNA LIBBY MAISIE ANNA REBECCA ROSIE TIA LAYLA MAYA NIAMH")
+            .split("\\s+");
+
+    public static String randomName() {
+        return names[randomInt(names.length)];
+    }
+
     public static int randomInt(int bound) {
         return random.nextInt(bound);
     }
 
+    public static int randamIntRange(int min, int max) {
+        return random.nextInt((max - min) + 1) + min;
+    }
+
     public static String randomWord() {
         return tokens[randomInt(tokens.length)];
+    }
+
+    public static String oneOf(String... options) {
+        return options[randomInt(options.length)];
     }
 
     public static String randomString(int length) {
@@ -36,5 +60,14 @@ public class GenUtil {
             sb.append((char)('a' + randomInt(26)));
         }
         return sb.toString();
+    }
+
+    public static void writeToFile(List<String> row, Path dest, String filename) throws FileNotFoundException {
+        Path path = Paths.get(dest.toString(), filename);
+        try (PrintWriter out = new PrintWriter(path.toFile())) {
+            for (String line: row) {
+                out.println(line);
+            }
+        }
     }
 }
