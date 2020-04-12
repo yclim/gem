@@ -29,3 +29,11 @@ yarn mock yarn watch //this compiles, watches and moves your distribution to the
 * run GemApplication
       * the app will run in default tomcat port 8080
 * open Firefox/Chrome and go to http://localhost:8080
+
+
+# Generate Mock Sample files
+Generate samples to output directory (default: target/samples)
+```bash
+mvn package
+java -cp target/gem-0.1-SNAPSHOT.jar -Dloader.main=innohack.gem.filegen.GenerateMockFiles org.springframework.boot.loader.PropertiesLauncher <optional: /path/to/output-dir>
+```

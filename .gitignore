@@ -1,6 +1,7 @@
 app/node
-app/node_modules
 app/yarn.lock
+app/build
+node_modules
 dist
 .cache
 .idea
