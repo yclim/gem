@@ -1,4 +1,4 @@
-package innohack.gem.extractor.tika;
+package innohack.gem.example.tika;
 
 import java.io.File;
 import java.io.FileInputStream;

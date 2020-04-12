@@ -1,6 +1,6 @@
 package innohack.gem.example;
 
-import innohack.gem.extractor.tika.*;
+import innohack.gem.example.tika.TikaUtil;
 
 public class TikaExtractor {
 

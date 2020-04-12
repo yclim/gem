@@ -1,4 +1,4 @@
-package innohack.gem.extractor.tika;
+package innohack.gem.example.tika;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
