@@ -30,7 +30,6 @@ public class GroupController {
 		return groupService.getGroup(groupName);
 	}
 
-
 	// delete group by groupName
 	@RequestMapping(method = RequestMethod.DELETE)
 	public ResponseEntity<Object> deleteGroup(@RequestBody String groupName) {

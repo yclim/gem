@@ -1,6 +1,6 @@
 package innohack.gem.entity;
 
-import innohack.gem.entity.Target;
+import innohack.gem.entity.gem.data.Target;
 
 import java.util.Collection;
 
