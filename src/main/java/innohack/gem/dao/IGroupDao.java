@@ -1,23 +1,20 @@
 package innohack.gem.dao;
 
+import innohack.gem.entity.Group;
 import java.util.Collection;
 
-import innohack.gem.entity.Group;
-
 /**
- * Allow for injecting different DAO implementations...
- * e.g. in-memory, database, es, etc
- * @author TC
+ * Allow for injecting different DAO implementations... e.g. in-memory, database, es, etc
  *
+ * @author TC
  */
 public interface IGroupDao {
 
-	Collection<Group> getGroups();
+  Collection<Group> getGroups();
 
-	Group getGroup(String groupName);
+  Group getGroup(String groupName);
 
-	boolean saveGroup(Group group);
+  boolean saveGroup(Group group);
 
-	boolean deleteGroup(String groupName);
-	
+  boolean deleteGroup(String groupName);
 }

@@ -2,35 +2,33 @@ package innohack.gem.entity;
 
 public class Parameter {
 
-	private String label;
-	
-	private ParamType type;
-	
-	private String value;
+  private String label;
 
-	
-	public String getLabel() {
-		return label;
-	}
+  private ParamType type;
 
-	public void setLabel(String label) {
-		this.label = label;
-	}
+  private String value;
 
-	public ParamType getType() {
-		return type;
-	}
+  public String getLabel() {
+    return label;
+  }
 
-	public void setType(ParamType type) {
-		this.type = type;
-	}
+  public void setLabel(String label) {
+    this.label = label;
+  }
 
-	public String getValue() {
-		return value;
-	}
+  public ParamType getType() {
+    return type;
+  }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
-	
+  public void setType(ParamType type) {
+    this.type = type;
+  }
+
+  public String getValue() {
+    return value;
+  }
+
+  public void setValue(String value) {
+    this.value = value;
+  }
 }
