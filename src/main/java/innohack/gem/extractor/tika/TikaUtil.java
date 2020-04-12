@@ -38,7 +38,7 @@ public class TikaUtil {
 
     /**
      * Walkpath to walk though a folder contains different files
-     * @param path path of the folder which contains the files
+     * @param path of the folder which contains the files
      */
 
     public  void walkPath (String path) {
