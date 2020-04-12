@@ -17,7 +17,7 @@ const EditGroups: FunctionComponent<RouteComponentProps> = () => {
   useEffect(() => {
     console.log("getGroups from api");
     if (groups.size === 0) {
-      ruleService.getGroups().then(groups => {
+      ruleService.getGroups().then((groups: Group[]) => {
         setGroups(new Map(groups.map(g => [g.groupName, g])));
       });
     }
