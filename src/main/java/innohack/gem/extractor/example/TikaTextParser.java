@@ -1,4 +1,4 @@
-package innohack.gem.extractor.tika;
+package innohack.gem.extractor.example;
 
 import org.apache.tika.parser.txt.TXTParser;
 
@@ -16,6 +16,13 @@ import java.io.IOException;
 
 public class TikaTextParser {
 
+    /**
+     * parseText use tika to parse through pure text
+     * @param args
+     * @throws IOException
+     * @throws SAXException
+     * @throws TikaException
+     */
     public static void parseText(final String[] args) throws IOException,SAXException, TikaException {
 //detecting the file type
         BodyContentHandler handler = new BodyContentHandler();

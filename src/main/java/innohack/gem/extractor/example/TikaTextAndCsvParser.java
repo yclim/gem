@@ -1,4 +1,4 @@
-package innohack.gem.extractor.tika;
+package innohack.gem.extractor.example;
 
 import com.fasterxml.jackson.core.util.Separators;
 import com.opencsv.enums.CSVReaderNullFieldIndicator;
@@ -31,6 +31,13 @@ public class TikaTextAndCsvParser {
         this.filePath = filePath;
     }
 
+    /**
+     * parseTextAndCsv to call tikacsv parser, however this method do not detect seperators, so as of now put as
+     * placeholder first
+     * @throws IOException
+     * @throws SAXException
+     * @throws TikaException
+     */
     public void parseTextAndCsv() throws IOException,SAXException, TikaException {
 //detecting the file type
         BodyContentHandler handler = new BodyContentHandler();
@@ -51,6 +58,12 @@ public class TikaTextAndCsvParser {
         }
     }
 
+    /**
+     * detectSeparators to help determine the delimiters for a csv files
+     * @param pBuffered
+     * @return
+     * @throws IOException
+     */
     private char detectSeparators(BufferedReader pBuffered) throws IOException {
         int lMaxValue = 0;
         char lCharMax = ',';
@@ -80,6 +93,9 @@ public class TikaTextAndCsvParser {
     }
 
 
+    /**
+     * parsingUsingOpenCSV uses openCSV libraries instead of tika for better csv support
+     */
     public void parseUsingOpenCsv() {
 
         Reader reader = null;
@@ -120,6 +136,9 @@ public class TikaTextAndCsvParser {
         }
     }
 
+    /**
+     * Seperators to keep track of each delimiters count.
+     */
     private class Separators {
         private char fSeparatorChar;
         private int  fFieldCount;

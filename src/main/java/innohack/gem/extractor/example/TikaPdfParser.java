@@ -1,4 +1,4 @@
-package innohack.gem.extractor.tika;
+package innohack.gem.extractor.example;
 
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
@@ -19,6 +19,12 @@ public class TikaPdfParser {
         this.filePath = filePath;
     }
 
+    /**
+     * parsePDF to call tika pdf parser to parse through and extract both content and metadata
+     * @throws IOException
+     * @throws TikaException
+     * @throws SAXException
+     */
     public void parsePDF() throws IOException, TikaException, SAXException {
 
         // this is to set the limit to unlimited

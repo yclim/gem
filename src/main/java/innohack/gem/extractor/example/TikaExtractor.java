@@ -1,6 +1,7 @@
-package innohack.gem.extractor.tika;
+package innohack.gem.extractor.example;
 
 
+import innohack.gem.extractor.tika.TikaMimeEnum;
 import org.apache.tika.Tika;
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.detect.DefaultDetector;
@@ -11,7 +12,6 @@ import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
 import org.xml.sax.SAXException;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -52,6 +52,12 @@ public class TikaExtractor {
 
     }
 
+    /**
+     * Walkpath to walk though a folder contains different files
+     * @param path path of the folder
+     * @throws IOException
+     */
+
     public  void walkPath (String path) throws IOException {
         try (Stream<Path> walk = Files.walk(Paths.get(path))) {
 
@@ -74,6 +80,12 @@ public class TikaExtractor {
         }
     }
 
+    /**
+     * determineMimeTypeAndParser after finding out the MIME type, determine the type of tika/poi parser to parse
+     * @param mediaType
+     * @param path
+     * @return
+     */
     public TikaMimeEnum determineMimeTypeAndParser (MediaType mediaType, Path path) {
         // need to force find all the type here
 
