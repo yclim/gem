@@ -23,6 +23,24 @@ import java.util.List;
  */
 public class PdfFileGenerator {
 
+    public static void generateProductsPdfFiles(int numOfFiles, Path dest) throws IOException {
+        String HEADER_TEXT = "PRODUCT INFORMATION :: PRODUCT_ID, PRODUCT_NAME, PRICE, QUANTITY";
+        String fileNamePrefix = "product_info_";
+        List<String> textLines = null;
+
+        for (int i = 0; i < numOfFiles; i++) {
+            textLines = new ArrayList<>();
+            textLines.add(HEADER_TEXT);
+            int numOfRecords = GenUtil.randomInt(15);
+            String filename = fileNamePrefix + "_" + i + ".pdf";
+            List<List<String>> dataTable = generateDataTable(numOfRecords);
+            for (List<String> row: dataTable) {
+                textLines.add(String.join(", ", row));
+            }
+            generateTextualPdfFiles(Paths.get(dest.toString(), filename), textLines);
+        }
+    }
+
     public static void generateTextualPdfFiles(Path path, List<String> textLines) throws IOException {
         PDDocument document = new PDDocument();
         PDPage page = new PDPage();
