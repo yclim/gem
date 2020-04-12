@@ -19,21 +19,6 @@ import java.util.stream.Collectors;
 
 public class CsvFileGenerator {
 
-    public static void generateCustomerCsvFiles(int numOfFiles, Path dest) throws FileNotFoundException {
-        int numOfLines = GenUtil.randomInt(300);
-        String filenamePrefix = "customer_";
-        for (int i = 0; i < numOfFiles; i++) {
-            String filename = filenamePrefix + i + ".csv";
-            GenUtil.writeToFile(
-                    generateDataTables(numOfLines).stream()
-                            .map(CsvFileGenerator::toCsv)
-                            .map(row -> String.join(",", row))
-                            .collect(Collectors.toList()), dest, filename
-            );
-
-        }
-    }
-
     public static List<List<String>> generateDataTables(int rows) {
         List<List<String>> table = new ArrayList<>();
         List<String> headers =
@@ -59,6 +44,21 @@ public class CsvFileGenerator {
         return row.stream()
             .map(col -> String.format("\"%s\"", col))
             .collect(Collectors.toList());
+    }
+
+    public static void generateCustomerCsvFiles(int numOfFiles, Path dest) throws FileNotFoundException {
+        int numOfLines = GenUtil.randomInt(300);
+        String filenamePrefix = "customer_";
+        for (int i = 0; i < numOfFiles; i++) {
+            String filename = filenamePrefix + i + ".csv";
+            GenUtil.writeToFile(
+                generateDataTables(numOfLines).stream()
+                    .map(CsvFileGenerator::toCsv)
+                    .map(row -> String.join(",", row))
+                    .collect(Collectors.toList()), dest, filename
+            );
+
+        }
     }
 
     public static void main(String[] args) throws FileNotFoundException {
