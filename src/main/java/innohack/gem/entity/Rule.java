@@ -1,49 +1,47 @@
 package innohack.gem.entity;
 
 import innohack.gem.entity.gem.data.Target;
-
 import java.util.Collection;
 
 public class Rule {
 
-	private String ruleId;
-	
-    private String label;
-    
-    private Collection<Parameter> params;
+  private String ruleId;
 
-    private Target target; //XXX not sure how this is applied...
+  private String label;
 
-	public String getRuleId() {
-		return ruleId;
-	}
+  private Collection<Parameter> params;
 
-	public void setRuleId(String ruleId) {
-		this.ruleId = ruleId;
-	}
+  private Target target; // XXX not sure how this is applied...
 
-	public String getLabel() {
-		return label;
-	}
+  public String getRuleId() {
+    return ruleId;
+  }
 
-	public void setLabel(String label) {
-		this.label = label;
-	}
+  public void setRuleId(String ruleId) {
+    this.ruleId = ruleId;
+  }
 
-	public Collection<Parameter> getParams() {
-		return params;
-	}
+  public String getLabel() {
+    return label;
+  }
 
-	public void setParams(Collection<Parameter> params) {
-		this.params = params;
-	}
+  public void setLabel(String label) {
+    this.label = label;
+  }
 
-	public Target getTarget() {
-		return target;
-	}
+  public Collection<Parameter> getParams() {
+    return params;
+  }
 
-	public void setTarget(Target target) {
-		this.target = target;
-	}
+  public void setParams(Collection<Parameter> params) {
+    this.params = params;
+  }
 
+  public Target getTarget() {
+    return target;
+  }
+
+  public void setTarget(Target target) {
+    this.target = target;
+  }
 }

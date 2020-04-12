@@ -3,33 +3,34 @@ package innohack.gem.entity;
 import java.util.Collection;
 
 public class Group {
-	
-	private String groupName;
 
-	private Collection<Rule> rules;
+  private String groupName;
 
-	public String getGroupName() {
-		return groupName;
-	}
+  private Collection<Rule> rules;
 
-	public void setGroupName(String groupName) {
-		this.groupName = groupName;
-	}
+  public String getGroupName() {
+    return groupName;
+  }
 
-	public Collection<Rule> getRules() {
-		return rules;
-	}
+  public void setGroupName(String groupName) {
+    this.groupName = groupName;
+  }
 
-	public void setRules(Collection<Rule> rules) {
-		this.rules = rules;
-	}
+  public Collection<Rule> getRules() {
+    return rules;
+  }
 
-	public Collection<GEMFile> getMatches() {
-		return matches;
-	}
-	public void setMatches(Collection<GEMFile> matches) {
-		this.matches = matches;
-	}
+  public void setRules(Collection<Rule> rules) {
+    this.rules = rules;
+  }
 
-	private Collection<GEMFile> matches;
+  public Collection<GEMFile> getMatches() {
+    return matches;
+  }
+
+  public void setMatches(Collection<GEMFile> matches) {
+    this.matches = matches;
+  }
+
+  private Collection<GEMFile> matches;
 }
