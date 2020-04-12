@@ -1,7 +1,5 @@
-package innohack.gem.extractor.example;
+package innohack.gem.extractor.tika;
 
-
-import innohack.gem.extractor.tika.TikaMimeEnum;
 import org.apache.tika.Tika;
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.detect.DefaultDetector;
@@ -21,44 +19,29 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class TikaExtractor {
+public class TikaUtil {
+
+
 
     private TikaConfig tika;
 
 
-    public TikaExtractor() {
+    public TikaUtil() {
         try {
             tika = new TikaConfig();
 
         }catch (IOException | TikaException ex) {
-                System.out.println("error ex: " + ex.toString());
-
-        }
-    }
-
-
-    public static void main(String[] args) {
-
-        System.out.println("running tika");
-        // please code here for the path to perform the testing
-        String pathFolder = "C://Users//duo_t//Documents//WFH//data";
-        try {
-            TikaExtractor extract = new TikaExtractor();
-            extract.walkPath(pathFolder);
-        }catch (IOException  ex) {
             System.out.println("error ex: " + ex.toString());
 
         }
-
     }
 
     /**
      * Walkpath to walk though a folder contains different files
      * @param path path of the folder
-     * @throws IOException
      */
 
-    public  void walkPath (String path) throws IOException {
+    public  void walkPath (String path) {
         try (Stream<Path> walk = Files.walk(Paths.get(path))) {
 
             List<Path> results = walk.filter(Files::isRegularFile)
@@ -66,13 +49,13 @@ public class TikaExtractor {
 
             for (Path result : results) {
                 System.out.println("each result is " + result.toAbsolutePath());
-                    Metadata metadata = new Metadata();
-                    metadata.set(Metadata.RESOURCE_NAME_KEY, result.toString());
-                    MediaType mimetype = tika.getDetector().detect(
-                            TikaInputStream.get(result), metadata);
+                Metadata metadata = new Metadata();
+                metadata.set(Metadata.RESOURCE_NAME_KEY, result.toString());
+                MediaType mimetype = tika.getDetector().detect(
+                        TikaInputStream.get(result), metadata);
 
-                    TikaMimeEnum mimeType = determineMimeTypeAndParser(mimetype, result);
-                    System.out.println("result is " + result.toAbsolutePath() + " mimeType is " + mimeType.getMimeType());
+                TikaMimeEnum mimeType = determineMimeTypeAndParser(mimetype, result);
+                System.out.println("result is " + result.toAbsolutePath() + " mimeType is " + mimeType.getMimeType());
 
             }
         } catch (IOException e) {
@@ -82,9 +65,9 @@ public class TikaExtractor {
 
     /**
      * determineMimeTypeAndParser after finding out the MIME type, determine the type of tika/poi parser to parse
-     * @param mediaType
-     * @param path
-     * @return
+     * @param mediaType MIME type of the file
+     * @param path path of the folder been point to
+     * @return of the mimetype found
      */
     public TikaMimeEnum determineMimeTypeAndParser (MediaType mediaType, Path path) {
         // need to force find all the type here
@@ -93,11 +76,7 @@ public class TikaExtractor {
             TikaPdfParser pdfParser = new TikaPdfParser(path);
             try {
                 pdfParser.parsePDF();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (TikaException e) {
-                e.printStackTrace();
-            } catch (SAXException e) {
+            } catch (IOException | TikaException | SAXException e) {
                 e.printStackTrace();
             }
             return TikaMimeEnum.PDF;
@@ -110,10 +89,10 @@ public class TikaExtractor {
 
         }else if (mediaType.getSubtype().equals(TikaMimeEnum.CSV.getMimeType())) {
             TikaTextAndCsvParser csvParser = new TikaTextAndCsvParser(path);
-                //this is usng tika
-                // csvParser.parseTextAndCsv();
-                // this is using opencsv
-                csvParser.parseUsingOpenCsv();
+            //this is usng tika
+            // csvParser.parseTextAndCsv();
+            // this is using opencsv
+            csvParser.parseUsingOpenCsv();
 
             return TikaMimeEnum.CSV;
 
@@ -122,22 +101,5 @@ public class TikaExtractor {
 
     }
 
-    public String detectDocTypeUsingDetector(InputStream stream)
-            throws IOException {
-        Detector detector = new DefaultDetector();
-        Metadata metadata = new Metadata();
-
-        MediaType mediaType = detector.detect(stream, metadata);
-
-        return mediaType.toString();
-    }
-
-    public String detectDocTypeUsingFacade(InputStream stream)
-            throws IOException {
-
-        Tika tika = new Tika();
-        String mediaType = tika.detect(stream);
-        return mediaType;
-    }
 
 }

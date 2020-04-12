@@ -1,4 +1,4 @@
-package innohack.gem.extractor.example;
+package innohack.gem.extractor.tika;
 
 import com.fasterxml.jackson.core.util.Separators;
 import com.opencsv.enums.CSVReaderNullFieldIndicator;
@@ -15,7 +15,6 @@ import au.com.bytecode.opencsv.CSVReader;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -34,9 +33,9 @@ public class TikaTextAndCsvParser {
     /**
      * parseTextAndCsv to call tikacsv parser, however this method do not detect seperators, so as of now put as
      * placeholder first
-     * @throws IOException
-     * @throws SAXException
-     * @throws TikaException
+     * @throws IOException IOexception if path is not found
+     * @throws SAXException SAXException from Tika
+     * @throws TikaException TikaException if thrown internal by Tika
      */
     public void parseTextAndCsv() throws IOException,SAXException, TikaException {
 //detecting the file type
@@ -60,9 +59,9 @@ public class TikaTextAndCsvParser {
 
     /**
      * detectSeparators to help determine the delimiters for a csv files
-     * @param pBuffered
-     * @return
-     * @throws IOException
+     * @param pBuffered bufferedread for the inputstream
+     * @return character delimiter
+     * @throws IOException if file is not found
      */
     private char detectSeparators(BufferedReader pBuffered) throws IOException {
         int lMaxValue = 0;
@@ -98,7 +97,7 @@ public class TikaTextAndCsvParser {
      */
     public void parseUsingOpenCsv() {
 
-        Reader reader = null;
+        Reader reader;
         try {
             reader = Files.newBufferedReader(this.filePath, UTF_8);
 

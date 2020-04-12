@@ -1,4 +1,4 @@
-package innohack.gem.extractor.example;
+package innohack.gem.extractor.tika;
 
 import org.apache.tika.parser.txt.TXTParser;
 
@@ -13,17 +13,18 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Path;
 
 public class TikaTextParser {
 
     /**
      * parseText use tika to parse through pure text
-     * @param args
-     * @throws IOException
-     * @throws SAXException
-     * @throws TikaException
+     * @param filepath of the folder path
+     * @throws IOException IOException when dealing with files
+     * @throws SAXException SAX tika exception
+     * @throws TikaException any tiak exception found
      */
-    public static void parseText(final String[] args) throws IOException,SAXException, TikaException {
+    public static void parseText(Path filepath) throws IOException,SAXException, TikaException {
 //detecting the file type
         BodyContentHandler handler = new BodyContentHandler();
         Metadata metadata = new Metadata();

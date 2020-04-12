@@ -1,4 +1,4 @@
-package innohack.gem.extractor.example;
+package innohack.gem.extractor.tika;
 
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
@@ -21,9 +21,9 @@ public class TikaPdfParser {
 
     /**
      * parsePDF to call tika pdf parser to parse through and extract both content and metadata
-     * @throws IOException
-     * @throws TikaException
-     * @throws SAXException
+     * @throws IOException IOException when dealing with files
+     * @throws SAXException SAX tika exception
+     * @throws TikaException any tiak exception found
      */
     public void parsePDF() throws IOException, TikaException, SAXException {
 
