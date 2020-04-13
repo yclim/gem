@@ -99,12 +99,17 @@ public class TikaUtil {
       return TikaMimeEnum.MSWORD;
 
     } else if (mediaType.getSubtype().equals(TikaMimeEnum.MSEXCEL.getMimeType())) {
+      TikaExcelParser excelParser = new TikaExcelParser(path);
+      try {
+        excelParser.parseExcel();
+      } catch (IOException | TikaException | SAXException e) {
+        e.printStackTrace();
+      }
       return TikaMimeEnum.MSEXCEL;
 
     } else if (mediaType.getSubtype().equals(TikaMimeEnum.CSV.getMimeType())) {
       GEMFile csvFile = new GEMFile(path.getFileName().toString(), path.getParent().toString());
       csvFile.extractCSV();
-
 
       return TikaMimeEnum.CSV;
 
