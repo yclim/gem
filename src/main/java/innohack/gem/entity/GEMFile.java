@@ -10,7 +10,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 public class GEMFile {
-  private String name;
+  private String fileName;
   private String contentType;
   private Long size;
   private String extension;
@@ -18,24 +18,24 @@ public class GEMFile {
   private String directory;
   private Collection<AbstractFeature> data;
 
-  public GEMFile(String name, String directory) {
+  public GEMFile(String fileName, String directory) {
     this.directory = directory;
-    this.name = name;
+    this.fileName = fileName;
   }
 
   public GEMFile(MultipartFile file) {
-    this.name = file.getOriginalFilename();
+    this.fileName = file.getOriginalFilename();
     this.size = file.getSize();
     this.extension = FilenameUtils.getExtension(file.getOriginalFilename());
     this.contentType = file.getContentType();
   }
 
-  public String getName() {
-    return name;
+  public String getFileName() {
+    return fileName;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setFileName(String fileName) {
+    this.fileName = fileName;
   }
 
   public String getDirectory() {
@@ -47,7 +47,7 @@ public class GEMFile {
   }
 
   public String getAbsolutePath() {
-    return getAbsolutePath(this.getName(), this.getDirectory());
+    return getAbsolutePath(this.getFileName(), this.getDirectory());
   }
 
   public static String getAbsolutePath(String name, String directory) {
