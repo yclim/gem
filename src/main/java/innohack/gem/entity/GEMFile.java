@@ -116,4 +116,31 @@ public class GEMFile {
 
     return this;
   }
+
+
+  // Perform extraction
+  public GEMFile extractCSV() {
+    // TODO extract file's data
+    File f = new File(getAbsolutePath());
+    extension = FilenameUtils.getExtension(f.getName());
+
+    CsvFeature extractedData1 = new CsvFeature();
+    extractedData1.extract(f);
+    addData(extractedData1);
+
+    System.out.println("*************Metadata****************");
+    System.out.println(extractedData1.getMetadata().toString());
+
+    System.out.println("*************HEADER****************");
+    System.out.println(extractedData1.getHeader());
+
+    System.out.println("*************RECORD****************");
+    System.out.println(extractedData1.getContents());
+
+    System.out.println("*************COLRECORD****************");
+    System.out.println(extractedData1.getColRecords().toString());
+
+
+    return this;
+  }
 }

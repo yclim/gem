@@ -1,5 +1,6 @@
 package innohack.gem.example.tika;
 
+import innohack.gem.entity.GEMFile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -56,6 +57,25 @@ public class TikaUtil {
   }
 
   /**
+   * Walkpath to walk though a folder contains different files
+   *
+   * @param path of the folder which contains the files
+   */
+  public MediaType extractMime(Path path) {
+
+    System.out.println("each result is " + path.toAbsolutePath());
+    Metadata metadata = new Metadata();
+    metadata.set(Metadata.RESOURCE_NAME_KEY, path.toString());
+    MediaType mimeType = null;
+    try {
+      mimeType = tika.getDetector().detect(TikaInputStream.get(path), metadata);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return mimeType;
+  }
+
+  /**
    * determineMimeTypeAndParser after finding out the MIME type, determine the type of tika/poi
    * parser to parse
    *
@@ -82,11 +102,9 @@ public class TikaUtil {
       return TikaMimeEnum.MSEXCEL;
 
     } else if (mediaType.getSubtype().equals(TikaMimeEnum.CSV.getMimeType())) {
-      TikaTextAndCsvParser csvParser = new TikaTextAndCsvParser(path);
-      // this is usng tika
-      // csvParser.parseTextAndCsv();
-      // this is using opencsv
-      csvParser.parseUsingOpenCsv();
+      GEMFile csvFile = new GEMFile(path.getFileName().toString(), path.getParent().toString());
+      csvFile.extractCSV();
+
 
       return TikaMimeEnum.CSV;
 

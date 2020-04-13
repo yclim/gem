@@ -59,6 +59,32 @@ public class TikaTextAndCsvParser {
   }
 
   /**
+   * parseTextAndCsv to call tikacsv parser, however this method do not detect seperators, so as of
+   * now put as placeholder first
+   *
+   * @throws IOException IOexception if path is not found
+   * @throws SAXException SAXException from Tika
+   * @throws TikaException TikaException if thrown internal by Tika
+   */
+  public Metadata parseMetaDataUsingTextAndCsv() throws IOException, SAXException, TikaException {
+    // detecting the file type
+    BodyContentHandler handler = new BodyContentHandler();
+    Metadata metadata = new Metadata();
+    FileInputStream inputstream =
+        new FileInputStream(new File(String.valueOf(this.filePath.toAbsolutePath())));
+    ParseContext pcontext = new ParseContext();
+
+    // Text document parser
+    TextAndCSVParser csvParser = new TextAndCSVParser();
+    csvParser.parse(inputstream, handler, metadata, pcontext);
+
+    // System.out.println("Contents of the document:" + handler.toString());
+    // System.out.println("Metadata of the document:");
+
+    return metadata;
+  }
+
+  /**
    * detectSeparators to help determine the delimiters for a csv files
    *
    * @param pBuffered bufferedread for the inputstream
@@ -131,6 +157,37 @@ public class TikaTextAndCsvParser {
     } catch (IOException | CsvException e) {
       e.printStackTrace();
     }
+  }
+
+  /**
+   * this is to get a csvreader back using a filePath
+   *
+   * @return CSVReader
+   */
+  public com.opencsv.CSVReader getCsvReaderUsingOpenCsv() {
+
+    Reader reader;
+    com.opencsv.CSVReader csvReader = null;
+
+    try {
+      reader = Files.newBufferedReader(this.filePath, UTF_8);
+
+      System.out.println(" Using opencsv ");
+      CSVParser parser =
+          new CSVParserBuilder()
+              .withSeparator(detectSeparators((BufferedReader) reader))
+              .withFieldAsNull(CSVReaderNullFieldIndicator.EMPTY_QUOTES)
+              .withIgnoreLeadingWhiteSpace(true)
+              .withIgnoreQuotations(false)
+              .withStrictQuotes(false)
+              .build();
+
+      csvReader = new CSVReaderBuilder(reader).withCSVParser(parser).build();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    return csvReader;
   }
 
   /** Seperators to keep track of each delimiters count. */
