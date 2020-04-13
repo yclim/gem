@@ -10,6 +10,14 @@ import java.util.Set;
  * @author TC
  */
 public interface IGEMFileDao {
+
+  // Get current directory path where files uploaded
+  /**
+   * Find document in feature store by file name and directory
+   *
+   * @return directory path
+   */
+  String getCurrentDirectory();
   /**
    * Find document in feature store by file name and directory
    *
@@ -44,8 +52,7 @@ public interface IGEMFileDao {
   Collection<GEMFile> findByExtension(String extension);
 
   /**
-   * Retrieves metadata for all stored documents It should return the minimun; file name and
-   * directory
+   * Retrieves all stored documents It should return the minimun; file name and directory
    *
    * @return list of metadata {@link GEMFile @GEMFile}
    */

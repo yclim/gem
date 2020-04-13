@@ -1,5 +1,6 @@
 package innohack.gem.web;
 
+import com.google.common.collect.Lists;
 import innohack.gem.entity.GEMFile;
 import innohack.gem.service.GEMFileService;
 import java.util.Collection;
@@ -12,6 +13,17 @@ import org.springframework.web.bind.annotation.*;
 public class GEMFileController {
 
   @Autowired private GEMFileService fileService;
+
+  /**
+   * Retrieves metadata for all uploaded documents
+   *
+   * @return list of metadata {@link GEMFile @DocumentMetadata}
+   */
+  // get list of files from feature store
+  @GetMapping("/currentDir")
+  public String getCurrentDirectory() {
+    return fileService.getCurrentDirectory();
+  }
 
   // get file by directory and filename
   @GetMapping("/findByNameAndDir")
@@ -40,7 +52,11 @@ public class GEMFileController {
   // get list of files and perform data extraction
   @GetMapping("/sync")
   public Collection<GEMFile> sync(@RequestParam(name = "directory") String directory) {
-    return fileService.syncFiles(directory);
+    if (directory.trim().length() > 0) {
+      return fileService.syncFiles(directory);
+    } else {
+      return Lists.newArrayList();
+    }
   }
 
   /**

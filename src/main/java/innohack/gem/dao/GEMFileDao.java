@@ -11,9 +11,28 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class GEMFileDao implements IGEMFileDao {
-  public static HashMap<String, GEMFile> featureStore = new HashMap<String, GEMFile>();
+  private static HashMap<String, GEMFile> featureStore = new HashMap<>();
+  private static String directoryStore = "";
   public static Set<String> fileTypeStore = new HashSet<String>();
 
+  // Get current directory path where files uploaded
+  /**
+   * Find document in feature store by file name and directory
+   *
+   * @return directory path
+   */
+  @Override
+  public String getCurrentDirectory() {
+    return directoryStore;
+  }
+
+  /**
+   * Find document in feature store by file name and directory
+   *
+   * @param filename document file name
+   * @param directory directory where the file is
+   * @return list of document metadata
+   */
   // This method get file data from feature store
   @Override
   public Set<String> getFileTypes() {
@@ -38,13 +57,18 @@ public class GEMFileDao implements IGEMFileDao {
   public Collection<GEMFile> findByName(String filename) {
     Collection<GEMFile> l = Lists.newArrayList();
     for (GEMFile f : featureStore.values()) {
-      if (f.getName().toLowerCase().contains(filename.toLowerCase())) {
+      if (f.getFileName().contains(filename)) {
         l.add(f);
       }
     }
     return l;
   }
-
+  /**
+   * Find document metadata by document file extension
+   *
+   * @param extension document file extension
+   * @return list of document metadata
+   */
   @Override
   public Collection<GEMFile> findByExtension(String extension) {
     Collection<GEMFile> l = Lists.newArrayList();
@@ -56,12 +80,16 @@ public class GEMFileDao implements IGEMFileDao {
     return l;
   }
 
-  // Get list of files from feature store. It should return the minimum; file name and directory
+  /**
+   * Retrieves all stored documents It should return the minimun; file name and directory
+   *
+   * @return list of metadata {@link GEMFile @GEMFile}
+   */
   @Override
   public Collection<GEMFile> getFiles() {
     Collection<GEMFile> l = Lists.newArrayList();
     for (GEMFile f : featureStore.values()) {
-      l.add(new GEMFile(f.getName(), f.getDirectory()));
+      l.add(new GEMFile(f.getFileName(), f.getDirectory()));
     }
     return l;
   }
@@ -72,12 +100,15 @@ public class GEMFileDao implements IGEMFileDao {
     File dir = new File(directory);
     Collection<GEMFile> resultList = Lists.newArrayList();
     File[] fList = dir.listFiles();
-    for (File file : fList) {
-      if (file.isFile()) {
-        resultList.add(new GEMFile(file.getName(), file.getParent()));
-      } else {
-        resultList.addAll(getLocalFiles(file.getAbsolutePath()));
+    if(fList!=null){
+      for (File file : fList) {
+        if (file.isFile()) {
+          resultList.add(new GEMFile(file.getName(), file.getParent()));
+        } else {
+          resultList.addAll(getLocalFiles(file.getAbsolutePath()));
+        }
       }
+      directoryStore = directory;
     }
     return resultList;
   }
