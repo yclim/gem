@@ -29,7 +29,7 @@ public class GEMFileDao implements IGEMFileDao {
   public Collection<GEMFile> findByName(String filename) {
     Collection<GEMFile> l = Lists.newArrayList();
     for (GEMFile f : featureStore.values()) {
-      if (f.getName().contains(filename)) {
+      if (f.getFileName().contains(filename)) {
         l.add(f);
       }
     }
@@ -52,7 +52,7 @@ public class GEMFileDao implements IGEMFileDao {
   public Collection<GEMFile> getFiles() {
     Collection<GEMFile> l = Lists.newArrayList();
     for (GEMFile f : featureStore.values()) {
-      l.add(new GEMFile(f.getName(), f.getDirectory()));
+      l.add(new GEMFile(f.getFileName(), f.getDirectory()));
     }
     return l;
   }

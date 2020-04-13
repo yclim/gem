@@ -4,6 +4,7 @@ import { Button, ButtonGroup } from "@blueprintjs/core";
 import { Intent } from "@blueprintjs/core/lib/esm/common/intent";
 import { File } from "./api";
 import ruleService from "./api/mock";
+import fileService from "./api/GEMFileAPIService";
 import FileList from "./FileList";
 
 const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
@@ -19,9 +20,15 @@ const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
   }, []);
 
   useEffect(() => {
-    ruleService.getFilesByType(currentType).then(f => {
-      setFiles(f);
-    });
+    if(ALL === "All"){
+        fileService.getFiles().then(f => {
+          setFiles(f);
+        });
+    }else{
+        fileService.getFilesByType(currentType).then(f => {
+          setFiles(f);
+        });
+    }
   }, [currentType]);
 
   function renderTypeButton() {
@@ -40,10 +47,14 @@ const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
     setCurrentType(type);
   }
 
+  function handleSynchronize() {
+    setCurrentType(type);
+  }
+
   return (
     <div className="vertical-container">
       <div>
-        <Button icon="refresh" text="Synchronize" />
+        <Button icon="refresh" text="Synchronize" onClick={()=> handleSynchronize} />
       </div>
       <div className="horizontal-container">
         <div className="left-nav-section">
