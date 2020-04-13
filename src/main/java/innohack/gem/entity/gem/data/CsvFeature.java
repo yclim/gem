@@ -3,6 +3,7 @@ package innohack.gem.entity.gem.data;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import innohack.gem.example.tika.TikaTextAndCsvParser;
+import innohack.gem.extractor.opencsv.OpenCsvParser;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class CsvFeature extends AbstractFeature {
         System.out.println(name + " : " + metadata.get(name));
         addMetadata(name, metadata.get(name));
       }
-      csvContentParser();
+      csvContentParser(f);
 
     } catch (IOException e) {
       e.printStackTrace();
@@ -57,9 +58,10 @@ public class CsvFeature extends AbstractFeature {
     }
   }
 
-  private void csvContentParser() {
+  private void csvContentParser(File f) {
 
     try {
+      OpenCsvParser csvParser = new OpenCsvParser(f.toPath());
       CSVReader csvReader = csvParser.getCsvReaderUsingOpenCsv();
 
       if (csvReader != null) {
