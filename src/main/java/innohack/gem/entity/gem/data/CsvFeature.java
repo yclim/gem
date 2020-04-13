@@ -15,8 +15,11 @@ import org.xml.sax.SAXException;
 /** Object to hold wrap csv data */
 public class CsvFeature extends AbstractFeature {
 
-  private String header;
-  private ArrayList<String> contents = new ArrayList<String>();
+  private List<String> header = new ArrayList<String> ();
+
+
+
+  private ArrayList<ArrayList<String>> contents = new ArrayList<ArrayList<String>>();
   private HashMap<String, ArrayList<String>> colRecords = new HashMap<String, ArrayList<String>>();
   private HashMap<Integer, String> colMapper = new HashMap<Integer, String>();
   private int totalRow = 0;
@@ -68,11 +71,9 @@ public class CsvFeature extends AbstractFeature {
         for (String[] record : records) {
           if (totalRow == 0) {
             // this is for the header row
-            StringBuilder headerBuilder = new StringBuilder();
             int colCount = 0;
             for (String cell : record) {
-              headerBuilder.append(cell);
-              headerBuilder.append(";");
+              header.add(cell);
 
               if (!colRecords.containsKey(cell)) {
                 colRecords.put(cell, new ArrayList<String>());
@@ -82,18 +83,15 @@ public class CsvFeature extends AbstractFeature {
 
               System.out.print(cell + " ");
             }
-            header = headerBuilder.toString();
-            header = header.substring(0, header.length() - 1);
             totalRow++;
           } else {
 
             // this is for the records row
-            StringBuilder recordBuilder = new StringBuilder();
+            ArrayList<String> recordBuilder = new ArrayList<String>();
             int colCount = 0;
 
             for (String cell : record) {
-              recordBuilder.append(cell);
-              recordBuilder.append(";");
+              recordBuilder.add(cell);
 
               if (colMapper.containsKey(colCount)) {
                 String colHeader = colMapper.get(colCount);
@@ -107,9 +105,7 @@ public class CsvFeature extends AbstractFeature {
               }
               colCount++;
             }
-            String perRow = recordBuilder.toString();
-            perRow = perRow.substring(0, perRow.length() - 1);
-            contents.add(perRow);
+            contents.add(recordBuilder);
             totalRow++;
           }
         }
@@ -128,21 +124,22 @@ public class CsvFeature extends AbstractFeature {
     }
   }
 
-  public ArrayList<String> getContents() {
-    return contents;
-  }
-
-  public void setContents(ArrayList<String> contents) {
-    this.contents = contents;
-  }
-
-  public String getHeader() {
+  public List<String> getHeader() {
     return header;
   }
 
-  public void setHeader(String header) {
+  public void setHeader(List<String> header) {
     this.header = header;
   }
+
+  public ArrayList<ArrayList<String>> getContents() {
+    return contents;
+  }
+
+  public void setContents(ArrayList<ArrayList<String>> contents) {
+    this.contents = contents;
+  }
+
 
   public HashMap<String, ArrayList<String>> getColRecords() {
     return colRecords;
