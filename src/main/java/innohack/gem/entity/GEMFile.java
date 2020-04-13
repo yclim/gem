@@ -117,7 +117,6 @@ public class GEMFile {
     return this;
   }
 
-
   // Perform extraction
   public GEMFile extractCSV() {
     // TODO extract file's data
@@ -139,7 +138,6 @@ public class GEMFile {
 
     System.out.println("*************COLRECORD****************");
     System.out.println(extractedData1.getColRecords().toString());
-
 
     return this;
   }

@@ -5,12 +5,21 @@ import innohack.gem.entity.GEMFile;
 import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class GEMFileDao implements IGEMFileDao {
   public static HashMap<String, GEMFile> featureStore = new HashMap<String, GEMFile>();
+  public static Set<String> fileTypeStore = new HashSet<String>();
 
+  // This method get file data from feature store
+  @Override
+  public Set<String> getFileTypes() {
+    // TODO get file data from feature store
+    return fileTypeStore;
+  }
   // This method get file data from feature store
   @Override
   public GEMFile getFile(String filename, String directory) {
@@ -29,7 +38,7 @@ public class GEMFileDao implements IGEMFileDao {
   public Collection<GEMFile> findByName(String filename) {
     Collection<GEMFile> l = Lists.newArrayList();
     for (GEMFile f : featureStore.values()) {
-      if (f.getName().contains(filename)) {
+      if (f.getName().toLowerCase().contains(filename.toLowerCase())) {
         l.add(f);
       }
     }
@@ -40,7 +49,7 @@ public class GEMFileDao implements IGEMFileDao {
   public Collection<GEMFile> findByExtension(String extension) {
     Collection<GEMFile> l = Lists.newArrayList();
     for (GEMFile f : featureStore.values()) {
-      if (f.getExtension().contains(extension)) {
+      if (f.getExtension().toLowerCase().contains(extension.toLowerCase())) {
         l.add(f);
       }
     }
@@ -77,6 +86,7 @@ public class GEMFileDao implements IGEMFileDao {
   @Override
   public void saveFile(GEMFile file) {
     // TODO Insert file into feature store
+    fileTypeStore.add(file.getExtension());
     featureStore.put(file.getAbsolutePath(), file);
   }
 

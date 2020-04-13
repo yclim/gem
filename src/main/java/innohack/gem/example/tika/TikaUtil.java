@@ -105,7 +105,6 @@ public class TikaUtil {
       GEMFile csvFile = new GEMFile(path.getFileName().toString(), path.getParent().toString());
       csvFile.extractCSV();
 
-
       return TikaMimeEnum.CSV;
 
     } else return TikaMimeEnum.UNKNOWN;

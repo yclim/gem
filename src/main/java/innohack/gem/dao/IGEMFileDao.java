@@ -2,6 +2,7 @@ package innohack.gem.dao;
 
 import innohack.gem.entity.GEMFile;
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * Allow for injecting different DAO implementations... e.g. in-memory, database, es, etc
@@ -55,4 +56,11 @@ public interface IGEMFileDao {
 
   // save file to feature store
   void saveFile(GEMFile files);
+
+  /**
+   * Retrieves all file extensions uploaded
+   *
+   * @return list of file extension
+   */
+  Set<String> getFileTypes();
 }

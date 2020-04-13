@@ -5,6 +5,7 @@ import innohack.gem.entity.GEMFile;
 import innohack.gem.service.event.EventListener;
 import innohack.gem.service.event.NewEvent;
 import java.util.Collection;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -63,5 +64,14 @@ public class GEMFileService extends NewEvent {
    */
   public Collection<GEMFile> findByExtension(String extension) {
     return gemDao.findByExtension(extension);
+  }
+
+  /**
+   * Retrieves all file extensions uploaded
+   *
+   * @return list of file extension
+   */
+  public Set<String> getFileTypes() {
+    return gemDao.getFileTypes();
   }
 }

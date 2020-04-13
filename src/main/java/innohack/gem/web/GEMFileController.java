@@ -3,6 +3,7 @@ package innohack.gem.web;
 import innohack.gem.entity.GEMFile;
 import innohack.gem.service.GEMFileService;
 import java.util.Collection;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -62,5 +63,15 @@ public class GEMFileController {
   @RequestMapping("/findByExtension/{extension}")
   public Collection<GEMFile> findByExtension(@PathVariable String extension) {
     return fileService.findByExtension(extension);
+  }
+
+  /**
+   * Retrieves all file extensions uploaded
+   *
+   * @return list of file extension
+   */
+  @RequestMapping("/extensions/list")
+  public Set<String> getFileTypes() {
+    return fileService.getFileTypes();
   }
 }
