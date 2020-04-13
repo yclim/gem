@@ -1,6 +1,5 @@
 package innohack.gem.example.tika;
 
-
 import com.opencsv.*;
 import java.io.*;
 import java.nio.file.Path;

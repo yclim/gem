@@ -73,7 +73,8 @@ public class GEMFileController {
   /**
    * Retrieves list of document metadata with given document file extension
    *
-   * @param extension file name extension
+   * @param extension file name extension getCurrentDirectory() { const url = API_DOMAIN + END_POINT
+   *     + '/currentDir'; return axios.get(url); }
    * @return list of metadata {@link GEMFile @DocumentMetadata}
    */
   @RequestMapping("/findByExtension/{extension}")

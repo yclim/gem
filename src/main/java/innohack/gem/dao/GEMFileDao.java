@@ -27,29 +27,23 @@ public class GEMFileDao implements IGEMFileDao {
   }
 
   /**
-   * Find document in feature store by file name and directory
+   * Retrieves all file extensions uploaded
    *
-   * @param filename document file name
-   * @param directory directory where the file is
-   * @return list of document metadata
+   * @return list of file extension
    */
-  // This method get file data from feature store
   @Override
   public Set<String> getFileTypes() {
-    // TODO get file data from feature store
     return fileTypeStore;
   }
   // This method get file data from feature store
   @Override
   public GEMFile getFile(String filename, String directory) {
-    // TODO get file data from feature store
     return featureStore.get(GEMFile.getAbsolutePath(filename, directory));
   }
 
   // This method get file data from feature store
   @Override
   public GEMFile getFileByAbsolutePath(String absolutePath) {
-    // TODO get file data from feature store
     return featureStore.get(absolutePath);
   }
 
@@ -100,7 +94,7 @@ public class GEMFileDao implements IGEMFileDao {
     File dir = new File(directory);
     Collection<GEMFile> resultList = Lists.newArrayList();
     File[] fList = dir.listFiles();
-    if(fList!=null){
+    if (fList != null) {
       for (File file : fList) {
         if (file.isFile()) {
           resultList.add(new GEMFile(file.getName(), file.getParent()));
@@ -116,7 +110,6 @@ public class GEMFileDao implements IGEMFileDao {
   // save file to feature store
   @Override
   public void saveFile(GEMFile file) {
-    // TODO Insert file into feature store
     fileTypeStore.add(file.getExtension());
     featureStore.put(file.getAbsolutePath(), file);
   }
