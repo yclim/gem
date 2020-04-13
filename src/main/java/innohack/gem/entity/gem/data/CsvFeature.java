@@ -112,13 +112,13 @@ public class CsvFeature extends AbstractFeature {
           }
         }
         System.out.println("\n");
+        // close readers
+        csvReader.close();
 
       } else {
         System.out.println("Not able to parse");
       }
 
-      // close readers
-      csvReader.close();
     } catch (IOException e) {
       e.printStackTrace();
     } catch (CsvException e) {
