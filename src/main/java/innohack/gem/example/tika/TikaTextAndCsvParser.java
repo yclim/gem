@@ -59,103 +59,30 @@ public class TikaTextAndCsvParser {
   }
 
   /**
-   * detectSeparators to help determine the delimiters for a csv files
+   * parseTextAndCsv to call tikacsv parser, however this method do not detect seperators, so as of
+   * now put as placeholder first
    *
-   * @param pBuffered bufferedread for the inputstream
-   * @return character delimiter
-   * @throws IOException if file is not found
+   * @throws IOException IOexception if path is not found
+   * @throws SAXException SAXException from Tika
+   * @throws TikaException TikaException if thrown internal by Tika
    */
-  private char detectSeparators(BufferedReader pBuffered) throws IOException {
-    int lMaxValue = 0;
-    char lCharMax = ',';
-    pBuffered.mark(2048);
+  public Metadata parseMetaDataUsingTextAndCsv() throws IOException, SAXException, TikaException {
+    // detecting the file type
+    BodyContentHandler handler = new BodyContentHandler();
+    Metadata metadata = new Metadata();
+    FileInputStream inputstream =
+        new FileInputStream(new File(String.valueOf(this.filePath.toAbsolutePath())));
+    ParseContext pcontext = new ParseContext();
 
-    ArrayList<Separators> lSeparators = new ArrayList<Separators>();
-    lSeparators.add(new Separators(','));
-    lSeparators.add(new Separators(';'));
-    lSeparators.add(new Separators('\t'));
+    // Text document parser
+    TextAndCSVParser csvParser = new TextAndCSVParser();
+    csvParser.parse(inputstream, handler, metadata, pcontext);
 
-    Iterator<Separators> lIterator = lSeparators.iterator();
-    while (lIterator.hasNext()) {
-      Separators lSeparator = lIterator.next();
-      au.com.bytecode.opencsv.CSVReader lReader =
-          new CSVReader(pBuffered, lSeparator.getSeparator());
-      String[] lLine;
-      lLine = lReader.readNext();
-      lSeparator.setCount(lLine.length);
-
-      if (lSeparator.getCount() > lMaxValue) {
-        lMaxValue = lSeparator.getCount();
-        lCharMax = lSeparator.getSeparator();
-      }
-      pBuffered.reset();
-    }
-    System.out.println("The seperator is " + lCharMax);
-    return lCharMax;
+    // System.out.println("Contents of the document:" + handler.toString());
+    // System.out.println("Metadata of the document:");
+    inputstream.close();
+    return metadata;
   }
 
-  /** parsingUsingOpenCSV uses openCSV libraries instead of tika for better csv support */
-  public void parseUsingOpenCsv() {
 
-    Reader reader;
-    try {
-      reader = Files.newBufferedReader(this.filePath, UTF_8);
-
-      System.out.println(" Using opencsv ");
-      CSVParser parser =
-          new CSVParserBuilder()
-              .withSeparator(detectSeparators((BufferedReader) reader))
-              .withFieldAsNull(CSVReaderNullFieldIndicator.EMPTY_QUOTES)
-              .withIgnoreLeadingWhiteSpace(true)
-              .withIgnoreQuotations(false)
-              .withStrictQuotes(false)
-              .build();
-
-      com.opencsv.CSVReader csvReader = new CSVReaderBuilder(reader).withCSVParser(parser).build();
-
-      // read all records at once
-      List<String[]> records = csvReader.readAll();
-
-      // iterate through list of records
-      for (String[] record : records) {
-        for (String cell : record) {
-          System.out.print(cell + " ");
-        }
-        System.out.println("\n");
-      }
-
-      // close readers
-      csvReader.close();
-      reader.close();
-
-    } catch (IOException | CsvException e) {
-      e.printStackTrace();
-    }
-  }
-
-  /** Seperators to keep track of each delimiters count. */
-  private class Separators {
-    private char fSeparatorChar;
-    private int fFieldCount;
-
-    public Separators(char pSeparator) {
-      fSeparatorChar = pSeparator;
-    }
-
-    public void setSeparator(char pSeparator) {
-      fSeparatorChar = pSeparator;
-    }
-
-    public void setCount(int pCount) {
-      fFieldCount = pCount;
-    }
-
-    public char getSeparator() {
-      return fSeparatorChar;
-    }
-
-    public int getCount() {
-      return fFieldCount;
-    }
-  }
 }
