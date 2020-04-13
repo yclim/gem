@@ -17,6 +17,10 @@ class GEMFileAPIService {
         const url = API_DOMAIN + END_POINT + '/findByExtension/' + type;
         return axios.get(url);
     }
+    getCurrentDirectory() {
+        const url = API_DOMAIN + END_POINT + '/currentDir';
+        return axios.get(url);
+    }
 }
 
 export default new GEMFileAPIService();

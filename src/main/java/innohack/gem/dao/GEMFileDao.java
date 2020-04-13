@@ -9,22 +9,50 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class GEMFileDao implements IGEMFileDao {
-  public static HashMap<String, GEMFile> featureStore = new HashMap<String, GEMFile>();
+  private static HashMap<String, GEMFile> featureStore = new HashMap<>();
+  private static String directoryStore = "";
 
-  // This method get file data from feature store
+  // Get current directory path where files uploaded
+  /**
+   * Find document in feature store by file name and directory
+   *
+   * @return directory path
+   */
+  @Override
+  public String getCurrentDirectory() {
+    return directoryStore;
+  }
+
+  /**
+   * Find document in feature store by file name and directory
+   *
+   * @param filename document file name
+   * @param directory directory where the file is
+   * @return list of document metadata
+   */
   @Override
   public GEMFile getFile(String filename, String directory) {
     // TODO get file data from feature store
     return featureStore.get(GEMFile.getAbsolutePath(filename, directory));
   }
 
-  // This method get file data from feature store
+  /**
+   * Find document in feature store by absolute path
+   *
+   * @param absolutePath of the document
+   * @return list of document metadata
+   */
   @Override
   public GEMFile getFileByAbsolutePath(String absolutePath) {
     // TODO get file data from feature store
     return featureStore.get(absolutePath);
   }
-
+  /**
+   * Find document metadata by document file extension
+   *
+   * @param filename document file extension
+   * @return list of document metadata
+   */
   @Override
   public Collection<GEMFile> findByName(String filename) {
     Collection<GEMFile> l = Lists.newArrayList();
@@ -35,7 +63,12 @@ public class GEMFileDao implements IGEMFileDao {
     }
     return l;
   }
-
+  /**
+   * Find document metadata by document file extension
+   *
+   * @param extension document file extension
+   * @return list of document metadata
+   */
   @Override
   public Collection<GEMFile> findByExtension(String extension) {
     Collection<GEMFile> l = Lists.newArrayList();
@@ -47,7 +80,11 @@ public class GEMFileDao implements IGEMFileDao {
     return l;
   }
 
-  // Get list of files from feature store. It should return the minimum; file name and directory
+  /**
+   * Retrieves all stored documents It should return the minimun; file name and directory
+   *
+   * @return list of metadata {@link GEMFile @GEMFile}
+   */
   @Override
   public Collection<GEMFile> getFiles() {
     Collection<GEMFile> l = Lists.newArrayList();
@@ -63,12 +100,15 @@ public class GEMFileDao implements IGEMFileDao {
     File dir = new File(directory);
     Collection<GEMFile> resultList = Lists.newArrayList();
     File[] fList = dir.listFiles();
-    for (File file : fList) {
-      if (file.isFile()) {
-        resultList.add(new GEMFile(file.getName(), file.getParent()));
-      } else {
-        resultList.addAll(getLocalFiles(file.getAbsolutePath()));
+    if(fList!=null){
+      for (File file : fList) {
+        if (file.isFile()) {
+          resultList.add(new GEMFile(file.getName(), file.getParent()));
+        } else {
+          resultList.addAll(getLocalFiles(file.getAbsolutePath()));
+        }
       }
+      directoryStore = directory;
     }
     return resultList;
   }

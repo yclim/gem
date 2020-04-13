@@ -13,6 +13,10 @@ public class GEMFileService extends NewEvent {
 
   @Autowired private IGEMFileDao gemDao;
 
+  public String getCurrentDirectory() {
+    return gemDao.getCurrentDirectory();
+  }
+
   public GEMFile getFile(String filename, String directory) {
     return gemDao.getFile(filename, directory);
   }
@@ -28,7 +32,7 @@ public class GEMFileService extends NewEvent {
   /**
    * Retrieves and initial extraction for list of files in the folder
    *
-   * @param folderPath
+   * @param folderPath directory path of files to sync
    * @return list of files that was processed and stored {@link GEMFile @GEMFile}
    */
   public Collection<GEMFile> syncFiles(String folderPath) {
