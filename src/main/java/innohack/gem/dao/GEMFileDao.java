@@ -5,12 +5,15 @@ import innohack.gem.entity.GEMFile;
 import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class GEMFileDao implements IGEMFileDao {
   private static HashMap<String, GEMFile> featureStore = new HashMap<>();
   private static String directoryStore = "";
+  public static Set<String> fileTypeStore = new HashSet<String>();
 
   // Get current directory path where files uploaded
   /**
@@ -24,35 +27,26 @@ public class GEMFileDao implements IGEMFileDao {
   }
 
   /**
-   * Find document in feature store by file name and directory
+   * Retrieves all file extensions uploaded
    *
-   * @param filename document file name
-   * @param directory directory where the file is
-   * @return list of document metadata
+   * @return list of file extension
    */
   @Override
+  public Set<String> getFileTypes() {
+    return fileTypeStore;
+  }
+  // This method get file data from feature store
+  @Override
   public GEMFile getFile(String filename, String directory) {
-    // TODO get file data from feature store
     return featureStore.get(GEMFile.getAbsolutePath(filename, directory));
   }
 
-  /**
-   * Find document in feature store by absolute path
-   *
-   * @param absolutePath of the document
-   * @return list of document metadata
-   */
+  // This method get file data from feature store
   @Override
   public GEMFile getFileByAbsolutePath(String absolutePath) {
-    // TODO get file data from feature store
     return featureStore.get(absolutePath);
   }
-  /**
-   * Find document metadata by document file extension
-   *
-   * @param filename document file extension
-   * @return list of document metadata
-   */
+
   @Override
   public Collection<GEMFile> findByName(String filename) {
     Collection<GEMFile> l = Lists.newArrayList();
@@ -73,7 +67,7 @@ public class GEMFileDao implements IGEMFileDao {
   public Collection<GEMFile> findByExtension(String extension) {
     Collection<GEMFile> l = Lists.newArrayList();
     for (GEMFile f : featureStore.values()) {
-      if (f.getExtension().contains(extension)) {
+      if (f.getExtension().toLowerCase().contains(extension.toLowerCase())) {
         l.add(f);
       }
     }
@@ -100,7 +94,7 @@ public class GEMFileDao implements IGEMFileDao {
     File dir = new File(directory);
     Collection<GEMFile> resultList = Lists.newArrayList();
     File[] fList = dir.listFiles();
-    if(fList!=null){
+    if (fList != null) {
       for (File file : fList) {
         if (file.isFile()) {
           resultList.add(new GEMFile(file.getName(), file.getParent()));
@@ -116,7 +110,7 @@ public class GEMFileDao implements IGEMFileDao {
   // save file to feature store
   @Override
   public void saveFile(GEMFile file) {
-    // TODO Insert file into feature store
+    fileTypeStore.add(file.getExtension());
     featureStore.put(file.getAbsolutePath(), file);
   }
 

@@ -16,9 +16,7 @@ import org.xml.sax.SAXException;
 /** Object to hold wrap csv data */
 public class CsvFeature extends AbstractFeature {
 
-  private List<String> header = new ArrayList<String> ();
-
-
+  private List<String> header = new ArrayList<String>();
 
   private ArrayList<ArrayList<String>> contents = new ArrayList<ArrayList<String>>();
   private HashMap<String, ArrayList<String>> colRecords = new HashMap<String, ArrayList<String>>();
@@ -141,7 +139,6 @@ public class CsvFeature extends AbstractFeature {
   public void setContents(ArrayList<ArrayList<String>> contents) {
     this.contents = contents;
   }
-
 
   public HashMap<String, ArrayList<String>> getColRecords() {
     return colRecords;

@@ -15,9 +15,6 @@ const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
   const [directory, setDirectory] = useState<string>();
 
   useEffect(() => {
-    ruleService.getFileTypes().then(t => {
-      setTypes(t);
-    });
     fileService.getCurrentDirectory().then(response => {
        setDirectory(response.data);
     });
@@ -34,6 +31,12 @@ const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
         });
     }
   }, [currentType]);
+
+  useEffect(() => {
+    fileService.getFileTypes().then(response => {
+      setTypes(response.data);
+    });
+  }, [files]);
 
   function renderTypeButton() {
     return types.map(t => (

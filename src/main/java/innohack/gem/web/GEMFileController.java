@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import innohack.gem.entity.GEMFile;
 import innohack.gem.service.GEMFileService;
 import java.util.Collection;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -72,11 +73,22 @@ public class GEMFileController {
   /**
    * Retrieves list of document metadata with given document file extension
    *
-   * @param extension file name extension
+   * @param extension file name extension getCurrentDirectory() { const url = API_DOMAIN + END_POINT
+   *     + '/currentDir'; return axios.get(url); }
    * @return list of metadata {@link GEMFile @DocumentMetadata}
    */
   @RequestMapping("/findByExtension/{extension}")
   public Collection<GEMFile> findByExtension(@PathVariable String extension) {
     return fileService.findByExtension(extension);
+  }
+
+  /**
+   * Retrieves all file extensions uploaded
+   *
+   * @return list of file extension
+   */
+  @RequestMapping("/extensions/list")
+  public Set<String> getFileTypes() {
+    return fileService.getFileTypes();
   }
 }

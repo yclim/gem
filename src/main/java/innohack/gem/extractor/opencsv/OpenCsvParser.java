@@ -157,5 +157,4 @@ public class OpenCsvParser {
       return fFieldCount;
     }
   }
-
 }

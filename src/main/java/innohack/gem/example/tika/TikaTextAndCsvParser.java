@@ -1,18 +1,8 @@
 package innohack.gem.example.tika;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
-import au.com.bytecode.opencsv.CSVReader;
-import com.fasterxml.jackson.core.util.Separators;
 import com.opencsv.*;
-import com.opencsv.enums.CSVReaderNullFieldIndicator;
-import com.opencsv.exceptions.CsvException;
 import java.io.*;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.ParseContext;
@@ -83,6 +73,4 @@ public class TikaTextAndCsvParser {
     inputstream.close();
     return metadata;
   }
-
-
 }
