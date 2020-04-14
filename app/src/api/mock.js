@@ -340,10 +340,7 @@ var eightyNames = [
 
 var filenames = eightyNames.map((n, i) => {
   return {
-    fileName: n + "." + fileExt[i % fileExt.length],
-    fileSize: i * 100,
-    mimeType: mimeTypes[i % mimeTypes.length],
-    rawText: rawTxt[i % rawTxt.length]
+    fileName: n + "." + fileExt[i % fileExt.length]
   };
 });
 

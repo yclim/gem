@@ -48,18 +48,18 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
               </tr>
               <tr>
                 <td>File size (bytes) </td>
-                <td> {currentFile?.fileSize}</td>
+                <td> {currentFile?.size}</td>
               </tr>
               <tr>
-                <td>Mime Type</td>
-                <td>{currentFile?.mimeType}</td>
+                <td>Extension</td>
+                <td>{currentFile?.extension}</td>
               </tr>
             </tbody>
           </table>
           <br />
           <Card elevation={Elevation.ZERO}>
             <span> RAW TEXT </span>
-            <pre>{currentFile?.rawText}</pre>
+            <pre> TODO </pre>
           </Card>
         </div>
       );
@@ -161,7 +161,7 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
             title="Tika Content"
             panel={
               <Card elevation={Elevation.ZERO}>
-                <pre>{currentFile?.rawText}</pre>
+                <pre> TODO </pre>
               </Card>
             }
           />
