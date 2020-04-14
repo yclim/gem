@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { RouteComponentProps } from "@reach/router";
-import { Button, ButtonGroup, EditableText} from "@blueprintjs/core";
+import { Button, ButtonGroup, EditableText } from "@blueprintjs/core";
 import { Intent } from "@blueprintjs/core/lib/esm/common/intent";
 import { File } from "./api";
 import ruleService from "./api/mock";
@@ -16,19 +16,19 @@ const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
 
   useEffect(() => {
     fileService.getCurrentDirectory().then(response => {
-       setDirectory(response.data);
+      setDirectory(response.data);
     });
   }, []);
 
   useEffect(() => {
-    if(currentType === "All"){
-        fileService.getFiles().then(response => {
-            setFiles(response.data);
-        });
-    }else{
-        fileService.getFilesByType(currentType).then(response => {
-            setFiles(response.data);
-        });
+    if (currentType === "All") {
+      fileService.getFiles().then(response => {
+        setFiles(response.data);
+      });
+    } else {
+      fileService.getFilesByType(currentType).then(response => {
+        setFiles(response.data);
+      });
     }
   }, [currentType]);
 
@@ -55,21 +55,26 @@ const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
   }
 
   function handleSynchronize() {
-     fileService.sync(directory).then(response => {
-       setFiles(response.data);
-     });
+    fileService.sync(directory).then(response => {
+      setFiles(response.data);
+    });
   }
 
   return (
     <div className="vertical-container">
       <div>
-        <Button icon="refresh" text="Synchronize" onClick={()=> handleSynchronize()} />
-          <label className="editable-label"> Directory: </label>
-          <EditableText
+        <Button
+          icon="refresh"
+          text="Synchronize"
+          onClick={() => handleSynchronize()}
+        />
+        <label className="editable-label"> Directory: </label>
+        <EditableText
           id="currentDirectory"
           className="editable-text"
           value={directory}
-          onChange={e => setDirectory(e)}/>
+          onChange={e => setDirectory(e)}
+        />
       </div>
       <div className="horizontal-container">
         <div className="left-nav-section">
