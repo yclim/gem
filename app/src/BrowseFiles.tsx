@@ -3,7 +3,6 @@ import { RouteComponentProps } from "@reach/router";
 import { Button, ButtonGroup, EditableText } from "@blueprintjs/core";
 import { Intent } from "@blueprintjs/core/lib/esm/common/intent";
 import { File } from "./api";
-import ruleService from "./api/mock";
 import fileService from "./api/GEMFileAPIService";
 import FileList from "./FileList";
 
@@ -70,7 +69,6 @@ const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
         />
         <label className="editable-label"> Directory: </label>
         <EditableText
-          id="currentDirectory"
           className="editable-text"
           value={directory}
           onChange={e => setDirectory(e)}

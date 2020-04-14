@@ -4,9 +4,7 @@ import GroupList from "./GroupList";
 import { RouteComponentProps } from "@reach/router";
 import { File, Group } from "./api";
 import ruleService from "./api/mock";
-import { Cell, Column, Table } from "@blueprintjs/table";
 import "@blueprintjs/table/lib/css/table.css";
-import { Tab, TabId, Tabs } from "@blueprintjs/core";
 import FileList from "./FileList";
 
 const EditGroups: FunctionComponent<RouteComponentProps> = () => {
