@@ -3,8 +3,7 @@ import { RouteComponentProps } from "@reach/router";
 import { Button, ButtonGroup, EditableText } from "@blueprintjs/core";
 import { Intent } from "@blueprintjs/core/lib/esm/common/intent";
 import { File } from "./api";
-import ruleService from "./api/mock";
-import fileService from "./api/GEMFileAPIService";
+import fileService from "./api/FileService";
 import FileList from "./FileList";
 
 const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
@@ -12,7 +11,7 @@ const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
   const [currentType, setCurrentType] = useState<string>(ALL);
   const [types, setTypes] = useState<string[]>([]);
   const [files, setFiles] = useState<File[]>([]);
-  const [directory, setDirectory] = useState<string>();
+  const [directory, setDirectory] = useState<string>("");
 
   useEffect(() => {
     fileService.getCurrentDirectory().then(response => {
@@ -21,19 +20,19 @@ const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
   }, []);
 
   useEffect(() => {
-    if (currentType === "All") {
+    if (currentType === ALL) {
       fileService.getFiles().then(response => {
         setFiles(response.data);
       });
     } else {
-      fileService.getFilesByType(currentType).then(response => {
+      fileService.getFileByExtension(currentType).then(response => {
         setFiles(response.data);
       });
     }
   }, [currentType]);
 
   useEffect(() => {
-    fileService.getFileTypes().then(response => {
+    fileService.getExtensions().then(response => {
       setTypes(response.data);
     });
   }, [files]);
@@ -70,7 +69,6 @@ const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
         />
         <label className="editable-label"> Directory: </label>
         <EditableText
-          id="currentDirectory"
           className="editable-text"
           value={directory}
           onChange={e => setDirectory(e)}
@@ -83,8 +81,7 @@ const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
               intent={currentType === ALL ? Intent.PRIMARY : Intent.NONE}
               onClick={() => handleChangeType(ALL)}
             >
-              {" "}
-              {ALL}{" "}
+              {ALL}
             </Button>
             {renderTypeButton()}
           </ButtonGroup>

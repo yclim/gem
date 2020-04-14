@@ -5,8 +5,6 @@
   "scripts": {
     "build": "parcel build src/index.html",
     "dev": "parcel src/index.html",
-    "dev:mock": "cross-env gem_API=mock yarn run dev",
-    "mock": "cross-env gem_API=mock",
     "watch": "parcel watch src/index.html --out-dir ../target/classes/static",
     "clear-build-cache": "rm -rf .cache/ dist/",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
