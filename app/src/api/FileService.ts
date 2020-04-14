@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
-import Api from "./api";
+import Api from "./Api";
 import { File } from ".";
 
 class FileService extends Api {
