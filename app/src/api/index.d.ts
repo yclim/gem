@@ -34,18 +34,3 @@ export interface File {
   directory: string;
   data: any[];
 }
-
-declare module RuleService {
-  export function getRules(): Promise<RuleDef[]>;
-  export function getGroups(): Promise<Group[]>;
-  export function addRuleToGroup(
-    gname: string,
-    rname: string,
-    rlabel: string
-  ): Promise<string>;
-  export function getGroupFiles(gname: string): Promise<GroupFiles>;
-  export function getFileTypes(): Promise<string[]>;
-  export function getFilesByType(type: string): Promise<File[]>;
-}
-
-export default RuleService;

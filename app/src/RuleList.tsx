@@ -1,9 +1,8 @@
 import React, {
-  useState,
-  useEffect,
+  ChangeEvent,
   FunctionComponent,
-  FormEvent,
-  ChangeEvent
+  useEffect,
+  useState
 } from "react";
 import { Group, ParamDef, RuleDef } from "./api";
 import ruleService from "./api/mock";
@@ -11,22 +10,17 @@ import {
   Alignment,
   Button,
   ButtonGroup,
-  Classes,
   Dialog,
   Divider,
-  FormGroup,
-  H5,
   Icon,
-  IconName,
   InputGroup,
   Intent,
-  Label,
+  Menu,
+  MenuDivider,
+  MenuItem,
   Popover,
-  Position,
-  Switch
+  Position
 } from "@blueprintjs/core";
-
-import { Menu, MenuDivider, MenuItem } from "@blueprintjs/core";
 
 interface IProps {
   groups: Map<string, Group>;
@@ -50,8 +44,8 @@ const RuleList: FunctionComponent<IProps> = ({ groups, setGroups }) => {
   }, [currentRule]);
 
   useEffect(() => {
-    ruleService.getRules().then(rules => {
-      setRules(rules);
+    ruleService.getRules().then(r => {
+      setRules(r);
     });
   }, []);
 
@@ -71,11 +65,11 @@ const RuleList: FunctionComponent<IProps> = ({ groups, setGroups }) => {
   }
 
   function handleOpen(gname: string, rid: string) {
-    let grp = groups.get(gname);
+    const grp = groups.get(gname);
     if (typeof grp !== "undefined") {
       // grp.rules = [... grp.rules, {ruleId: rid, label: rlabel, paramValues: [param1]}]
       // setGroups(new Map(groups.set(gname, grp)))
-      const ruleDef = rules.find(r => r.ruleId == rid);
+      const ruleDef = rules.find(r => r.ruleId === rid);
       if (typeof ruleDef !== "undefined") {
         setCurrentRule(ruleDef);
         setIsOpen(true);
@@ -96,9 +90,9 @@ const RuleList: FunctionComponent<IProps> = ({ groups, setGroups }) => {
   function getLabel(group: Group, alias: string) {
     let counter = 1;
     while (true) {
-      let label = alias + "-" + counter;
-      var ri = group.rules.find(ri => ri.label === label);
-      if (typeof ri === "undefined") {
+      const label = alias + "-" + counter;
+      const ruleInstance = group.rules.find(r => r.label === label);
+      if (typeof ruleInstance === "undefined") {
         return label;
       } else {
         counter++;
@@ -131,7 +125,7 @@ const RuleList: FunctionComponent<IProps> = ({ groups, setGroups }) => {
         position={Position.RIGHT_TOP}
         content={renderGroupMenu(rule)}
       >
-        <Button rightIcon="plus" text={rule.ruleId}></Button>
+        <Button rightIcon="plus" text={rule.ruleId} />
       </Popover>
     );
   }
@@ -182,7 +176,7 @@ const RuleList: FunctionComponent<IProps> = ({ groups, setGroups }) => {
   }
 
   function renderParamForm(r: RuleDef) {
-    let len = r.paramDefs.length;
+    const len = r.paramDefs.length;
 
     return (
       <div>
@@ -190,12 +184,12 @@ const RuleList: FunctionComponent<IProps> = ({ groups, setGroups }) => {
         {len >= 2 ? (
           renderParamInput(r.paramDefs[1], r, param2, setParam2)
         ) : (
-          <span></span>
+          <span />
         )}
-        {len == 3 ? (
+        {len === 3 ? (
           renderParamInput(r.paramDefs[2], r, param3, setParam3)
         ) : (
-          <span></span>
+          <span />
         )}
       </div>
     );

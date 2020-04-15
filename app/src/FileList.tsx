@@ -28,9 +28,9 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
   }
 
   function handleSection(region: IRegion[]) {
-    let reg = region[0];
+    const reg = region[0];
     if (reg && reg.rows) {
-      let r = reg.rows[0];
+      const r = reg.rows[0];
       setCurrentFile(files[r]);
     }
   }
@@ -40,7 +40,7 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
       return (
         <div>
           <table className="bp3-html-table bp3-html-table-striped keyval-table">
-            <thead></thead>
+            <thead />
             <tbody>
               <tr>
                 <td>Filename</td>
@@ -64,7 +64,7 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
         </div>
       );
     } else {
-      return <div> </div>;
+      return <div />;
     }
   }
 
