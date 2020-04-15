@@ -185,6 +185,21 @@
               </environmentVariables>
             </configuration>
           </execution>
+
+          <execution>
+            <id>yarn lint</id>
+            <goals>
+              <goal>yarn</goal>
+            </goals>
+            <phase>prepare-package</phase>
+            <configuration>
+              <arguments>lint</arguments>
+              <environmentVariables>
+                <CI>true</CI>
+              </environmentVariables>
+            </configuration>
+          </execution>
+
           <execution>
             <id>yarn build</id>
             <goals>
