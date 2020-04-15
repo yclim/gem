@@ -39,87 +39,81 @@ public class ExcelSheetFeature extends AbstractFeature {
 
   }
 
-  public void extract(File f, int sheetNo) {
+  public void extract(Workbook workbook, int sheetNo) {
     // TODO extraction method for EXCEL
-    contentParser(f, sheetNo);
+    contentParser(workbook, sheetNo);
   }
 
-  private void contentParser(File f, int sheetNo) {
+  private void contentParser(Workbook workbook, int sheetNo) {
 
-    try {
-      PoiExcelParser poiParser = new PoiExcelParser(f.toPath());
-      Workbook workbook = poiParser.getWorkBook();
+  if (workbook != null) {
+      Sheet workSheet = workbook.getSheetAt(sheetNo);
 
-      if (workbook != null) {
-        Sheet workSheet = workbook.getSheetAt(sheetNo);
+      sheetTitle = workSheet.getSheetName();
 
-        sheetTitle = workSheet.getSheetName();
+      // iterate through list of records
+      Iterator<Row> rowIterator = workSheet.rowIterator();
+      while (rowIterator.hasNext()) {
+        HSSFRow row = (HSSFRow) rowIterator.next();
 
-        // iterate through list of records
-        Iterator<Row> rowIterator = workSheet.rowIterator();
-        while (rowIterator.hasNext()) {
-          HSSFRow row = (HSSFRow) rowIterator.next();
+        if (totalRow == 0) {
+          // this is for the header row
+          int colCount = 0;
 
-          if (totalRow == 0) {
-            // this is for the header row
-            int colCount = 0;
+          for (int i = 0; i < row.getLastCellNum(); i++) {
+            HSSFCell cell = row.getCell(i, MissingCellPolicy.CREATE_NULL_AS_BLANK);
+            System.out.print(cell.toString() + " ");
 
-            for (int i = 0; i < row.getLastCellNum(); i++) {
-              HSSFCell cell = row.getCell(i, MissingCellPolicy.CREATE_NULL_AS_BLANK);
-              System.out.print(cell.toString() + " ");
+            String value = cellValue(cell);
+            header.add(value);
 
-              String value = cellValue(cell);
-              header.add(value);
-
-              if (!colRecords.containsKey(value)) {
-                colRecords.put(value, new ArrayList<String>());
-                colMapper.put(colCount, value);
-                colCount++;
-              }
-
-              System.out.print(value + " ");
-            }
-            totalRow++;
-          } else {
-
-            // this is for the records row
-            ArrayList<String> recordBuilder = new ArrayList<String>();
-            int colCount = 0;
-
-            for (int i = 0; i < row.getLastCellNum(); i++) {
-              HSSFCell cell = row.getCell(i, MissingCellPolicy.CREATE_NULL_AS_BLANK);
-              System.out.print(cell.toString() + " ");
-
-              String value = cellValue(cell);
-              recordBuilder.add(value);
-
-              if (colMapper.containsKey(colCount)) {
-                String colHeader = colMapper.get(colCount);
-
-                if (colRecords.containsKey(colHeader)) {
-                  ArrayList<String> colCell = colRecords.get(colHeader);
-                  colCell.add(value);
-                  colRecords.replace(colHeader, colCell);
-                  System.out.print(value + " ");
-                }
-              }
+            if (!colRecords.containsKey(value)) {
+              colRecords.put(value, new ArrayList<String>());
+              colMapper.put(colCount, value);
               colCount++;
             }
-            contents.add(recordBuilder);
-            totalRow++;
+
+            System.out.print(value + " ");
           }
+          totalRow++;
+        } else {
+
+          // this is for the records row
+          ArrayList<String> recordBuilder = new ArrayList<String>();
+          int colCount = 0;
+
+          for (int i = 0; i < row.getLastCellNum(); i++) {
+            HSSFCell cell = row.getCell(i, MissingCellPolicy.CREATE_NULL_AS_BLANK);
+            System.out.print(cell.toString() + " ");
+
+            String value = cellValue(cell);
+            recordBuilder.add(value);
+
+            if (colMapper.containsKey(colCount)) {
+              String colHeader = colMapper.get(colCount);
+
+              if (colRecords.containsKey(colHeader)) {
+                ArrayList<String> colCell = colRecords.get(colHeader);
+                colCell.add(value);
+                colRecords.replace(colHeader, colCell);
+                System.out.print(value + " ");
+              }
+            }
+            colCount++;
+          }
+          contents.add(recordBuilder);
+          totalRow++;
         }
-        System.out.println("\n");
-
-      } else {
-        System.out.println("Not able to parse");
       }
+      System.out.println("\n");
 
-      // close readers
-      workbook.close();
-    } catch (IOException e) {
-      e.printStackTrace();
+    } else {
+      System.out.println("Not able to parse");
     }
+
+    // close readers
+
+
   }
 
   private String cellValue(HSSFCell cell) {

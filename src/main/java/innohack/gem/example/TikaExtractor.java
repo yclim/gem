@@ -30,7 +30,7 @@ public class TikaExtractor {
       }
 
     } catch (Exception ex) {
-      System.out.println("error ex: " + ex.toString());
+      ex.printStackTrace();
     }
   }
 }

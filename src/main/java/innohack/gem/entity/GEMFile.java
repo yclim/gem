@@ -151,19 +151,17 @@ public class GEMFile {
     } else if (mediaType.getSubtype().equals(TikaMimeEnum.MSWORD.getMimeType())) {
 
 
-    } else if (mediaType.getSubtype().equals(TikaMimeEnum.MSEXCEL.getMimeType())) {
-      TikaExcelParser excelParser = new TikaExcelParser(path);
-      try {
-        excelParser.parseExcel();
-      } catch (IOException | TikaException | SAXException e) {
-        e.printStackTrace();
-      }
+    } else if (mediaType.getSubtype().equals(TikaMimeEnum.MSEXCELXLSX.getMimeType()) ||
+        mediaType.getSubtype().equals(TikaMimeEnum.MSEXCELXLS.getMimeType())) {
+
+      extractExcel(mediaType);
+
 
     } else if (mediaType.getSubtype().equals(TikaMimeEnum.CSV.getMimeType())) {
       extractCSV();
 
     } else {
-
+      System.out.println("the mediatype is " + mediaType );
     }
 
     return this;
@@ -195,12 +193,14 @@ public class GEMFile {
   }
 
   // Perform extraction on Excel
-  public GEMFile extractExcel() {
+  public GEMFile extractExcel(MediaType mediaType) {
     // TODO extract file's data
+
+    System.out.println("extractionExcel here");
     File f = new File(getAbsolutePath());
     extension = FilenameUtils.getExtension(f.getName());
 
-    ExcelFeature extractedData1 = new ExcelFeature();
+    ExcelFeature extractedData1 = new ExcelFeature(mediaType);
     extractedData1.extract(f);
     addData(extractedData1);
 
