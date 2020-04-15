@@ -1,5 +1,7 @@
 package innohack.gem.entity.gem.data;
 
+import innohack.gem.example.tika.TikaUtil;
+import java.awt.PageAttributes.MediaType;
 import java.io.File;
 import java.util.HashMap;
 
@@ -35,6 +37,12 @@ public abstract class AbstractFeature {
     if (metadata != null) {
       metadata.remove(key);
     }
+  }
+
+  public void extractMineType(File f) {
+    TikaUtil tiakUti = new TikaUtil();
+    tiakUti.extractMime(f.toPath());
+
   }
 
   public void setTarget(Target target) {

@@ -3,11 +3,23 @@ package innohack.gem.entity;
 import com.google.common.collect.Lists;
 import innohack.gem.entity.gem.data.AbstractFeature;
 import innohack.gem.entity.gem.data.CsvFeature;
+import innohack.gem.entity.gem.data.ExcelFeature;
 import innohack.gem.entity.gem.data.TikaFeature;
+import innohack.gem.example.tika.TikaExcelParser;
+import innohack.gem.example.tika.TikaMimeEnum;
+import innohack.gem.example.tika.TikaPdfParser;
+import innohack.gem.example.tika.TikaUtil;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Collection;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.tika.exception.TikaException;
+import org.apache.tika.io.TikaInputStream;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.mime.MediaType;
 import org.springframework.web.multipart.MultipartFile;
+import org.xml.sax.SAXException;
 
 public class GEMFile {
   private String fileName;
@@ -15,13 +27,25 @@ public class GEMFile {
   private Long size;
   private String extension;
 
+
+
+  private Path path;
+
   private String directory;
   private Collection<AbstractFeature> data;
 
   public GEMFile(String fileName, String directory) {
     this.directory = directory;
     this.fileName = fileName;
+
   }
+
+  public GEMFile(Path path) {
+    this.directory = path.getParent().toString();
+    this.fileName = path.getFileName().toString();
+    this.path = path;
+  }
+
 
   public GEMFile(MultipartFile file) {
     this.fileName = file.getOriginalFilename();
@@ -78,6 +102,10 @@ public class GEMFile {
     this.extension = extension;
   }
 
+  public Path getPath() { return path; }
+
+  public void setPath(Path path) { this.path = path; }
+
   public void addAllData(Collection<AbstractFeature> data) {
     if (this.data == null) {
       this.data = Lists.newArrayList();
@@ -106,18 +134,42 @@ public class GEMFile {
     File f = new File(getAbsolutePath());
     extension = FilenameUtils.getExtension(f.getName());
 
-    CsvFeature extractedData1 = new CsvFeature();
-    extractedData1.extract(f);
-    addData(extractedData1);
+    TikaUtil tikaUtil = new TikaUtil();
 
-    TikaFeature extractedData2 = new TikaFeature();
-    extractedData2.extract(f);
-    addData(extractedData2);
+    Metadata metadata = new Metadata();
+    metadata.set(Metadata.RESOURCE_NAME_KEY, path.toString());
+    MediaType mediaType = null;
+    try {
+      mediaType = tikaUtil.getTika().getDetector().detect(TikaInputStream.get(path), metadata);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    if (mediaType.getSubtype().equals(TikaMimeEnum.PDF.getMimeType())) {
+
+
+    } else if (mediaType.getSubtype().equals(TikaMimeEnum.MSWORD.getMimeType())) {
+
+
+    } else if (mediaType.getSubtype().equals(TikaMimeEnum.MSEXCEL.getMimeType())) {
+      TikaExcelParser excelParser = new TikaExcelParser(path);
+      try {
+        excelParser.parseExcel();
+      } catch (IOException | TikaException | SAXException e) {
+        e.printStackTrace();
+      }
+
+    } else if (mediaType.getSubtype().equals(TikaMimeEnum.CSV.getMimeType())) {
+      extractCSV();
+
+    } else {
+
+    }
 
     return this;
   }
 
-  // Perform extraction
+  // Perform extraction on csv
   public GEMFile extractCSV() {
     // TODO extract file's data
     File f = new File(getAbsolutePath());
@@ -141,4 +193,27 @@ public class GEMFile {
 
     return this;
   }
+
+  // Perform extraction on Excel
+  public GEMFile extractExcel() {
+    // TODO extract file's data
+    File f = new File(getAbsolutePath());
+    extension = FilenameUtils.getExtension(f.getName());
+
+    ExcelFeature extractedData1 = new ExcelFeature();
+    extractedData1.extract(f);
+    addData(extractedData1);
+
+
+
+    System.out.println("*************Metadata****************");
+    System.out.println(extractedData1.getMetadata().toString());
+
+    System.out.println("*************Sheets****************");
+    System.out.println(extractedData1.getSheetFeatures().toString());
+
+
+    return this;
+  }
+
 }

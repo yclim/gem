@@ -36,56 +36,12 @@ public class ExcelSheetFeature extends AbstractFeature {
 
   @Override
   public void extract(File f) {
-    // TODO extraction method for EXCEL
 
-    excelParser = new TikaExcelParser(f.toPath());
-    // to get metadata first
-    Metadata metadata = null;
-    try {
-      metadata = excelParser.parseExcel();
-
-      String[] metadataNames = metadata.names();
-
-      for (String name : metadataNames) {
-
-        System.out.println(name + " : " + metadata.get(name));
-        addMetadata(name, metadata.get(name));
-      }
-
-    } catch (IOException e) {
-      e.printStackTrace();
-    } catch (SAXException e) {
-      e.printStackTrace();
-    } catch (TikaException e) {
-      e.printStackTrace();
-    }
   }
 
   public void extract(File f, int sheetNo) {
     // TODO extraction method for EXCEL
-
-    excelParser = new TikaExcelParser(f.toPath());
-    // to get metadata first
-    Metadata metadata = null;
-    try {
-      metadata = excelParser.parseExcel();
-
-      String[] metadataNames = metadata.names();
-
-      for (String name : metadataNames) {
-
-        System.out.println(name + " : " + metadata.get(name));
-        addMetadata(name, metadata.get(name));
-      }
-      contentParser(f, sheetNo);
-
-    } catch (IOException e) {
-      e.printStackTrace();
-    } catch (SAXException e) {
-      e.printStackTrace();
-    } catch (TikaException e) {
-      e.printStackTrace();
-    }
+    contentParser(f, sheetNo);
   }
 
   private void contentParser(File f, int sheetNo) {

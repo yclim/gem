@@ -1,10 +1,12 @@
 package innohack.gem.example.tika;
 
+import innohack.gem.Util.FileUtil;
 import innohack.gem.entity.GEMFile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -18,6 +20,14 @@ import org.xml.sax.SAXException;
 public class TikaUtil {
 
   private TikaConfig tika;
+
+  public TikaConfig getTika() {
+    return tika;
+  }
+
+  public void setTika(TikaConfig tika) {
+    this.tika = tika;
+  }
 
   public TikaUtil() {
     try {
@@ -33,28 +43,30 @@ public class TikaUtil {
    *
    * @param path of the folder which contains the files
    */
-  public void walkPath(String path) {
-    try (Stream<Path> walk = Files.walk(Paths.get(path))) {
+  public void walkPathAndParse(String path) {
 
-      List<Path> results =
-          walk.filter(Files::isRegularFile)
-              .map(x -> x.toAbsolutePath())
-              .collect(Collectors.toList());
+      List<Path> results = FileUtil.walkPath(path);
 
       for (Path result : results) {
         System.out.println("each result is " + result.toAbsolutePath());
         Metadata metadata = new Metadata();
         metadata.set(Metadata.RESOURCE_NAME_KEY, result.toString());
-        MediaType mimetype = tika.getDetector().detect(TikaInputStream.get(result), metadata);
+        MediaType mimetype = null;
+
+        try {
+          mimetype = tika.getDetector().detect(TikaInputStream.get(result), metadata);
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
 
         TikaMimeEnum mimeType = determineMimeTypeAndParser(mimetype, result);
         System.out.println(
             "result is " + result.toAbsolutePath() + " mimeType is " + mimeType.getMimeType());
       }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+
   }
+
+
 
   /**
    * Walkpath to walk though a folder contains different files
@@ -115,4 +127,5 @@ public class TikaUtil {
 
     } else return TikaMimeEnum.UNKNOWN;
   }
+
 }
