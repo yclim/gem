@@ -1,9 +1,13 @@
 package innohack.gem.entity.gem.data;
 
+import com.opencsv.exceptions.CsvException;
 import innohack.gem.example.tika.TikaUtil;
 import java.awt.PageAttributes.MediaType;
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
+import org.apache.tika.exception.TikaException;
+import org.xml.sax.SAXException;
 
 public abstract class AbstractFeature {
   private HashMap<String, String> metadata = null;
@@ -49,5 +53,5 @@ public abstract class AbstractFeature {
     this.target = target;
   }
 
-  public abstract void extract(File f);
+  public abstract void extract(File f) throws TikaException, SAXException, IOException, CsvException;
 }

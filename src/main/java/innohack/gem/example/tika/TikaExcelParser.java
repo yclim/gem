@@ -1,12 +1,16 @@
 package innohack.gem.example.tika;
 
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
+import org.apache.tika.mime.MediaType;
 import org.apache.tika.parser.ParseContext;
+import org.apache.tika.parser.Parser;
+import org.apache.tika.parser.microsoft.OfficeParser;
 import org.apache.tika.parser.microsoft.ooxml.OOXMLParser;
 import org.apache.tika.sax.BodyContentHandler;
 import org.xml.sax.SAXException;
@@ -14,10 +18,12 @@ import org.xml.sax.SAXException;
 public class TikaExcelParser {
 
   private Path filePath;
+  private MediaType mediaType;
 
-  public TikaExcelParser(Path filePath) {
-    System.out.println("filepath is " + filePath);
+  public TikaExcelParser(Path filePath, MediaType mediaType) {
+    System.out.println("Excel filepath is " + filePath);
     this.filePath = filePath;
+    this.mediaType = mediaType;
   }
 
   /**
@@ -36,16 +42,21 @@ public class TikaExcelParser {
     ParseContext pcontext = new ParseContext();
 
     // OOXml parser
-    OOXMLParser msofficeparser = new OOXMLParser();
-    msofficeparser.parse(inputstream, handler, metadata, pcontext);
-    System.out.println("Contents of the document:" + handler.toString());
-    System.out.println("Metadata of the document:");
-    String[] metadataNames = metadata.names();
-
-    for (String name : metadataNames) {
-      System.out.println(name + ": " + metadata.get(name));
+    Parser parser = null;
+    if (mediaType.getSubtype().equals(TikaMimeEnum.MSEXCELXLSX.getMimeType()) ) {
+      parser = new OOXMLParser();
+    }else if (mediaType.getSubtype().equals(TikaMimeEnum.MSEXCELXLS.getMimeType())) {
+      parser = new OfficeParser();
     }
-    inputstream.close();
+
+    if (parser != null) {
+      parser.parse(inputstream, handler, metadata, pcontext);
+
+    } else {
+      System.out.println("No sutiable parser for this type");
+    }
+      inputstream.close();
     return metadata;
   }
+
 }

@@ -1,15 +1,11 @@
 package innohack.gem.example.tika;
 
-import innohack.gem.Util.FileUtil;
+import com.opencsv.exceptions.CsvException;
+import innohack.gem.example.Util.FileUtil;
 import innohack.gem.entity.GEMFile;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.io.TikaInputStream;
@@ -110,18 +106,28 @@ public class TikaUtil {
     } else if (mediaType.getSubtype().equals(TikaMimeEnum.MSWORD.getMimeType())) {
       return TikaMimeEnum.MSWORD;
 
-    } else if (mediaType.getSubtype().equals(TikaMimeEnum.MSEXCEL.getMimeType())) {
-      TikaExcelParser excelParser = new TikaExcelParser(path);
+    } else if (mediaType.getSubtype().equals(TikaMimeEnum.MSEXCELXLSX.getMimeType())) {
+      TikaExcelParser excelParser = new TikaExcelParser(path, mediaType);
       try {
         excelParser.parseExcel();
       } catch (IOException | TikaException | SAXException e) {
         e.printStackTrace();
       }
-      return TikaMimeEnum.MSEXCEL;
+      return TikaMimeEnum.MSEXCELXLSX;
 
     } else if (mediaType.getSubtype().equals(TikaMimeEnum.CSV.getMimeType())) {
       GEMFile csvFile = new GEMFile(path.getFileName().toString(), path.getParent().toString());
-      csvFile.extractCSV();
+      try {
+        csvFile.extractCSV();
+      } catch (SAXException e) {
+        e.printStackTrace();
+      } catch (TikaException e) {
+        e.printStackTrace();
+      } catch (CsvException e) {
+        e.printStackTrace();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
 
       return TikaMimeEnum.CSV;
 

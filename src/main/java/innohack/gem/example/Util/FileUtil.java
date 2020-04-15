@@ -1,4 +1,4 @@
-package innohack.gem.Util;
+package innohack.gem.example.Util;
 
 import java.io.IOException;
 import java.nio.file.Files;
