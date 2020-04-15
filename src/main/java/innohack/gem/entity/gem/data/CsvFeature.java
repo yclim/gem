@@ -2,6 +2,7 @@ package innohack.gem.entity.gem.data;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
+import innohack.gem.entity.gem.util.FeatureExtractorUtil;
 import innohack.gem.example.tika.TikaTextAndCsvParser;
 import innohack.gem.extractor.opencsv.OpenCsvParser;
 import java.io.File;
@@ -16,9 +17,7 @@ import org.xml.sax.SAXException;
 /** Object to hold wrap csv data */
 public class CsvFeature extends AbstractFeature {
 
-  private List<String> header = new ArrayList<String>();
-
-  private ArrayList<ArrayList<String>> contents = new ArrayList<ArrayList<String>>();
+  private List<List<String>> contents = new ArrayList<>();
   private HashMap<String, ArrayList<String>> colRecords = new HashMap<String, ArrayList<String>>();
   private HashMap<Integer, String> colMapper = new HashMap<Integer, String>();
   private int totalRow = 0;
@@ -29,13 +28,13 @@ public class CsvFeature extends AbstractFeature {
   }
 
   @Override
-  public void extract(File f) {
+  public void extract(File f) throws TikaException, SAXException, IOException, CsvException {
     // TODO extraction method for CSV
 
     csvParser = new TikaTextAndCsvParser(f.toPath());
     // to get metadata first
     Metadata metadata = null;
-    try {
+
       metadata = csvParser.parseMetaDataUsingTextAndCsv();
 
       String[] metadataNames = metadata.names();
@@ -45,20 +44,14 @@ public class CsvFeature extends AbstractFeature {
         System.out.println(name + " : " + metadata.get(name));
         addMetadata(name, metadata.get(name));
       }
-      csvContentParser(f);
+      contentParser(f);
 
-    } catch (IOException e) {
-      e.printStackTrace();
-    } catch (SAXException e) {
-      e.printStackTrace();
-    } catch (TikaException e) {
-      e.printStackTrace();
-    }
   }
 
-  private void csvContentParser(File f) {
 
-    try {
+
+  private void contentParser(File f) throws IOException, CsvException {
+
       OpenCsvParser csvParser = new OpenCsvParser(f.toPath());
       CSVReader csvReader = csvParser.getCsvReaderUsingOpenCsv();
 
@@ -68,48 +61,27 @@ public class CsvFeature extends AbstractFeature {
         records = csvReader.readAll();
 
         // iterate through list of records
+
         for (String[] record : records) {
-          if (totalRow == 0) {
-            // this is for the header row
-            int colCount = 0;
-            for (String cell : record) {
-              header.add(cell);
+          // this is for the records row
+          ArrayList<String> recordBuilder = new ArrayList<String>();
 
-              if (!colRecords.containsKey(cell)) {
-                colRecords.put(cell, new ArrayList<String>());
-                colMapper.put(colCount, cell);
-                colCount++;
-              }
+          int colCount = 0;
+          for (String cell : record) {
+            recordBuilder.add(cell);
+            if (totalRow == 0) {
+              FeatureExtractorUtil.buildHeaderMapperAndContent(cell, colRecords,
+                  colMapper, colCount);
 
-              System.out.print(cell + " ");
+            } else {
+              FeatureExtractorUtil.buildContent(cell, colRecords, colMapper, colCount);
             }
-            totalRow++;
-          } else {
-
-            // this is for the records row
-            ArrayList<String> recordBuilder = new ArrayList<String>();
-            int colCount = 0;
-
-            for (String cell : record) {
-              recordBuilder.add(cell);
-
-              if (colMapper.containsKey(colCount)) {
-                String colHeader = colMapper.get(colCount);
-
-                if (colRecords.containsKey(colHeader)) {
-                  ArrayList<String> colCell = colRecords.get(colHeader);
-                  colCell.add(cell);
-                  colRecords.replace(colHeader, colCell);
-                  System.out.print(cell + " ");
-                }
-              }
-              colCount++;
-            }
-            contents.add(recordBuilder);
-            totalRow++;
+            colCount++;
           }
+          contents.add(recordBuilder);
+          totalRow++;
         }
-        System.out.println("\n");
+        System.out.println("Col is :" + colRecords.toString());
 
       } else {
         System.out.println("Not able to parse");
@@ -117,43 +89,19 @@ public class CsvFeature extends AbstractFeature {
 
       // close readers
       csvReader.close();
-    } catch (IOException e) {
-      e.printStackTrace();
-    } catch (CsvException e) {
-      e.printStackTrace();
-    }
+
   }
 
-  public List<String> getHeader() {
-    return header;
-  }
-
-  public void setHeader(List<String> header) {
-    this.header = header;
-  }
-
-  public ArrayList<ArrayList<String>> getContents() {
+  public List<List<String>> getContents() {
     return contents;
   }
 
-  public void setContents(ArrayList<ArrayList<String>> contents) {
+  public void setContents(List<List<String>> contents) {
     this.contents = contents;
   }
 
-
-  public HashMap<String, ArrayList<String>> getColRecords() {
-    return colRecords;
+  public List<String> getHeader() {
+    return this.contents.get(0);
   }
 
-  public void setColRecords(HashMap<String, ArrayList<String>> colRecords) {
-    this.colRecords = colRecords;
-  }
-
-  public int getTotalRow() {
-    return totalRow;
-  }
-
-  public void setTotalRow(int totalRow) {
-    this.totalRow = totalRow;
-  }
 }

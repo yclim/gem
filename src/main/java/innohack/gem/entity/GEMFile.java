@@ -1,6 +1,7 @@
 package innohack.gem.entity;
 
 import com.google.common.collect.Lists;
+import com.opencsv.exceptions.CsvException;
 import innohack.gem.entity.gem.data.AbstractFeature;
 import innohack.gem.entity.gem.data.CsvFeature;
 import innohack.gem.entity.gem.data.ExcelFeature;
@@ -141,34 +142,40 @@ public class GEMFile {
     MediaType mediaType = null;
     try {
       mediaType = tikaUtil.getTika().getDetector().detect(TikaInputStream.get(path), metadata);
+
+      if (mediaType.getSubtype().equals(TikaMimeEnum.PDF.getMimeType())) {
+
+
+      } else if (mediaType.getSubtype().equals(TikaMimeEnum.MSWORD.getMimeType())) {
+
+
+      } else if (mediaType.getSubtype().equals(TikaMimeEnum.MSEXCELXLSX.getMimeType()) ||
+          mediaType.getSubtype().equals(TikaMimeEnum.MSEXCELXLS.getMimeType())) {
+
+        extractExcel(mediaType);
+
+
+      } else if (mediaType.getSubtype().equals(TikaMimeEnum.CSV.getMimeType())) {
+        extractCSV();
+
+      } else {
+        System.out.println("the mediatype is " + mediaType );
+      }
     } catch (IOException e) {
       e.printStackTrace();
-    }
-
-    if (mediaType.getSubtype().equals(TikaMimeEnum.PDF.getMimeType())) {
-
-
-    } else if (mediaType.getSubtype().equals(TikaMimeEnum.MSWORD.getMimeType())) {
-
-
-    } else if (mediaType.getSubtype().equals(TikaMimeEnum.MSEXCELXLSX.getMimeType()) ||
-        mediaType.getSubtype().equals(TikaMimeEnum.MSEXCELXLS.getMimeType())) {
-
-      extractExcel(mediaType);
-
-
-    } else if (mediaType.getSubtype().equals(TikaMimeEnum.CSV.getMimeType())) {
-      extractCSV();
-
-    } else {
-      System.out.println("the mediatype is " + mediaType );
+    } catch (CsvException e) {
+      e.printStackTrace();
+    } catch (SAXException e) {
+      e.printStackTrace();
+    } catch (TikaException e) {
+      e.printStackTrace();
     }
 
     return this;
   }
 
   // Perform extraction on csv
-  public GEMFile extractCSV() {
+  public GEMFile extractCSV() throws SAXException, TikaException, CsvException, IOException {
     // TODO extract file's data
     File f = new File(getAbsolutePath());
     extension = FilenameUtils.getExtension(f.getName());
@@ -186,14 +193,12 @@ public class GEMFile {
     System.out.println("*************RECORD****************");
     System.out.println(extractedData1.getContents());
 
-    System.out.println("*************COLRECORD****************");
-    System.out.println(extractedData1.getColRecords().toString());
 
     return this;
   }
 
   // Perform extraction on Excel
-  public GEMFile extractExcel(MediaType mediaType) {
+  public GEMFile extractExcel(MediaType mediaType) throws TikaException, IOException, SAXException {
     // TODO extract file's data
 
     System.out.println("extractionExcel here");

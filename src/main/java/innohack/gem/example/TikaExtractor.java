@@ -1,14 +1,10 @@
 package innohack.gem.example;
 
-import innohack.gem.Util.FileUtil;
+import innohack.gem.example.Util.FileUtil;
 import innohack.gem.entity.GEMFile;
-import innohack.gem.example.tika.TikaMimeEnum;
 import innohack.gem.example.tika.TikaUtil;
 import java.nio.file.Path;
 import java.util.List;
-import org.apache.tika.io.TikaInputStream;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.mime.MediaType;
 
 public class TikaExtractor {
 
