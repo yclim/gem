@@ -83,9 +83,6 @@ public class ExcelFeature extends AbstractFeature {
 
         System.out.println("SheetNo: " + (i+1) + "sheetFeatures is " +
             sheetFeatures.get(sheetName).toString());
-        //ExcelSheetFeature sheetFeature = new ExcelSheetFeature(mediaType);
-        //sheetFeature.extract(workbook, i);
-        //sheetFeatures.add(sheetFeature);
 
       }
     }
