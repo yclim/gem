@@ -1,9 +1,9 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { RouteComponentProps } from "@reach/router";
-import { Button, ButtonGroup } from "@blueprintjs/core";
+import { Button, ButtonGroup, EditableText } from "@blueprintjs/core";
 import { Intent } from "@blueprintjs/core/lib/esm/common/intent";
 import { File } from "./api";
-import ruleService from "./api/mock";
+import fileService from "./api/FileService";
 import FileList from "./FileList";
 
 const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
@@ -11,18 +11,31 @@ const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
   const [currentType, setCurrentType] = useState<string>(ALL);
   const [types, setTypes] = useState<string[]>([]);
   const [files, setFiles] = useState<File[]>([]);
+  const [directory, setDirectory] = useState<string>("");
 
   useEffect(() => {
-    ruleService.getFileTypes().then(t => {
-      setTypes(t);
+    fileService.getCurrentDirectory().then(response => {
+      setDirectory(response.data);
     });
   }, []);
 
   useEffect(() => {
-    ruleService.getFilesByType(currentType).then(f => {
-      setFiles(f);
-    });
+    if (currentType === ALL) {
+      fileService.getFiles().then(response => {
+        setFiles(response.data);
+      });
+    } else {
+      fileService.getFileByExtension(currentType).then(response => {
+        setFiles(response.data);
+      });
+    }
   }, [currentType]);
+
+  useEffect(() => {
+    fileService.getExtensions().then(response => {
+      setTypes(response.data);
+    });
+  }, [files]);
 
   function renderTypeButton() {
     return types.map(t => (
@@ -40,10 +53,26 @@ const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
     setCurrentType(type);
   }
 
+  function handleSynchronize() {
+    fileService.sync(directory).then(response => {
+      setFiles(response.data);
+    });
+  }
+
   return (
     <div className="vertical-container">
       <div>
-        <Button icon="refresh" text="Synchronize" />
+        <Button
+          icon="refresh"
+          text="Synchronize"
+          onClick={() => handleSynchronize()}
+        />
+        <label className="editable-label"> Directory: </label>
+        <EditableText
+          className="editable-text"
+          value={directory}
+          onChange={e => setDirectory(e)}
+        />
       </div>
       <div className="horizontal-container">
         <div className="left-nav-section">
@@ -52,8 +81,7 @@ const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
               intent={currentType === ALL ? Intent.PRIMARY : Intent.NONE}
               onClick={() => handleChangeType(ALL)}
             >
-              {" "}
-              {ALL}{" "}
+              {ALL}
             </Button>
             {renderTypeButton()}
           </ButtonGroup>

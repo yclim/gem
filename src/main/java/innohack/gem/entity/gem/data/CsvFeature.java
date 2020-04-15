@@ -17,6 +17,7 @@ import org.xml.sax.SAXException;
 public class CsvFeature extends AbstractFeature {
 
   private List<String> header = new ArrayList<String>();
+
   private ArrayList<ArrayList<String>> contents = new ArrayList<ArrayList<String>>();
   private HashMap<String, ArrayList<String>> colRecords = new HashMap<String, ArrayList<String>>();
   private HashMap<Integer, String> colMapper = new HashMap<Integer, String>();
@@ -44,7 +45,7 @@ public class CsvFeature extends AbstractFeature {
         System.out.println(name + " : " + metadata.get(name));
         addMetadata(name, metadata.get(name));
       }
-      contentParser(f);
+      csvContentParser(f);
 
     } catch (IOException e) {
       e.printStackTrace();
@@ -55,7 +56,7 @@ public class CsvFeature extends AbstractFeature {
     }
   }
 
-  private void contentParser(File f) {
+  private void csvContentParser(File f) {
 
     try {
       OpenCsvParser csvParser = new OpenCsvParser(f.toPath());
@@ -138,6 +139,7 @@ public class CsvFeature extends AbstractFeature {
   public void setContents(ArrayList<ArrayList<String>> contents) {
     this.contents = contents;
   }
+
 
   public HashMap<String, ArrayList<String>> getColRecords() {
     return colRecords;

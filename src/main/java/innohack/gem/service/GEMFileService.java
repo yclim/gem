@@ -5,6 +5,7 @@ import innohack.gem.entity.GEMFile;
 import innohack.gem.service.event.EventListener;
 import innohack.gem.service.event.NewEvent;
 import java.util.Collection;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,10 @@ import org.springframework.stereotype.Service;
 public class GEMFileService extends NewEvent {
 
   @Autowired private IGEMFileDao gemDao;
+
+  public String getCurrentDirectory() {
+    return gemDao.getCurrentDirectory();
+  }
 
   public GEMFile getFile(String filename, String directory) {
     return gemDao.getFile(filename, directory);
@@ -28,7 +33,7 @@ public class GEMFileService extends NewEvent {
   /**
    * Retrieves and initial extraction for list of files in the folder
    *
-   * @param folderPath
+   * @param folderPath directory path of files to sync
    * @return list of files that was processed and stored {@link GEMFile @GEMFile}
    */
   public Collection<GEMFile> syncFiles(String folderPath) {
@@ -63,5 +68,14 @@ public class GEMFileService extends NewEvent {
    */
   public Collection<GEMFile> findByExtension(String extension) {
     return gemDao.findByExtension(extension);
+  }
+
+  /**
+   * Retrieves all file extensions uploaded
+   *
+   * @return list of file extension
+   */
+  public Set<String> getFileTypes() {
+    return gemDao.getFileTypes();
   }
 }

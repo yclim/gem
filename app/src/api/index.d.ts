@@ -28,9 +28,11 @@ export interface GroupFiles {
 
 export interface File {
   fileName: string;
-  fileSize: string;
-  mimeType: string;
-  rawText: string;
+  contentType: string;
+  size: bigint;
+  extension: string;
+  directory: string;
+  data: any[];
 }
 
 declare module RuleService {
