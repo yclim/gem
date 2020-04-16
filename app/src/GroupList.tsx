@@ -1,5 +1,5 @@
-import React, { useState, useEffect, FunctionComponent } from "react";
-import { Intent, Button, Card, Elevation, Tag } from "@blueprintjs/core";
+import React, { FunctionComponent } from "react";
+import { Button, Card, Elevation, Intent, Tag } from "@blueprintjs/core";
 import { Group } from "./api";
 import GroupCard from "./GroupCard";
 
@@ -17,14 +17,14 @@ const GroupList: FunctionComponent<IProps> = ({
   setCurrentGroup
 }) => {
   function createGroup() {
-    let name = "untitled";
+    const name = "untitled";
     let counter = 1;
     console.log(groups);
     while (true) {
-      let mod_name = name + "-" + counter;
-      if (!groups.has(mod_name)) {
+      const modName = name + "-" + counter;
+      if (!groups.has(modName)) {
         setGroups(
-          new Map(groups.set(mod_name, { groupName: mod_name, rules: [] }))
+          new Map(groups.set(modName, { groupName: modName, rules: [] }))
         );
         return;
       } else {
@@ -60,7 +60,7 @@ const GroupList: FunctionComponent<IProps> = ({
             updateGroups={updateGroup}
             focusGrp={currentGroup}
             setFocusGrp={setCurrentGroup}
-          ></GroupCard>
+          />
         ))}
         <Card
           interactive={false}

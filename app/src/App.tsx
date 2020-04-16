@@ -1,22 +1,19 @@
-import React, { useState } from "react";
+import React from "react";
 import { render } from "react-dom";
 import "@blueprintjs/icons/lib/css/blueprint-icons.css";
 import "@blueprintjs/core/lib/css/blueprint.css";
 
-import { Router, Link } from "@reach/router";
+import { Link, Router } from "@reach/router";
 import {
   Alignment,
   Button,
   Classes,
-  H5,
   Navbar,
   NavbarDivider,
   NavbarGroup,
-  NavbarHeading,
-  Switch
+  NavbarHeading
 } from "@blueprintjs/core";
 import "./App.scss";
-import GroupList from "./GroupList";
 import EditGroups from "./EditGroups";
 import BrowseFiles from "./BrowseFiles";
 

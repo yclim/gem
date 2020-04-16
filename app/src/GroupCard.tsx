@@ -50,7 +50,7 @@ const GroupCard: FunctionComponent<IProps> = ({
           rightIcon="more"
           text={ri.label}
           className="rule"
-        ></Button>
+        />
       </Popover>
     );
   }
@@ -60,7 +60,7 @@ const GroupCard: FunctionComponent<IProps> = ({
   }
 
   function handleChangeGroupName(e: string) {
-    let g = { groupName: e, rules: grp.rules };
+    const g = { groupName: e, rules: grp.rules };
     setGrp(g);
   }
 
