@@ -2,23 +2,19 @@ package innohack.gem.entity.gem.data;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
+import innohack.gem.entity.gem.util.FeatureExtractorUtil;
 import innohack.gem.example.tika.TikaTextAndCsvParser;
-import innohack.gem.extractor.opencsv.OpenCsvParser;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
-import org.xml.sax.SAXException;
 
 /** Object to hold wrap csv data */
 public class CsvFeature extends AbstractFeature {
 
-  private List<String> header = new ArrayList<String>();
-
-  private ArrayList<ArrayList<String>> contents = new ArrayList<ArrayList<String>>();
+  private List<List<String>> contents = new ArrayList<>();
   private HashMap<String, ArrayList<String>> colRecords = new HashMap<String, ArrayList<String>>();
   private HashMap<Integer, String> colMapper = new HashMap<Integer, String>();
   private int totalRow = 0;
@@ -29,130 +25,71 @@ public class CsvFeature extends AbstractFeature {
   }
 
   @Override
-  public void extract(File f) {
-    // TODO extraction method for CSV
-
+  public void extract(File f) throws Exception {
     csvParser = new TikaTextAndCsvParser(f.toPath());
     // to get metadata first
     Metadata metadata = null;
-    try {
-      metadata = csvParser.parseMetaDataUsingTextAndCsv();
 
-      String[] metadataNames = metadata.names();
+    metadata = csvParser.parseMetaDataUsingTextAndCsv();
 
-      for (String name : metadataNames) {
+    String[] metadataNames = metadata.names();
 
-        System.out.println(name + " : " + metadata.get(name));
-        addMetadata(name, metadata.get(name));
-      }
-      csvContentParser(f);
+    for (String name : metadataNames) {
 
-    } catch (IOException e) {
-      e.printStackTrace();
-    } catch (SAXException e) {
-      e.printStackTrace();
-    } catch (TikaException e) {
-      e.printStackTrace();
+      System.out.println(name + " : " + metadata.get(name));
+      addMetadata(name, metadata.get(name));
     }
+    contentParser(f);
   }
 
-  private void csvContentParser(File f) {
+  private void contentParser(File f) throws IOException, CsvException {
 
-    try {
-      OpenCsvParser csvParser = new OpenCsvParser(f.toPath());
-      CSVReader csvReader = csvParser.getCsvReaderUsingOpenCsv();
+    CSVReader csvReader = FeatureExtractorUtil.getCsvReaderUsingOpenCsv(f.toPath());
 
-      if (csvReader != null) {
-        // read all records at once
-        List<String[]> records = null;
-        records = csvReader.readAll();
+    if (csvReader != null) {
+      // read all records at once
+      List<String[]> records = null;
+      records = csvReader.readAll();
 
-        // iterate through list of records
-        for (String[] record : records) {
+      // iterate through list of records
+
+      for (String[] record : records) {
+        // this is for the records row
+        ArrayList<String> recordBuilder = new ArrayList<String>();
+
+        int colCount = 0;
+        for (String cell : record) {
+          recordBuilder.add(cell);
           if (totalRow == 0) {
-            // this is for the header row
-            int colCount = 0;
-            for (String cell : record) {
-              header.add(cell);
+            FeatureExtractorUtil.buildHeaderMapperAndContent(cell, colRecords, colMapper, colCount);
 
-              if (!colRecords.containsKey(cell)) {
-                colRecords.put(cell, new ArrayList<String>());
-                colMapper.put(colCount, cell);
-                colCount++;
-              }
-
-              System.out.print(cell + " ");
-            }
-            totalRow++;
           } else {
-
-            // this is for the records row
-            ArrayList<String> recordBuilder = new ArrayList<String>();
-            int colCount = 0;
-
-            for (String cell : record) {
-              recordBuilder.add(cell);
-
-              if (colMapper.containsKey(colCount)) {
-                String colHeader = colMapper.get(colCount);
-
-                if (colRecords.containsKey(colHeader)) {
-                  ArrayList<String> colCell = colRecords.get(colHeader);
-                  colCell.add(cell);
-                  colRecords.replace(colHeader, colCell);
-                  System.out.print(cell + " ");
-                }
-              }
-              colCount++;
-            }
-            contents.add(recordBuilder);
-            totalRow++;
+            FeatureExtractorUtil.buildContent(cell, colRecords, colMapper, colCount);
           }
+          colCount++;
         }
-        System.out.println("\n");
-        // close readers
-        csvReader.close();
-
-      } else {
-        System.out.println("Not able to parse");
+        contents.add(recordBuilder);
+        totalRow++;
       }
+      System.out.println("Col is :" + colRecords.toString());
 
-    } catch (IOException e) {
-      e.printStackTrace();
-    } catch (CsvException e) {
-      e.printStackTrace();
+    } else {
+      System.out.println("Not able to parse");
     }
+
+    // close readers
+    csvReader.close();
   }
 
-  public List<String> getHeader() {
-    return header;
-  }
-
-  public void setHeader(List<String> header) {
-    this.header = header;
-  }
-
-  public ArrayList<ArrayList<String>> getContents() {
+  public List<List<String>> getContents() {
     return contents;
   }
 
-  public void setContents(ArrayList<ArrayList<String>> contents) {
+  public void setContents(List<List<String>> contents) {
     this.contents = contents;
   }
 
-  public HashMap<String, ArrayList<String>> getColRecords() {
-    return colRecords;
-  }
-
-  public void setColRecords(HashMap<String, ArrayList<String>> colRecords) {
-    this.colRecords = colRecords;
-  }
-
-  public int getTotalRow() {
-    return totalRow;
-  }
-
-  public void setTotalRow(int totalRow) {
-    this.totalRow = totalRow;
+  public List<String> getHeader() {
+    return this.contents.get(0);
   }
 }

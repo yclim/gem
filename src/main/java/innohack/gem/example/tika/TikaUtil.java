@@ -1,13 +1,10 @@
 package innohack.gem.example.tika;
 
 import innohack.gem.entity.GEMFile;
+import innohack.gem.example.util.FileUtil;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.io.TikaInputStream;
@@ -18,6 +15,14 @@ import org.xml.sax.SAXException;
 public class TikaUtil {
 
   private TikaConfig tika;
+
+  public TikaConfig getTika() {
+    return tika;
+  }
+
+  public void setTika(TikaConfig tika) {
+    this.tika = tika;
+  }
 
   public TikaUtil() {
     try {
@@ -33,26 +38,25 @@ public class TikaUtil {
    *
    * @param path of the folder which contains the files
    */
-  public void walkPath(String path) {
-    try (Stream<Path> walk = Files.walk(Paths.get(path))) {
+  public void walkPathAndParse(String path) throws Exception {
 
-      List<Path> results =
-          walk.filter(Files::isRegularFile)
-              .map(x -> x.toAbsolutePath())
-              .collect(Collectors.toList());
+    List<Path> results = FileUtil.walkPath(path);
 
-      for (Path result : results) {
-        System.out.println("each result is " + result.toAbsolutePath());
-        Metadata metadata = new Metadata();
-        metadata.set(Metadata.RESOURCE_NAME_KEY, result.toString());
-        MediaType mimetype = tika.getDetector().detect(TikaInputStream.get(result), metadata);
+    for (Path result : results) {
+      System.out.println("each result is " + result.toAbsolutePath());
+      Metadata metadata = new Metadata();
+      metadata.set(Metadata.RESOURCE_NAME_KEY, result.toString());
+      MediaType mimetype = null;
 
-        TikaMimeEnum mimeType = determineMimeTypeAndParser(mimetype, result);
-        System.out.println(
-            "result is " + result.toAbsolutePath() + " mimeType is " + mimeType.getMimeType());
+      try {
+        mimetype = tika.getDetector().detect(TikaInputStream.get(result), metadata);
+      } catch (IOException e) {
+        e.printStackTrace();
       }
-    } catch (IOException e) {
-      e.printStackTrace();
+
+      TikaMimeEnum mimeType = determineMimeTypeAndParser(mimetype, result);
+      System.out.println(
+          "result is " + result.toAbsolutePath() + " mimeType is " + mimeType.getMimeType());
     }
   }
 
@@ -83,7 +87,7 @@ public class TikaUtil {
    * @param path path of the folder been point to
    * @return of the mimetype found
    */
-  public TikaMimeEnum determineMimeTypeAndParser(MediaType mediaType, Path path) {
+  public TikaMimeEnum determineMimeTypeAndParser(MediaType mediaType, Path path) throws Exception {
     // need to force find all the type here
 
     if (mediaType.getSubtype().equals(TikaMimeEnum.PDF.getMimeType())) {
@@ -98,11 +102,18 @@ public class TikaUtil {
     } else if (mediaType.getSubtype().equals(TikaMimeEnum.MSWORD.getMimeType())) {
       return TikaMimeEnum.MSWORD;
 
-    } else if (mediaType.getSubtype().equals(TikaMimeEnum.MSEXCEL.getMimeType())) {
-      return TikaMimeEnum.MSEXCEL;
+    } else if (mediaType.getSubtype().equals(TikaMimeEnum.MSEXCELXLSX.getMimeType())) {
+      TikaExcelParser excelParser = new TikaExcelParser(path, mediaType);
+      try {
+        excelParser.parseExcel();
+      } catch (IOException | TikaException | SAXException e) {
+        e.printStackTrace();
+      }
+      return TikaMimeEnum.MSEXCELXLSX;
 
     } else if (mediaType.getSubtype().equals(TikaMimeEnum.CSV.getMimeType())) {
       GEMFile csvFile = new GEMFile(path.getFileName().toString(), path.getParent().toString());
+
       csvFile.extractCSV();
 
       return TikaMimeEnum.CSV;

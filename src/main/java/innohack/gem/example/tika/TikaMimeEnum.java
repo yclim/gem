@@ -2,7 +2,8 @@ package innohack.gem.example.tika;
 
 public enum TikaMimeEnum {
   PDF("pdf"),
-  MSEXCEL("vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
+  MSEXCELXLSX("vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
+  MSEXCELXLS("vnd.ms-excel"),
   MSWORD("vnd.openxmlformats-officedocument.wordprocessingml.document"),
   CSV("csv"),
   TEXT("text"),

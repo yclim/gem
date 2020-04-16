@@ -49,8 +49,7 @@ public class TikaTextAndCsvParser {
   }
 
   /**
-   * parseTextAndCsv to call tikacsv parser, however this method do not detect seperators, so as of
-   * now put as placeholder first
+   * parseMetaDataUsingTextAndCsv to extract metadata of csv files
    *
    * @throws IOException IOexception if path is not found
    * @throws SAXException SAXException from Tika

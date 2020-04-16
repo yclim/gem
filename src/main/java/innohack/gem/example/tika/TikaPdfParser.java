@@ -48,5 +48,6 @@ public class TikaPdfParser {
     for (String name : metadataNames) {
       System.out.println(name + " : " + metadata.get(name));
     }
+    inputstream.close();
   }
 }

@@ -41,5 +41,5 @@ public abstract class AbstractFeature {
     this.target = target;
   }
 
-  public abstract void extract(File f);
+  public abstract void extract(File f) throws Exception;
 }
