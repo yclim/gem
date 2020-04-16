@@ -6,14 +6,11 @@ import innohack.gem.entity.gem.data.CsvFeature;
 import innohack.gem.entity.gem.data.ExcelFeature;
 import innohack.gem.entity.gem.util.FeatureExtractorUtil;
 import innohack.gem.example.tika.TikaMimeEnum;
-import innohack.gem.example.tika.TikaUtil;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.Collection;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.tika.config.TikaConfig;
-import org.apache.tika.io.TikaInputStream;
-import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -151,7 +148,6 @@ public class GEMFile {
 
   // Perform extraction on csv
   public GEMFile extractCSV() throws Exception {
-    // TODO extract file's data
     File f = new File(getAbsolutePath());
     extension = FilenameUtils.getExtension(f.getName());
 
@@ -163,23 +159,22 @@ public class GEMFile {
     System.out.println(extractedData1.getMetadata().toString());
 
     System.out.println("*************HEADER****************");
-    System.out.println(extractedData1.getHeader());
+    System.out.println(extractedData1.getHeaders());
 
     System.out.println("*************RECORD****************");
-    System.out.println(extractedData1.getContents());
+    System.out.println(extractedData1.getTableData());
 
     return this;
   }
 
   // Perform extraction on Excel
   public GEMFile extractExcel(MediaType mediaType) throws Exception {
-    // TODO extract file's data
 
     System.out.println("extractionExcel here");
     File f = new File(getAbsolutePath());
     extension = FilenameUtils.getExtension(f.getName());
 
-    ExcelFeature extractedData1 = new ExcelFeature(mediaType);
+    ExcelFeature extractedData1 = new ExcelFeature();
     extractedData1.extract(f);
     addData(extractedData1);
 
@@ -187,7 +182,7 @@ public class GEMFile {
     System.out.println(extractedData1.getMetadata().toString());
 
     System.out.println("*************Sheets****************");
-    System.out.println(extractedData1.getSheetFeatures().toString());
+    System.out.println(extractedData1.getSheetTableData().toString());
 
     return this;
   }

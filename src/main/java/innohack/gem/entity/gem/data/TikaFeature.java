@@ -6,9 +6,6 @@ import org.apache.tika.config.TikaConfig;
 
 /** Object to hold wrap extracted tika data */
 public class TikaFeature extends AbstractFeature {
-  public TikaFeature() {
-    super(Target.TIKA);
-  }
 
   @Override
   public void extract(File f) throws Exception {

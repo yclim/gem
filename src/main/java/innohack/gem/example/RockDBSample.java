@@ -47,10 +47,9 @@ public class RockDBSample {
         List<byte[]> results = db.multiGetAsList(lookupKeys);
         for (byte[] result : results) {
           CsvFeature temp = deserialize(result);
-          System.out.println("total row: " + temp.getTotalRow());
+          System.out.println("total row: " + temp.getTableData().size());
           list.add(temp);
         }
-
       }
 
     } catch (Exception e) {
@@ -78,7 +77,7 @@ public class RockDBSample {
 
           String prefixString = new String(prefix);
 
-         /*
+          /*
             An iterator that specifies a prefix (via ReadOptions) will use these bloom bits
             to avoid looking into data files that do not contain keys with the specified key-prefix.
           */
@@ -91,17 +90,16 @@ public class RockDBSample {
             final String key = new String(iterator.key());
 
             if (key.startsWith(prefixString)) {
-                list.add(key);
-                System.out.println("key: " + key);
+              list.add(key);
+              System.out.println("key: " + key);
             } else {
-                /* To check
-                Since next() can go across the boundary to a different prefix,
-                you will need to check the end condition:
-                break out of loop if prefix not matched
-                */
-                break;
+              /* To check
+              Since next() can go across the boundary to a different prefix,
+              you will need to check the end condition:
+              break out of loop if prefix not matched
+              */
+              break;
             }
-
           }
         } catch (Exception e) {
           e.printStackTrace();
@@ -125,7 +123,7 @@ public class RockDBSample {
         // set filename as key for this record
         File file = new File(filePath);
 
-        if(file.exists()) {
+        if (file.exists()) {
           byte[] fileKey = file.getName().getBytes();
 
           // set csv feature
@@ -147,15 +145,13 @@ public class RockDBSample {
 
           System.out.println("check assertions");
           // assert csv feature and test feature
-          assert csvFeature.getTotalRow() == testFeature.getTotalRow() : "total row not matched";
-          assert csvFeature.getHeader() == testFeature.getHeader() : "header not matched";
-          assert csvFeature.getContents() == testFeature.getContents() : "content not matched";
-          assert csvFeature.getColRecords() == testFeature.getColRecords()
-                  : "col records not matched";
+          assert csvFeature.getTableData().size() == testFeature.getTableData().size()
+              : "total row not matched";
+          assert csvFeature.getHeaders() == testFeature.getHeaders() : "header not matched";
+          assert csvFeature.getTableData() == testFeature.getTableData() : "content not matched";
         } else {
           System.out.println("File not found: " + filePath);
         }
-
       }
 
     } catch (Exception e) {

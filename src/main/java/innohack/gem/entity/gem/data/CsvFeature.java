@@ -1,95 +1,169 @@
 package innohack.gem.entity.gem.data;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
+import com.opencsv.CSVParser;
+import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
+import com.opencsv.enums.CSVReaderNullFieldIndicator;
 import com.opencsv.exceptions.CsvException;
-import innohack.gem.entity.gem.util.FeatureExtractorUtil;
-import innohack.gem.example.tika.TikaTextAndCsvParser;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
+import org.apache.tika.parser.ParseContext;
+import org.apache.tika.parser.csv.TextAndCSVParser;
+import org.apache.tika.sax.BodyContentHandler;
+import org.xml.sax.SAXException;
 
 /** Object to hold wrap csv data */
 public class CsvFeature extends AbstractFeature {
 
-  private List<List<String>> contents = new ArrayList<>();
-  private HashMap<String, ArrayList<String>> colRecords = new HashMap<String, ArrayList<String>>();
-  private HashMap<Integer, String> colMapper = new HashMap<Integer, String>();
-  private int totalRow = 0;
-  private TikaTextAndCsvParser csvParser;
-
-  public CsvFeature() {
-    super(Target.CSV);
-  }
+  private List<List<String>> tableData = new ArrayList<>();
 
   @Override
   public void extract(File f) throws Exception {
-    csvParser = new TikaTextAndCsvParser(f.toPath());
-    // to get metadata first
     Metadata metadata = null;
 
-    metadata = csvParser.parseMetaDataUsingTextAndCsv();
+    metadata = parseMetaDataUsingTextAndCsv(f.toPath());
 
     String[] metadataNames = metadata.names();
 
     for (String name : metadataNames) {
-
-      System.out.println(name + " : " + metadata.get(name));
       addMetadata(name, metadata.get(name));
     }
+
     contentParser(f);
   }
 
   private void contentParser(File f) throws IOException, CsvException {
 
-    CSVReader csvReader = FeatureExtractorUtil.getCsvReaderUsingOpenCsv(f.toPath());
+    CSVReader csvReader = getCsvReaderUsingOpenCsv(f.toPath());
 
-    if (csvReader != null) {
-      // read all records at once
-      List<String[]> records = null;
-      records = csvReader.readAll();
+    List<String[]> records = null;
+    records = csvReader.readAll();
 
-      // iterate through list of records
-
-      for (String[] record : records) {
-        // this is for the records row
-        ArrayList<String> recordBuilder = new ArrayList<String>();
-
-        int colCount = 0;
-        for (String cell : record) {
-          recordBuilder.add(cell);
-          if (totalRow == 0) {
-            FeatureExtractorUtil.buildHeaderMapperAndContent(cell, colRecords, colMapper, colCount);
-
-          } else {
-            FeatureExtractorUtil.buildContent(cell, colRecords, colMapper, colCount);
-          }
-          colCount++;
-        }
-        contents.add(recordBuilder);
-        totalRow++;
+    for (String[] record : records) {
+      List<String> recordBuilder = new ArrayList<>();
+      for (String cell : record) {
+        recordBuilder.add(cell);
       }
-      System.out.println("Col is :" + colRecords.toString());
-
-    } else {
-      System.out.println("Not able to parse");
+      tableData.add(recordBuilder);
     }
 
-    // close readers
     csvReader.close();
   }
 
-  public List<List<String>> getContents() {
-    return contents;
+  public Metadata parseMetaDataUsingTextAndCsv(Path filePath)
+      throws IOException, SAXException, TikaException {
+    BodyContentHandler handler = new BodyContentHandler();
+    Metadata metadata = new Metadata();
+    FileInputStream inputstream =
+        new FileInputStream(new File(String.valueOf(filePath.toAbsolutePath())));
+    ParseContext pcontext = new ParseContext();
+
+    TextAndCSVParser csvParser = new TextAndCSVParser();
+    csvParser.parse(inputstream, handler, metadata, pcontext);
+
+    inputstream.close();
+    return metadata;
   }
 
-  public void setContents(List<List<String>> contents) {
-    this.contents = contents;
+  /** use openCSV libraries instead of tika for better csv support */
+  private CSVReader getCsvReaderUsingOpenCsv(Path filePath) {
+    Reader reader;
+    CSVReader csvReader = null;
+
+    try {
+      reader = Files.newBufferedReader(filePath, UTF_8);
+
+      System.out.println(" Using opencsv ");
+      CSVParser parser =
+          new CSVParserBuilder()
+              .withSeparator(detectSeparators((BufferedReader) reader))
+              .withFieldAsNull(CSVReaderNullFieldIndicator.EMPTY_QUOTES)
+              .withIgnoreLeadingWhiteSpace(true)
+              .withIgnoreQuotations(false)
+              .withStrictQuotes(false)
+              .build();
+
+      csvReader = new CSVReaderBuilder(reader).withCSVParser(parser).build();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    return csvReader;
   }
 
-  public List<String> getHeader() {
-    return this.contents.get(0);
+  /** detectSeparators to help determine the delimiters for a csv files */
+  private char detectSeparators(BufferedReader pBuffered) throws IOException {
+    int lMaxValue = 0;
+    char lCharMax = ',';
+    pBuffered.mark(2048);
+
+    ArrayList<Separators> lSeparators = new ArrayList<Separators>();
+    lSeparators.add(new Separators(','));
+    lSeparators.add(new Separators(';'));
+    lSeparators.add(new Separators('\t'));
+
+    Iterator<Separators> lIterator = lSeparators.iterator();
+    while (lIterator.hasNext()) {
+      Separators lSeparator = lIterator.next();
+      au.com.bytecode.opencsv.CSVReader lReader =
+          new au.com.bytecode.opencsv.CSVReader(pBuffered, lSeparator.getSeparator());
+      String[] lLine;
+      lLine = lReader.readNext();
+      lSeparator.setCount(lLine.length);
+
+      if (lSeparator.getCount() > lMaxValue) {
+        lMaxValue = lSeparator.getCount();
+        lCharMax = lSeparator.getSeparator();
+      }
+      pBuffered.reset();
+    }
+    return lCharMax;
+  }
+
+  public List<List<String>> getTableData() {
+    return tableData;
+  }
+
+  public List<String> getHeaders() {
+    return this.tableData.get(0);
+  }
+}
+
+class Separators {
+  private char fSeparatorChar;
+  private int fFieldCount;
+
+  public Separators(char pSeparator) {
+    fSeparatorChar = pSeparator;
+  }
+
+  public void setSeparator(char pSeparator) {
+    fSeparatorChar = pSeparator;
+  }
+
+  public void setCount(int pCount) {
+    fFieldCount = pCount;
+  }
+
+  public char getSeparator() {
+    return fSeparatorChar;
+  }
+
+  public int getCount() {
+    return fFieldCount;
   }
 }
