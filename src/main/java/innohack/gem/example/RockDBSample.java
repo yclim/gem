@@ -24,7 +24,7 @@ public class RockDBSample {
     // insert record
     putCsvFeature(dbPath, filePath);
     // get keys
-    List<String> list = scanPrefixKey(dbPath, "csv", false);
+    List<String> list = scanPrefixKey(dbPath, "csv");
     // get values
     getBatch(dbPath, list);
   }
@@ -62,7 +62,7 @@ public class RockDBSample {
   }
 
   // how we set the key name convention will affect the scan performance of db
-  public static List<String> scanPrefixKey(String dbPath, String prefixStr, Boolean isPrefix) {
+  public static List<String> scanPrefixKey(String dbPath, String prefixStr) {
     // the Options class contains a set of configurable DB options
     // that determines the behaviour of the database.
 
@@ -90,22 +90,18 @@ public class RockDBSample {
 
             final String key = new String(iterator.key());
 
-
-            if (isPrefix) {
-              if (key.startsWith(prefixString)) {
+            if (key.startsWith(prefixString)) {
                 list.add(key);
                 System.out.println("key: " + key);
-              } else {
+            } else {
                 /* To check
                 Since next() can go across the boundary to a different prefix,
                 you will need to check the end condition:
                 break out of loop if prefix not matched
                 */
                 break;
-              }
-            } else {
-              list.add(key);
             }
+
           }
         } catch (Exception e) {
           e.printStackTrace();
