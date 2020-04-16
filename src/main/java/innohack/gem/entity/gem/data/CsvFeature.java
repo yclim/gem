@@ -4,15 +4,12 @@ import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import innohack.gem.entity.gem.util.FeatureExtractorUtil;
 import innohack.gem.example.tika.TikaTextAndCsvParser;
-import innohack.gem.extractor.opencsv.OpenCsvParser;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
-import org.xml.sax.SAXException;
 
 /** Object to hold wrap csv data */
 public class CsvFeature extends AbstractFeature {
@@ -28,68 +25,60 @@ public class CsvFeature extends AbstractFeature {
   }
 
   @Override
-  public void extract(File f) throws TikaException, SAXException, IOException, CsvException {
-    // TODO extraction method for CSV
-
+  public void extract(File f) throws Exception {
     csvParser = new TikaTextAndCsvParser(f.toPath());
     // to get metadata first
     Metadata metadata = null;
 
-      metadata = csvParser.parseMetaDataUsingTextAndCsv();
+    metadata = csvParser.parseMetaDataUsingTextAndCsv();
 
-      String[] metadataNames = metadata.names();
+    String[] metadataNames = metadata.names();
 
-      for (String name : metadataNames) {
+    for (String name : metadataNames) {
 
-        System.out.println(name + " : " + metadata.get(name));
-        addMetadata(name, metadata.get(name));
-      }
-      contentParser(f);
-
+      System.out.println(name + " : " + metadata.get(name));
+      addMetadata(name, metadata.get(name));
+    }
+    contentParser(f);
   }
-
-
 
   private void contentParser(File f) throws IOException, CsvException {
 
-      OpenCsvParser csvParser = new OpenCsvParser(f.toPath());
-      CSVReader csvReader = csvParser.getCsvReaderUsingOpenCsv();
+    CSVReader csvReader = FeatureExtractorUtil.getCsvReaderUsingOpenCsv(f.toPath());
 
-      if (csvReader != null) {
-        // read all records at once
-        List<String[]> records = null;
-        records = csvReader.readAll();
+    if (csvReader != null) {
+      // read all records at once
+      List<String[]> records = null;
+      records = csvReader.readAll();
 
-        // iterate through list of records
+      // iterate through list of records
 
-        for (String[] record : records) {
-          // this is for the records row
-          ArrayList<String> recordBuilder = new ArrayList<String>();
+      for (String[] record : records) {
+        // this is for the records row
+        ArrayList<String> recordBuilder = new ArrayList<String>();
 
-          int colCount = 0;
-          for (String cell : record) {
-            recordBuilder.add(cell);
-            if (totalRow == 0) {
-              FeatureExtractorUtil.buildHeaderMapperAndContent(cell, colRecords,
-                  colMapper, colCount);
+        int colCount = 0;
+        for (String cell : record) {
+          recordBuilder.add(cell);
+          if (totalRow == 0) {
+            FeatureExtractorUtil.buildHeaderMapperAndContent(cell, colRecords, colMapper, colCount);
 
-            } else {
-              FeatureExtractorUtil.buildContent(cell, colRecords, colMapper, colCount);
-            }
-            colCount++;
+          } else {
+            FeatureExtractorUtil.buildContent(cell, colRecords, colMapper, colCount);
           }
-          contents.add(recordBuilder);
-          totalRow++;
+          colCount++;
         }
-        System.out.println("Col is :" + colRecords.toString());
-
-      } else {
-        System.out.println("Not able to parse");
+        contents.add(recordBuilder);
+        totalRow++;
       }
+      System.out.println("Col is :" + colRecords.toString());
 
-      // close readers
-      csvReader.close();
+    } else {
+      System.out.println("Not able to parse");
+    }
 
+    // close readers
+    csvReader.close();
   }
 
   public List<List<String>> getContents() {
@@ -103,5 +92,4 @@ public class CsvFeature extends AbstractFeature {
   public List<String> getHeader() {
     return this.contents.get(0);
   }
-
 }

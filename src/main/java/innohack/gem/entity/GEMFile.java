@@ -1,34 +1,27 @@
 package innohack.gem.entity;
 
 import com.google.common.collect.Lists;
-import com.opencsv.exceptions.CsvException;
 import innohack.gem.entity.gem.data.AbstractFeature;
 import innohack.gem.entity.gem.data.CsvFeature;
 import innohack.gem.entity.gem.data.ExcelFeature;
-import innohack.gem.entity.gem.data.TikaFeature;
-import innohack.gem.example.tika.TikaExcelParser;
+import innohack.gem.entity.gem.util.FeatureExtractorUtil;
 import innohack.gem.example.tika.TikaMimeEnum;
-import innohack.gem.example.tika.TikaPdfParser;
 import innohack.gem.example.tika.TikaUtil;
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.tika.exception.TikaException;
+import org.apache.tika.config.TikaConfig;
 import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
 import org.springframework.web.multipart.MultipartFile;
-import org.xml.sax.SAXException;
 
 public class GEMFile {
   private String fileName;
   private String contentType;
   private Long size;
   private String extension;
-
-
 
   private Path path;
 
@@ -38,7 +31,6 @@ public class GEMFile {
   public GEMFile(String fileName, String directory) {
     this.directory = directory;
     this.fileName = fileName;
-
   }
 
   public GEMFile(Path path) {
@@ -46,7 +38,6 @@ public class GEMFile {
     this.fileName = path.getFileName().toString();
     this.path = path;
   }
-
 
   public GEMFile(MultipartFile file) {
     this.fileName = file.getOriginalFilename();
@@ -103,9 +94,13 @@ public class GEMFile {
     this.extension = extension;
   }
 
-  public Path getPath() { return path; }
+  public Path getPath() {
+    return path;
+  }
 
-  public void setPath(Path path) { this.path = path; }
+  public void setPath(Path path) {
+    this.path = path;
+  }
 
   public void addAllData(Collection<AbstractFeature> data) {
     if (this.data == null) {
@@ -131,43 +126,23 @@ public class GEMFile {
 
   // Perform extraction
   public GEMFile extract() {
-    // TODO extract file's data
     File f = new File(getAbsolutePath());
     extension = FilenameUtils.getExtension(f.getName());
 
-    TikaUtil tikaUtil = new TikaUtil();
-
-    Metadata metadata = new Metadata();
-    metadata.set(Metadata.RESOURCE_NAME_KEY, path.toString());
-    MediaType mediaType = null;
     try {
-      mediaType = tikaUtil.getTika().getDetector().detect(TikaInputStream.get(path), metadata);
-
-      if (mediaType.getSubtype().equals(TikaMimeEnum.PDF.getMimeType())) {
-
-
-      } else if (mediaType.getSubtype().equals(TikaMimeEnum.MSWORD.getMimeType())) {
-
-
-      } else if (mediaType.getSubtype().equals(TikaMimeEnum.MSEXCELXLSX.getMimeType()) ||
-          mediaType.getSubtype().equals(TikaMimeEnum.MSEXCELXLS.getMimeType())) {
-
+      TikaConfig config = new TikaConfig();
+      MediaType mediaType = FeatureExtractorUtil.extractMime(config, f.toPath());
+      String subtype = mediaType.getSubtype();
+      System.out.println(subtype);
+      if (subtype.equals(TikaMimeEnum.MSEXCELXLSX.getMimeType())
+          || subtype.equals(TikaMimeEnum.MSEXCELXLS.getMimeType())) {
         extractExcel(mediaType);
-
-
       } else if (mediaType.getSubtype().equals(TikaMimeEnum.CSV.getMimeType())) {
         extractCSV();
-
       } else {
-        System.out.println("the mediatype is " + mediaType );
+        System.out.println("unsupported: " + mediaType);
       }
-    } catch (IOException e) {
-      e.printStackTrace();
-    } catch (CsvException e) {
-      e.printStackTrace();
-    } catch (SAXException e) {
-      e.printStackTrace();
-    } catch (TikaException e) {
+    } catch (Exception e) {
       e.printStackTrace();
     }
 
@@ -175,7 +150,7 @@ public class GEMFile {
   }
 
   // Perform extraction on csv
-  public GEMFile extractCSV() throws SAXException, TikaException, CsvException, IOException {
+  public GEMFile extractCSV() throws Exception {
     // TODO extract file's data
     File f = new File(getAbsolutePath());
     extension = FilenameUtils.getExtension(f.getName());
@@ -193,12 +168,11 @@ public class GEMFile {
     System.out.println("*************RECORD****************");
     System.out.println(extractedData1.getContents());
 
-
     return this;
   }
 
   // Perform extraction on Excel
-  public GEMFile extractExcel(MediaType mediaType) throws TikaException, IOException, SAXException {
+  public GEMFile extractExcel(MediaType mediaType) throws Exception {
     // TODO extract file's data
 
     System.out.println("extractionExcel here");
@@ -209,16 +183,12 @@ public class GEMFile {
     extractedData1.extract(f);
     addData(extractedData1);
 
-
-
     System.out.println("*************Metadata****************");
     System.out.println(extractedData1.getMetadata().toString());
 
     System.out.println("*************Sheets****************");
     System.out.println(extractedData1.getSheetFeatures().toString());
 
-
     return this;
   }
-
 }
