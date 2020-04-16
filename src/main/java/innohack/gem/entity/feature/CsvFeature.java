@@ -45,6 +45,14 @@ public class CsvFeature extends AbstractFeature {
     contentParser(f);
   }
 
+  public List<List<String>> getTableData() {
+    return tableData;
+  }
+
+  public List<String> getHeaders() {
+    return this.tableData.get(0);
+  }
+
   private void contentParser(File f) throws IOException, CsvException {
 
     CSVReader csvReader = getCsvReaderUsingOpenCsv(f.toPath());
@@ -63,7 +71,7 @@ public class CsvFeature extends AbstractFeature {
     csvReader.close();
   }
 
-  public Metadata parseMetaDataUsingTextAndCsv(Path filePath)
+  private Metadata parseMetaDataUsingTextAndCsv(Path filePath)
       throws IOException, SAXException, TikaException {
     BodyContentHandler handler = new BodyContentHandler();
     Metadata metadata = new Metadata();
@@ -131,14 +139,6 @@ public class CsvFeature extends AbstractFeature {
       pBuffered.reset();
     }
     return lCharMax;
-  }
-
-  public List<List<String>> getTableData() {
-    return tableData;
-  }
-
-  public List<String> getHeaders() {
-    return this.tableData.get(0);
   }
 }
 

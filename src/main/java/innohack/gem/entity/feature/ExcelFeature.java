@@ -107,7 +107,7 @@ public class ExcelFeature extends AbstractFeature {
     return metadata;
   }
 
-  public String cellValue(Cell cell) {
+  private String cellValue(Cell cell) {
 
     String rtnValue = "";
     if (cell.getCellType() == CellType.NUMERIC) {
