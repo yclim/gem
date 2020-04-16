@@ -110,7 +110,7 @@ public class CsvFeature extends AbstractFeature {
     char lCharMax = ',';
     pBuffered.mark(2048);
 
-    ArrayList<Separators> lSeparators = new ArrayList<Separators>();
+    ArrayList<Separators> lSeparators = new ArrayList<>();
     lSeparators.add(new Separators(','));
     lSeparators.add(new Separators(';'));
     lSeparators.add(new Separators('\t'));

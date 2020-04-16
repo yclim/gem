@@ -2,11 +2,12 @@ package innohack.gem.entity.feature;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Map;
 
 public abstract class AbstractFeature {
-  private HashMap<String, String> metadata = null;
+  private Map<String, String> metadata = null;
 
-  public HashMap<String, String> getMetadata() {
+  public Map<String, String> getMetadata() {
     return metadata;
   }
 
