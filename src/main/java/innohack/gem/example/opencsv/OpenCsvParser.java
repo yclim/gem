@@ -1,4 +1,4 @@
-package innohack.gem.extractor.opencsv;
+package innohack.gem.example.opencsv;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 

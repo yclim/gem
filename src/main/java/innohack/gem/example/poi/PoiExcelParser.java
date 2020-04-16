@@ -1,4 +1,4 @@
-package innohack.gem.extractor.poi;
+package innohack.gem.example.poi;
 
 import java.io.File;
 import java.io.IOException;

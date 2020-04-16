@@ -1,6 +1,5 @@
 package innohack.gem.example.tika;
 
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -43,9 +42,9 @@ public class TikaExcelParser {
 
     // OOXml parser
     Parser parser = null;
-    if (mediaType.getSubtype().equals(TikaMimeEnum.MSEXCELXLSX.getMimeType()) ) {
+    if (mediaType.getSubtype().equals(TikaMimeEnum.MSEXCELXLSX.getMimeType())) {
       parser = new OOXMLParser();
-    }else if (mediaType.getSubtype().equals(TikaMimeEnum.MSEXCELXLS.getMimeType())) {
+    } else if (mediaType.getSubtype().equals(TikaMimeEnum.MSEXCELXLS.getMimeType())) {
       parser = new OfficeParser();
     }
 
@@ -55,8 +54,7 @@ public class TikaExcelParser {
     } else {
       System.out.println("No sutiable parser for this type");
     }
-      inputstream.close();
+    inputstream.close();
     return metadata;
   }
-
 }

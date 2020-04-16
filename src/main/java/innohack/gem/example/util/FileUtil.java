@@ -1,4 +1,4 @@
-package innohack.gem.example.Util;
+package innohack.gem.example.util;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -33,6 +33,5 @@ public class FileUtil {
     } finally {
       return results;
     }
-
   }
 }
