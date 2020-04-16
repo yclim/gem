@@ -1,4 +1,4 @@
-package innohack.gem.entity.gem.util;
+package innohack.gem.entity.feature.common;
 
 import java.io.IOException;
 import java.nio.file.Path;

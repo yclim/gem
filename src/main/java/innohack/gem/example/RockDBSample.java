@@ -5,11 +5,10 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import innohack.gem.entity.gem.data.CsvFeature;
+import innohack.gem.entity.feature.CsvFeature;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.rocksdb.*;
 
 public class RockDBSample {

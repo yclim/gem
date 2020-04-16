@@ -1,4 +1,4 @@
-package innohack.gem.entity.gem.data;
+package innohack.gem.entity.feature;
 
 import java.io.File;
 import java.util.HashMap;

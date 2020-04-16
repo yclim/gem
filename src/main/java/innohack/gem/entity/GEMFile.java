@@ -1,10 +1,10 @@
 package innohack.gem.entity;
 
 import com.google.common.collect.Lists;
-import innohack.gem.entity.gem.data.AbstractFeature;
-import innohack.gem.entity.gem.data.CsvFeature;
-import innohack.gem.entity.gem.data.ExcelFeature;
-import innohack.gem.entity.gem.util.FeatureExtractorUtil;
+import innohack.gem.entity.feature.AbstractFeature;
+import innohack.gem.entity.feature.CsvFeature;
+import innohack.gem.entity.feature.ExcelFeature;
+import innohack.gem.entity.feature.common.FeatureExtractorUtil;
 import innohack.gem.example.tika.TikaMimeEnum;
 import java.io.File;
 import java.nio.file.Path;

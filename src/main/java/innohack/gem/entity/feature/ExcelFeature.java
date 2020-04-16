@@ -1,12 +1,11 @@
-package innohack.gem.entity.gem.data;
+package innohack.gem.entity.feature;
 
-import innohack.gem.entity.gem.util.FeatureExtractorUtil;
-import innohack.gem.entity.gem.util.TikaMimeEnum;
+import innohack.gem.entity.feature.common.FeatureExtractorUtil;
+import innohack.gem.entity.feature.common.TikaMimeEnum;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
