@@ -51,6 +51,8 @@
   width: #{$group-card-width + 20}px;
   min-width: #{$group-card-width + 20}px;
   margin-right: #{$gap}px;
+  max-height: 90vh;
+  overflow: auto;
 }
 
 .file-details {

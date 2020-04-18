@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { RouteComponentProps } from "@reach/router";
-import { Button, ButtonGroup, EditableText } from "@blueprintjs/core";
+import { Button, ButtonGroup, EditableText, Spinner } from "@blueprintjs/core";
 import { Intent } from "@blueprintjs/core/lib/esm/common/intent";
 import { File } from "./api";
 import fileService from "./api/FileService";
@@ -12,6 +12,7 @@ const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
   const [types, setTypes] = useState<string[]>([]);
   const [files, setFiles] = useState<File[]>([]);
   const [directory, setDirectory] = useState<string>("");
+  const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
     fileService.getCurrentDirectory().then(response => {
@@ -54,8 +55,10 @@ const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
   }
 
   function handleSynchronize() {
+    setLoading(true)
     fileService.sync(directory).then(response => {
       setFiles(response.data);
+      setLoading(false)
     });
   }
 
@@ -63,9 +66,10 @@ const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
     <div className="vertical-container">
       <div>
         <Button
-          icon="refresh"
+          icon={isLoading ? <Spinner size={Spinner.SIZE_SMALL}/>:"refresh"}
           text="Synchronize"
           onClick={() => handleSynchronize()}
+          disabled={isLoading}
         />
         <label className="editable-label"> Directory: </label>
         <EditableText
