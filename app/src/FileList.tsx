@@ -5,9 +5,16 @@ import {
   SelectionModes,
   Table
 } from "@blueprintjs/table";
-import { Blockquote, Tab, TabId, Tabs } from "@blueprintjs/core";
+import {
+  Blockquote,
+  Card,
+  Elevation,
+  Tab,
+  TabId,
+  Tabs
+} from "@blueprintjs/core";
 import React, { FunctionComponent, useState } from "react";
-import { CsvFeature, ExcelFeature, File } from "./api";
+import { CsvFeature, ExcelFeature, File, TikaFeature } from "./api";
 import fileService from "./api/FileService";
 
 interface IProps {
@@ -101,6 +108,31 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
     );
   }
 
+  function renderMetadata(meta: Map<string, string>) {
+    const keys = Object.keys(meta);
+    const values = Object.values(meta);
+    const pairs = keys.map((k, i) => [k, values[i]]);
+
+    return (
+      <table className="bp3-html-table bp3-html-table-striped keyval-table">
+        <thead>
+          <tr>
+            <th>Metadata Key</th>
+            <th>Metadata Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          {pairs.map(arr => (
+            <tr key={`tr-${arr[0]}`}>
+              <td>{arr[0]}</td>
+              <td>{arr[1]}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
+  }
+
   const NOT_APPLICABLE = <Blockquote> Not Applicable </Blockquote>;
   const NOT_LOADED = <Blockquote> Not Loaded </Blockquote>;
 
@@ -156,6 +188,36 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
     return NOT_LOADED;
   }
 
+  function renderTikaMetaTab() {
+    if (currentFile !== null && currentFile.data !== null) {
+      const index = currentFile.data.findIndex(f => "content" in f);
+      if (index > -1) {
+        const data = currentFile.data[index] as TikaFeature;
+        return renderMetadata(data.metadata);
+      } else {
+        return NOT_APPLICABLE;
+      }
+    }
+    return NOT_LOADED;
+  }
+
+  function renderTikaContentTab() {
+    if (currentFile !== null && currentFile.data !== null) {
+      const index = currentFile.data.findIndex(f => "content" in f);
+      if (index > -1) {
+        const data = currentFile.data[index] as TikaFeature;
+        return (
+          <Card elevation={Elevation.ZERO}>
+            <pre> {data.content} </pre>
+          </Card>
+        );
+      } else {
+        return NOT_APPLICABLE;
+      }
+    }
+    return NOT_LOADED;
+  }
+
   return (
     <div className="files-section">
       <div className="file-list">
@@ -175,6 +237,16 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
           onChange={handleNavbarTabChange}
         >
           <Tab id="raw" title="File Details" panel={renderFileDetailTab()} />
+          <Tab
+            id="tikaMeta"
+            title="Tika Metadata"
+            panel={renderTikaMetaTab()}
+          />
+          <Tab
+            id="tikaContent"
+            title="Tika Content"
+            panel={renderTikaContentTab()}
+          />
           <Tab id="csv" title="CSV Details" panel={renderCsvTab()} />
           <Tab id="xls" title="EXCEL Details" panel={renderExcelTab()} />
           <Tabs.Expander />

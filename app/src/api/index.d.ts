@@ -37,11 +37,16 @@ export interface CsvFeature {
   headers: string[];
 }
 
+export interface TikaFeature {
+  metadata: Map<string, string>;
+  content: string;
+}
+
 export interface File {
   fileName: string;
   size: bigint;
   extension: string;
   directory: string;
   mimeType: string;
-  data: (ExcelFeature | CsvFeature)[] | null;
+  data: (ExcelFeature | CsvFeature | TikaFeature)[] | null;
 }
