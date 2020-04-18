@@ -1,14 +1,11 @@
-package innohack.gem.entity.gem.data;
+package innohack.gem.entity.feature;
 
-import innohack.gem.entity.gem.util.FeatureExtractorUtil;
+import innohack.gem.entity.feature.common.FeatureExtractorUtil;
 import java.io.File;
 import org.apache.tika.config.TikaConfig;
 
 /** Object to hold wrap extracted tika data */
 public class TikaFeature extends AbstractFeature {
-  public TikaFeature() {
-    super(Target.TIKA);
-  }
 
   @Override
   public void extract(File f) throws Exception {
