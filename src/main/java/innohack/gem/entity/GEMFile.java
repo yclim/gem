@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import innohack.gem.entity.feature.AbstractFeature;
 import innohack.gem.entity.feature.CsvFeature;
 import innohack.gem.entity.feature.ExcelFeature;
+import innohack.gem.entity.feature.TikaFeature;
 import innohack.gem.entity.feature.common.FeatureExtractorUtil;
 import innohack.gem.example.tika.TikaMimeEnum;
 import java.io.File;
@@ -133,11 +134,12 @@ public class GEMFile {
       System.out.println(subtype);
       if (subtype.equals(TikaMimeEnum.MSEXCELXLSX.getMimeType())
           || subtype.equals(TikaMimeEnum.MSEXCELXLS.getMimeType())) {
-        extractExcel(mediaType);
+        extractExcel();
       } else if (mediaType.getSubtype().equals(TikaMimeEnum.CSV.getMimeType())) {
         extractCSV();
       } else {
         System.out.println("unsupported: " + mediaType);
+        extractUnknownFile();
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -151,12 +153,17 @@ public class GEMFile {
     File f = new File(getAbsolutePath());
     extension = FilenameUtils.getExtension(f.getName());
 
+
+    TikaFeature tikaFeature = new TikaFeature();
+    tikaFeature.extract(f);
+    addData(tikaFeature);
+
     CsvFeature extractedData1 = new CsvFeature();
     extractedData1.extract(f);
     addData(extractedData1);
 
     System.out.println("*************Metadata****************");
-    System.out.println(extractedData1.getMetadata().toString());
+    System.out.println(tikaFeature.getMetadata().toString());
 
     System.out.println("*************HEADER****************");
     System.out.println(extractedData1.getHeaders());
@@ -168,21 +175,47 @@ public class GEMFile {
   }
 
   // Perform extraction on Excel
-  public GEMFile extractExcel(MediaType mediaType) throws Exception {
+  public GEMFile extractExcel() throws Exception {
 
     System.out.println("extractionExcel here");
     File f = new File(getAbsolutePath());
     extension = FilenameUtils.getExtension(f.getName());
 
+    TikaFeature tikaFeature = new TikaFeature();
+    tikaFeature.extract(f);
+    addData(tikaFeature);
+
     ExcelFeature extractedData1 = new ExcelFeature();
     extractedData1.extract(f);
     addData(extractedData1);
 
+
     System.out.println("*************Metadata****************");
-    System.out.println(extractedData1.getMetadata().toString());
+    System.out.println(tikaFeature.getMetadata().toString());
 
     System.out.println("*************Sheets****************");
     System.out.println(extractedData1.getSheetTableData().toString());
+
+    return this;
+  }
+
+
+  // Perform extraction on Excel
+  public GEMFile extractUnknownFile() throws Exception {
+
+    System.out.println("extractionExcel here");
+    File f = new File(getAbsolutePath());
+    extension = FilenameUtils.getExtension(f.getName());
+
+    TikaFeature tikaFeature = new TikaFeature();
+    tikaFeature.extract(f);
+    addData(tikaFeature);
+
+    System.out.println("*************Metadata****************");
+    System.out.println(tikaFeature.getMetadata().toString());
+
+    System.out.println("*************Contents****************");
+    System.out.println(tikaFeature.parseContent());
 
     return this;
   }
