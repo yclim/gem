@@ -3,6 +3,7 @@ package innohack.gem.dao;
 import com.google.common.collect.Lists;
 import innohack.gem.entity.GEMFile;
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,7 +39,7 @@ public class GEMFileDao implements IGEMFileDao {
   // This method get file data from feature store
   @Override
   public GEMFile getFile(String filename, String directory) {
-    return featureStore.get(GEMFile.getAbsolutePath(filename, directory));
+    return featureStore.get(Paths.get(directory, filename).toString());
   }
 
   // This method get file data from feature store

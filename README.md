@@ -1,35 +1,18 @@
-# Group Extract Monitor
+# GEM
+App to help build rules to group structurally similar files together.
 
 # Quick Start
-#### Start React App backed by mock api
+start webapp at localhost:8080
 ```bash
-cd app
-yarn install //  typically only need to run it once only... or when modules are added/removed
-yarn dev
+mvn spring-boot:run -P prod
 ```
 
 # Setup
-### Frontend development
 * Install node and yarn
     * Node Version: v12.16.1
     * Yarn Version: v1.22.4
-* Prettier format on save
-    * ensure prettier and file watcher plugin is installed & follow instruction from [here](https://prettier.io/docs/en/webstorm.html)
-* Live Reload
-    * Install Live Reload plugin (e.g [for Chrome](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei?hl=en)) on your browser for yarn watch to work
-
-### Backend development
-* start a yarn watch to "compile" the frontend scripts
-
-```bash
-cd app
-yarn install //  typically only need to run once
-yarn watch //  this compiles, watches and moves your distribution to the tomcat hosted folder
-```
-* run GemApplication
-      * the app will run in default tomcat port 8080
-* open Firefox/Chrome and go to http://localhost:8080
-
+* Refer to [guide](https://github.com/yclim/gem/wiki/Setup-Auto-Code-Formatting-on-Intellij) to setup auto code formatting
+* For `yarn watch` to work, Install Live Reload plugin (e.g [for Chrome](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei?hl=en)) on your browser
 
 ### Generate Mock Sample files
 Generate samples to output directory (default: target/samples, 20 files for each type)

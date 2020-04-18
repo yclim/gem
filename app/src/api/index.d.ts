@@ -26,11 +26,27 @@ export interface GroupFiles {
   files: File[];
 }
 
+export interface ExcelFeature {
+  metadata: Map<string, string>;
+  sheetTableData: Map<string, string[][]>;
+}
+
+export interface CsvFeature {
+  metadata: Map<string, string>;
+  tableData: string[][];
+  headers: string[];
+}
+
+export interface TikaFeature {
+  metadata: Map<string, string>;
+  content: string;
+}
+
 export interface File {
   fileName: string;
-  contentType: string;
   size: bigint;
   extension: string;
   directory: string;
-  data: any[];
+  mimeType: string;
+  data: (ExcelFeature | CsvFeature | TikaFeature)[] | null;
 }
