@@ -103,16 +103,15 @@ public class GEMFile {
     this._mediaType = FeatureExtractorUtil.extractMime(new TikaConfig(), this._file.toPath());
 
     String subtype = _mediaType.getSubtype();
-    System.out.println(subtype);
     if (subtype.equals(TikaMimeEnum.MSEXCELXLSX.getMimeType())
         || subtype.equals(TikaMimeEnum.MSEXCELXLS.getMimeType())) {
       extractExcel(_mediaType);
     } else if (_mediaType.getSubtype().equals(TikaMimeEnum.CSV.getMimeType())) {
       extractCSV();
-    } else {
-      System.out.println("unsupported: " + _mediaType);
     }
-    extractUnknownFile();
+    //  we always want to use Tika no matter what file type
+    extractTika();
+
     return this;
   }
 
@@ -132,21 +131,11 @@ public class GEMFile {
     return this;
   }
 
-  public GEMFile extractUnknownFile() throws Exception {
-
-    System.out.println("extractionExcel here");
-    File f = new File(getAbsolutePath());
-    extension = FilenameUtils.getExtension(f.getName());
+  public GEMFile extractTika() throws Exception {
 
     TikaFeature tikaFeature = new TikaFeature();
-    tikaFeature.extract(f);
+    tikaFeature.extract(this._file);
     addData(tikaFeature);
-
-    System.out.println("*************Metadata****************");
-    System.out.println(tikaFeature.getMetadata().toString());
-
-    System.out.println("*************Contents****************");
-    System.out.println(tikaFeature.parseContent());
 
     return this;
   }

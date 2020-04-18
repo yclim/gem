@@ -1,11 +1,6 @@
 package innohack.gem.entity.feature;
 
-import innohack.gem.entity.feature.common.FeatureExtractorUtil;
-import innohack.gem.entity.feature.common.TikaMimeEnum;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -18,16 +13,6 @@ import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.apache.tika.config.TikaConfig;
-import org.apache.tika.exception.TikaException;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.mime.MediaType;
-import org.apache.tika.parser.ParseContext;
-import org.apache.tika.parser.Parser;
-import org.apache.tika.parser.microsoft.OfficeParser;
-import org.apache.tika.parser.microsoft.ooxml.OOXMLParser;
-import org.apache.tika.sax.BodyContentHandler;
-import org.xml.sax.SAXException;
 
 /** Object to hold wrap extracted excel data */
 public class ExcelFeature extends AbstractFeature {
@@ -43,7 +28,6 @@ public class ExcelFeature extends AbstractFeature {
 
     File file = new File(String.valueOf(f.toPath().toAbsolutePath()));
     Workbook workbook = WorkbookFactory.create(file);
-
 
     if (workbook.getNumberOfSheets() > 0) {
       sheetTableData = new HashMap<>();

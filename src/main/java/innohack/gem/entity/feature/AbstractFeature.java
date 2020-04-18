@@ -31,5 +31,4 @@ public abstract class AbstractFeature {
   }
 
   public abstract void extract(File f) throws Exception;
-
 }

@@ -24,7 +24,7 @@ public class TikaExtractor {
       for (Path result : results) {
         System.out.println("each result is " + result.toAbsolutePath());
 
-        GEMFile gFile = new GEMFile(result);
+        GEMFile gFile = new GEMFile(result.getFileName().toString(), result.getParent().toString());
         gFile.extract();
         Collection<AbstractFeature> abstractFeatureC = gFile.getData();
 
@@ -32,8 +32,7 @@ public class TikaExtractor {
         while (iterator.hasNext()) {
           AbstractFeature abs = iterator.next();
           if (abs.getMetadata() != null) {
-              abs.printMetadata();
-
+            abs.printMetadata();
           }
         }
       }

@@ -10,7 +10,6 @@ import com.opencsv.enums.CSVReaderNullFieldIndicator;
 import com.opencsv.exceptions.CsvException;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
@@ -18,12 +17,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import org.apache.tika.exception.TikaException;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.parser.ParseContext;
-import org.apache.tika.parser.csv.TextAndCSVParser;
-import org.apache.tika.sax.BodyContentHandler;
-import org.xml.sax.SAXException;
 
 /** Object to hold wrap csv data */
 public class CsvFeature extends AbstractFeature {
@@ -61,8 +54,6 @@ public class CsvFeature extends AbstractFeature {
 
     csvReader.close();
   }
-
-
 
   /** use openCSV libraries instead of tika for better csv support */
   private CSVReader getCsvReaderUsingOpenCsv(Path filePath) {
