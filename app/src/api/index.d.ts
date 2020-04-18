@@ -28,9 +28,9 @@ export interface GroupFiles {
 
 export interface File {
   fileName: string;
-  contentType: string;
   size: bigint;
   extension: string;
   directory: string;
+  mimeType: string;
   data: any[];
 }

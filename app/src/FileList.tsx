@@ -6,9 +6,9 @@ import {
   Table
 } from "@blueprintjs/table";
 import { Card, Elevation, Tab, TabId, Tabs } from "@blueprintjs/core";
-import React, { FunctionComponent, useEffect, useState } from "react";
-import { Group, GroupFiles, File } from "./api";
-import ruleService from "./api/mock";
+import React, { FunctionComponent, useState } from "react";
+import { File } from "./api";
+import fileService from "./api/FileService";
 
 interface IProps {
   files: File[];
@@ -31,11 +31,13 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
     const reg = region[0];
     if (reg && reg.rows) {
       const r = reg.rows[0];
-      setCurrentFile(files[r]);
+      fileService.getFile(files[r].fileName, files[r].directory).then(f => {
+        setCurrentFile(f.data);
+      });
     }
   }
 
-  function renderRawText() {
+  function renderFileDetails() {
     if (currentFile) {
       return (
         <div>
@@ -47,6 +49,10 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
                 <td> {currentFile?.fileName}</td>
               </tr>
               <tr>
+                <td>Directory</td>
+                <td>{currentFile?.directory}</td>
+              </tr>
+              <tr>
                 <td>File size (bytes) </td>
                 <td> {currentFile?.size}</td>
               </tr>
@@ -54,13 +60,12 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
                 <td>Extension</td>
                 <td>{currentFile?.extension}</td>
               </tr>
+              <tr>
+                <td>Mime Type</td>
+                <td>{currentFile?.mimeType}</td>
+              </tr>
             </tbody>
           </table>
-          <br />
-          <Card elevation={Elevation.ZERO}>
-            <span> RAW TEXT </span>
-            <pre> TODO </pre>
-          </Card>
         </div>
       );
     } else {
@@ -86,7 +91,7 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
           selectedTabId={activeTab}
           onChange={handleNavbarTabChange}
         >
-          <Tab id="raw" title="File Details" panel={renderRawText()} />
+          <Tab id="raw" title="File Details" panel={renderFileDetails()} />
           <Tab
             id="meta"
             title="Tika Metadata"

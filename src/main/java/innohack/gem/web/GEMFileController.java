@@ -51,7 +51,8 @@ public class GEMFileController {
 
   // get list of files and perform data extraction
   @GetMapping("/sync")
-  public Collection<GEMFile> sync(@RequestParam(name = "directory") String directory) {
+  public Collection<GEMFile> sync(@RequestParam(name = "directory") String directory)
+      throws Exception {
     if (directory.trim().length() > 0) {
       return fileService.syncFiles(directory);
     } else {

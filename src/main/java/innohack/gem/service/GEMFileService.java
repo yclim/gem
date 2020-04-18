@@ -36,7 +36,7 @@ public class GEMFileService extends NewEvent {
    * @param folderPath directory path of files to sync
    * @return list of files that was processed and stored {@link GEMFile @GEMFile}
    */
-  public Collection<GEMFile> syncFiles(String folderPath) {
+  public Collection<GEMFile> syncFiles(String folderPath) throws Exception {
     Collection<GEMFile> filelist = gemFileDao.getLocalFiles(folderPath);
     for (GEMFile file : filelist) {
 
