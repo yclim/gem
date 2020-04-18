@@ -31,6 +31,15 @@ class FileService extends Api {
   public getExtensions(): Promise<AxiosResponse<string[]>> {
     return this.get<string[]>("file/extensions/list");
   }
+
+  public getFile(
+    filename: string,
+    directory: string
+  ): Promise<AxiosResponse<File>> {
+    return this.get<File>("file/findByNameAndDir", {
+      params: { filename, directory }
+    });
+  }
 }
 
 export default new FileService();

@@ -12,22 +12,22 @@ import org.springframework.stereotype.Service;
 @Service
 public class GEMFileService extends NewEvent {
 
-  @Autowired private IGEMFileDao gemDao;
+  @Autowired private IGEMFileDao gemFileDao;
 
   public String getCurrentDirectory() {
-    return gemDao.getCurrentDirectory();
+    return gemFileDao.getCurrentDirectory();
   }
 
   public GEMFile getFile(String filename, String directory) {
-    return gemDao.getFile(filename, directory);
+    return gemFileDao.getFile(filename, directory);
   }
 
   public GEMFile getFileByAbsolutePath(String absolutePath) {
-    return gemDao.getFileByAbsolutePath(absolutePath);
+    return gemFileDao.getFileByAbsolutePath(absolutePath);
   }
 
   public Collection<GEMFile> getFileList() {
-    return gemDao.getFiles();
+    return gemFileDao.getFiles();
   }
 
   /**
@@ -36,13 +36,13 @@ public class GEMFileService extends NewEvent {
    * @param folderPath directory path of files to sync
    * @return list of files that was processed and stored {@link GEMFile @GEMFile}
    */
-  public Collection<GEMFile> syncFiles(String folderPath) {
-    Collection<GEMFile> filelist = gemDao.getLocalFiles(folderPath);
+  public Collection<GEMFile> syncFiles(String folderPath) throws Exception {
+    Collection<GEMFile> filelist = gemFileDao.getLocalFiles(folderPath);
     for (GEMFile file : filelist) {
 
       // perform extraction
       file.extract();
-      gemDao.saveFile(file);
+      gemFileDao.saveFile(file);
 
       // Trigger Matching
       newEvent(EventListener.Event.NEW_FILE, file);
@@ -57,7 +57,7 @@ public class GEMFileService extends NewEvent {
    * @return list of metadata {@link GEMFile @DocumentMetadata}
    */
   public Collection<GEMFile> findByName(String name) {
-    return gemDao.findByName(name);
+    return gemFileDao.findByName(name);
   }
 
   /**
@@ -67,7 +67,7 @@ public class GEMFileService extends NewEvent {
    * @return list of metadata {@link GEMFile @DocumentMetadata}
    */
   public Collection<GEMFile> findByExtension(String extension) {
-    return gemDao.findByExtension(extension);
+    return gemFileDao.findByExtension(extension);
   }
 
   /**
@@ -76,6 +76,6 @@ public class GEMFileService extends NewEvent {
    * @return list of file extension
    */
   public Set<String> getFileTypes() {
-    return gemDao.getFileTypes();
+    return gemFileDao.getFileTypes();
   }
 }

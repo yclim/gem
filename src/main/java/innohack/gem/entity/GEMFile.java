@@ -1,49 +1,33 @@
 package innohack.gem.entity;
 
 import com.google.common.collect.Lists;
-import innohack.gem.entity.gem.data.AbstractFeature;
-import innohack.gem.entity.gem.data.CsvFeature;
-import innohack.gem.entity.gem.data.ExcelFeature;
-import innohack.gem.entity.gem.util.FeatureExtractorUtil;
+import innohack.gem.entity.feature.AbstractFeature;
+import innohack.gem.entity.feature.CsvFeature;
+import innohack.gem.entity.feature.ExcelFeature;
+import innohack.gem.entity.feature.TikaFeature;
+import innohack.gem.entity.feature.common.FeatureExtractorUtil;
 import innohack.gem.example.tika.TikaMimeEnum;
-import innohack.gem.example.tika.TikaUtil;
 import java.io.File;
-import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.tika.config.TikaConfig;
-import org.apache.tika.io.TikaInputStream;
-import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
-import org.springframework.web.multipart.MultipartFile;
 
+/** Container that keeps all data extracted from a file */
 public class GEMFile {
   private String fileName;
-  private String contentType;
   private Long size;
   private String extension;
-
-  private Path path;
-
   private String directory;
   private Collection<AbstractFeature> data;
+
+  private MediaType _mediaType;
+  private File _file;
 
   public GEMFile(String fileName, String directory) {
     this.directory = directory;
     this.fileName = fileName;
-  }
-
-  public GEMFile(Path path) {
-    this.directory = path.getParent().toString();
-    this.fileName = path.getFileName().toString();
-    this.path = path;
-  }
-
-  public GEMFile(MultipartFile file) {
-    this.fileName = file.getOriginalFilename();
-    this.size = file.getSize();
-    this.extension = FilenameUtils.getExtension(file.getOriginalFilename());
-    this.contentType = file.getContentType();
   }
 
   public String getFileName() {
@@ -63,19 +47,7 @@ public class GEMFile {
   }
 
   public String getAbsolutePath() {
-    return getAbsolutePath(this.getFileName(), this.getDirectory());
-  }
-
-  public static String getAbsolutePath(String name, String directory) {
-    return directory + "/" + name;
-  }
-
-  public String getContentType() {
-    return contentType;
-  }
-
-  public void setContentType(String contentType) {
-    this.contentType = contentType;
+    return Paths.get(this.getDirectory(), this.getFileName()).toString();
   }
 
   public Long getSize() {
@@ -92,14 +64,6 @@ public class GEMFile {
 
   public void setExtension(String extension) {
     this.extension = extension;
-  }
-
-  public Path getPath() {
-    return path;
-  }
-
-  public void setPath(Path path) {
-    this.path = path;
   }
 
   public void addAllData(Collection<AbstractFeature> data) {
@@ -124,70 +88,54 @@ public class GEMFile {
     this.data = data;
   }
 
-  // Perform extraction
-  public GEMFile extract() {
-    File f = new File(getAbsolutePath());
-    extension = FilenameUtils.getExtension(f.getName());
-
-    try {
-      TikaConfig config = new TikaConfig();
-      MediaType mediaType = FeatureExtractorUtil.extractMime(config, f.toPath());
-      String subtype = mediaType.getSubtype();
-      System.out.println(subtype);
-      if (subtype.equals(TikaMimeEnum.MSEXCELXLSX.getMimeType())
-          || subtype.equals(TikaMimeEnum.MSEXCELXLS.getMimeType())) {
-        extractExcel(mediaType);
-      } else if (mediaType.getSubtype().equals(TikaMimeEnum.CSV.getMimeType())) {
-        extractCSV();
-      } else {
-        System.out.println("unsupported: " + mediaType);
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
+  public String getMimeType() {
+    if (_mediaType == null) {
+      return "";
+    } else {
+      return _mediaType.toString();
     }
+  }
+  // Perform extraction
+  public GEMFile extract() throws Exception {
+    this._file = new File(getAbsolutePath());
+    this.extension = FilenameUtils.getExtension(_file.getName());
+    this.size = _file.length();
+    this._mediaType = FeatureExtractorUtil.extractMime(new TikaConfig(), this._file.toPath());
+
+    String subtype = _mediaType.getSubtype();
+    if (subtype.equals(TikaMimeEnum.MSEXCELXLSX.getMimeType())
+        || subtype.equals(TikaMimeEnum.MSEXCELXLS.getMimeType())) {
+      extractExcel(_mediaType);
+    } else if (_mediaType.getSubtype().equals(TikaMimeEnum.CSV.getMimeType())) {
+      extractCSV();
+    }
+    //  we always want to use Tika no matter what file type
+    extractTika();
 
     return this;
   }
 
   // Perform extraction on csv
   public GEMFile extractCSV() throws Exception {
-    // TODO extract file's data
-    File f = new File(getAbsolutePath());
-    extension = FilenameUtils.getExtension(f.getName());
-
     CsvFeature extractedData1 = new CsvFeature();
-    extractedData1.extract(f);
+    extractedData1.extract(this._file);
     addData(extractedData1);
-
-    System.out.println("*************Metadata****************");
-    System.out.println(extractedData1.getMetadata().toString());
-
-    System.out.println("*************HEADER****************");
-    System.out.println(extractedData1.getHeader());
-
-    System.out.println("*************RECORD****************");
-    System.out.println(extractedData1.getContents());
-
     return this;
   }
 
   // Perform extraction on Excel
   public GEMFile extractExcel(MediaType mediaType) throws Exception {
-    // TODO extract file's data
-
-    System.out.println("extractionExcel here");
-    File f = new File(getAbsolutePath());
-    extension = FilenameUtils.getExtension(f.getName());
-
-    ExcelFeature extractedData1 = new ExcelFeature(mediaType);
-    extractedData1.extract(f);
+    ExcelFeature extractedData1 = new ExcelFeature();
+    extractedData1.extract(this._file);
     addData(extractedData1);
+    return this;
+  }
 
-    System.out.println("*************Metadata****************");
-    System.out.println(extractedData1.getMetadata().toString());
+  public GEMFile extractTika() throws Exception {
 
-    System.out.println("*************Sheets****************");
-    System.out.println(extractedData1.getSheetFeatures().toString());
+    TikaFeature tikaFeature = new TikaFeature();
+    tikaFeature.extract(this._file);
+    addData(tikaFeature);
 
     return this;
   }
