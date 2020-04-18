@@ -24,5 +24,12 @@ public abstract class AbstractFeature {
     }
   }
 
+  public void printMetadata() {
+    for (Map.Entry<String, String> entry : metadata.entrySet()) {
+      System.out.println(entry.getKey() + " = " + entry.getValue());
+    }
+  }
+
   public abstract void extract(File f) throws Exception;
+
 }

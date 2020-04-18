@@ -32,15 +32,6 @@ public class CsvFeature extends AbstractFeature {
 
   @Override
   public void extract(File f) throws Exception {
-    Metadata metadata = null;
-
-    metadata = parseMetaDataUsingTextAndCsv(f.toPath());
-
-    String[] metadataNames = metadata.names();
-
-    for (String name : metadataNames) {
-      addMetadata(name, metadata.get(name));
-    }
 
     contentParser(f);
   }
@@ -71,20 +62,7 @@ public class CsvFeature extends AbstractFeature {
     csvReader.close();
   }
 
-  private Metadata parseMetaDataUsingTextAndCsv(Path filePath)
-      throws IOException, SAXException, TikaException {
-    BodyContentHandler handler = new BodyContentHandler();
-    Metadata metadata = new Metadata();
-    FileInputStream inputstream =
-        new FileInputStream(new File(String.valueOf(filePath.toAbsolutePath())));
-    ParseContext pcontext = new ParseContext();
 
-    TextAndCSVParser csvParser = new TextAndCSVParser();
-    csvParser.parse(inputstream, handler, metadata, pcontext);
-
-    inputstream.close();
-    return metadata;
-  }
 
   /** use openCSV libraries instead of tika for better csv support */
   private CSVReader getCsvReaderUsingOpenCsv(Path filePath) {

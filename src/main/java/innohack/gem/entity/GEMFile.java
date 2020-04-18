@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import innohack.gem.entity.feature.AbstractFeature;
 import innohack.gem.entity.feature.CsvFeature;
 import innohack.gem.entity.feature.ExcelFeature;
+import innohack.gem.entity.feature.TikaFeature;
 import innohack.gem.entity.feature.common.FeatureExtractorUtil;
 import innohack.gem.example.tika.TikaMimeEnum;
 import java.io.File;
@@ -111,6 +112,7 @@ public class GEMFile {
     } else {
       System.out.println("unsupported: " + _mediaType);
     }
+    extractUnknownFile();
     return this;
   }
 
@@ -127,6 +129,25 @@ public class GEMFile {
     ExcelFeature extractedData1 = new ExcelFeature();
     extractedData1.extract(this._file);
     addData(extractedData1);
+    return this;
+  }
+
+  public GEMFile extractUnknownFile() throws Exception {
+
+    System.out.println("extractionExcel here");
+    File f = new File(getAbsolutePath());
+    extension = FilenameUtils.getExtension(f.getName());
+
+    TikaFeature tikaFeature = new TikaFeature();
+    tikaFeature.extract(f);
+    addData(tikaFeature);
+
+    System.out.println("*************Metadata****************");
+    System.out.println(tikaFeature.getMetadata().toString());
+
+    System.out.println("*************Contents****************");
+    System.out.println(tikaFeature.parseContent());
+
     return this;
   }
 }

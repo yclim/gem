@@ -40,15 +40,11 @@ public class ExcelFeature extends AbstractFeature {
 
   @Override
   public void extract(File f) throws Exception {
+
     File file = new File(String.valueOf(f.toPath().toAbsolutePath()));
     Workbook workbook = WorkbookFactory.create(file);
-    Metadata metadata = parseExcel(f.toPath());
-    String[] metadataNames = metadata.names();
 
-    for (String name : metadataNames) {
-      System.out.println(name + " : " + metadata.get(name));
-      addMetadata(name, metadata.get(name));
-    }
+
     if (workbook.getNumberOfSheets() > 0) {
       sheetTableData = new HashMap<>();
       for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
@@ -84,27 +80,6 @@ public class ExcelFeature extends AbstractFeature {
     tableData.put(sheetName, contents);
 
     return sheetName;
-  }
-
-  private Metadata parseExcel(Path path) throws IOException, TikaException, SAXException {
-    MediaType mediaType = FeatureExtractorUtil.extractMime(new TikaConfig(), path);
-    BodyContentHandler handler = new BodyContentHandler();
-    Metadata metadata = new Metadata();
-    Parser parser = null;
-    if (mediaType.getSubtype().equals(TikaMimeEnum.MSEXCELXLSX.getMimeType())) {
-      parser = new OOXMLParser();
-    } else if (mediaType.getSubtype().equals(TikaMimeEnum.MSEXCELXLS.getMimeType())) {
-      parser = new OfficeParser();
-    } else {
-      throw new IllegalStateException("cannot find excel parser for:" + mediaType.getSubtype());
-    }
-    try (FileInputStream inputstream =
-        new FileInputStream(new File(String.valueOf(path.toAbsolutePath())))) {
-      ParseContext pcontext = new ParseContext();
-      parser.parse(inputstream, handler, metadata, pcontext);
-    }
-
-    return metadata;
   }
 
   private String cellValue(Cell cell) {
