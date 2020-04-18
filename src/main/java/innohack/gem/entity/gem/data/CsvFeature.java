@@ -92,4 +92,13 @@ public class CsvFeature extends AbstractFeature {
   public List<String> getHeader() {
     return this.contents.get(0);
   }
+
+  public int getTotalRow() {
+	return totalRow;
+  }
+
+  public HashMap<String, ArrayList<String>> getColRecords() {
+	return colRecords;
+  }
+   
 }
