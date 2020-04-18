@@ -26,11 +26,22 @@ export interface GroupFiles {
   files: File[];
 }
 
+export interface ExcelFeature {
+  metadata: Map<string, string>;
+  sheetTableData: { [sheetName: string]: string[][] };
+}
+
+export interface CsvFeature {
+  metadata: Map<string, string>;
+  tableData: string[][];
+  headers: string[];
+}
+
 export interface File {
   fileName: string;
   size: bigint;
   extension: string;
   directory: string;
   mimeType: string;
-  data: any[];
+  data: (ExcelFeature | CsvFeature)[] | null;
 }
