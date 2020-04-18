@@ -49,42 +49,6 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
     }
   }
 
-  function renderFileDetailTab() {
-    if (currentFile) {
-      return (
-        <div>
-          <table className="bp3-html-table bp3-html-table-striped keyval-table">
-            <thead />
-            <tbody>
-              <tr>
-                <td>Filename</td>
-                <td> {currentFile?.fileName}</td>
-              </tr>
-              <tr>
-                <td>Directory</td>
-                <td>{currentFile?.directory}</td>
-              </tr>
-              <tr>
-                <td>File size (bytes) </td>
-                <td> {currentFile?.size}</td>
-              </tr>
-              <tr>
-                <td>Extension</td>
-                <td>{currentFile?.extension}</td>
-              </tr>
-              <tr>
-                <td>Mime Type</td>
-                <td>{currentFile?.mimeType}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      );
-    } else {
-      return <div />;
-    }
-  }
-
   function renderTable(tableData: string[][]) {
     return (
       <table className="bp3-html-table bp3-html-table-striped bp3-small">
@@ -131,6 +95,42 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
         </tbody>
       </table>
     );
+  }
+
+  function renderFileDetailTab() {
+    if (currentFile) {
+      return (
+        <div>
+          <table className="bp3-html-table bp3-html-table-striped keyval-table">
+            <thead />
+            <tbody>
+              <tr>
+                <td>Filename</td>
+                <td> {currentFile?.fileName}</td>
+              </tr>
+              <tr>
+                <td>Directory</td>
+                <td>{currentFile?.directory}</td>
+              </tr>
+              <tr>
+                <td>File size (bytes) </td>
+                <td> {currentFile?.size}</td>
+              </tr>
+              <tr>
+                <td>Extension</td>
+                <td>{currentFile?.extension}</td>
+              </tr>
+              <tr>
+                <td>Mime Type</td>
+                <td>{currentFile?.mimeType}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      );
+    } else {
+      return <div />;
+    }
   }
 
   const NOT_APPLICABLE = <Blockquote> Not Applicable </Blockquote>;
