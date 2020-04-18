@@ -28,7 +28,7 @@ export interface GroupFiles {
 
 export interface ExcelFeature {
   metadata: Map<string, string>;
-  sheetTableData: { [sheetName: string]: string[][] };
+  sheetTableData: Map<string, string[][]>;
 }
 
 export interface CsvFeature {

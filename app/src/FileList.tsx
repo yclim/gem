@@ -7,7 +7,7 @@ import {
 } from "@blueprintjs/table";
 import { Blockquote, Tab, TabId, Tabs } from "@blueprintjs/core";
 import React, { FunctionComponent, useState } from "react";
-import { CsvFeature, File } from "./api";
+import { CsvFeature, ExcelFeature, File } from "./api";
 import fileService from "./api/FileService";
 
 interface IProps {
@@ -18,13 +18,18 @@ interface IProps {
 const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
   const [activeTab, setActiveTab] = useState("raw");
   const [currentFile, setCurrentFile] = useState<File | null>(null);
+  const [activeExcelTab, setActiveExcelTab] = useState<string | undefined>();
 
   const cellRenderer = (rowIndex: number) => {
     return <Cell>{`${files[rowIndex].fileName}`}</Cell>;
   };
 
-  function handleNavbarTabChange(navbarTabId: TabId) {
-    setActiveTab(navbarTabId.toString());
+  function handleNavbarTabChange(tabId: TabId) {
+    setActiveTab(tabId.toString());
+  }
+
+  function handleExcelTabChange(tabId: TabId) {
+    setActiveExcelTab(tabId.toString());
   }
 
   function handleSection(region: IRegion[]) {
@@ -73,27 +78,6 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
     }
   }
 
-  function renderMetadata(meta: Map<string, string>) {
-    return (
-      <table className="bp3-html-table bp3-html-table-striped keyval-table">
-        <thead>
-          <tr>
-            <th>Metadata Key</th>
-            <th>Metadata Value</th>
-          </tr>
-        </thead>
-        <tbody>
-          {Array.from(meta, ([key, value]) => (
-            <tr>
-              <td>{key}</td>
-              <td>{value}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    );
-  }
-
   function renderTable(tableData: string[][]) {
     return (
       <table className="bp3-html-table bp3-html-table-striped bp3-small">
@@ -124,11 +108,46 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
     if (currentFile !== null && currentFile.data !== null) {
       const index = currentFile.data.findIndex(f => "tableData" in f);
       if (index > -1) {
-        const csvData = currentFile.data[index] as CsvFeature;
+        const data = currentFile.data[index] as CsvFeature;
         return (
           <div className="vertical-container">
-            {renderTable(csvData.tableData)}
+            {renderTable(data.tableData)}
           </div>
+        );
+      } else {
+        return NOT_APPLICABLE;
+      }
+    }
+    return NOT_LOADED;
+  }
+
+  function renderExcelTab() {
+    if (currentFile !== null && currentFile.data !== null) {
+      const index = currentFile.data.findIndex(f => "sheetTableData" in f);
+      if (index > -1) {
+        // tried multiple ways to map data.sheetTableData but fail
+        // not sure why Array.from(data.sheetTableData).map(...) doesn't work
+        // this is the only way i tried that work so far
+        const data = currentFile.data[index] as ExcelFeature;
+        const sheets = Object.keys(data.sheetTableData);
+        const tables = Object.values(data.sheetTableData);
+        const sheetsTables = sheets.map((s, i) => [s, tables[i]]);
+
+        return (
+          <Tabs
+            id="ExcelSheetTabs"
+            selectedTabId={activeExcelTab}
+            onChange={handleExcelTabChange}
+          >
+            {sheetsTables.map((arr, i) => (
+              <Tab
+                key={`${arr[0]}-${i}`}
+                id={`${arr[0]}-${i}`}
+                title={arr[0]}
+                panel={renderTable(arr[1])}
+              />
+            ))}
+          </Tabs>
         );
       } else {
         return NOT_APPLICABLE;
@@ -157,32 +176,7 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
         >
           <Tab id="raw" title="File Details" panel={renderFileDetailTab()} />
           <Tab id="csv" title="CSV Details" panel={renderCsvTab()} />
-          <Tab
-            id="xls"
-            title="EXCEL Details"
-            panel={
-              <table className="bp3-html-table bp3-html-table-striped keyval-table">
-                <tbody>
-                  <tr>
-                    <td>Header Column Count</td>
-                    <td>17</td>
-                  </tr>
-                  <tr>
-                    <td>Header values</td>
-                    <td>Timestamp, Name, Address</td>
-                  </tr>
-                  <tr>
-                    <td>Sheets count</td>
-                    <td>3</td>
-                  </tr>
-                  <tr>
-                    <td>Sheets values</td>
-                    <td>sheet1, sheet2, sheet3</td>
-                  </tr>
-                </tbody>
-              </table>
-            }
-          />
+          <Tab id="xls" title="EXCEL Details" panel={renderExcelTab()} />
           <Tabs.Expander />
         </Tabs>
       </div>
