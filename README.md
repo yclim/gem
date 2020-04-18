@@ -37,3 +37,6 @@ Generate samples to output directory (default: target/samples, 20 files for each
 mvn package
 java -cp target/gem-0.1-SNAPSHOT.jar -Dloader.main=innohack.gem.filegen.GenerateMockFiles org.springframework.boot.loader.PropertiesLauncher [</path/to/output-dir> <numOfFiles>]
 ```
+
+### Devops
+Jenkins: [Go!](https://tinyurl.com/y8n27x3z)
