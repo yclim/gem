@@ -1,9 +1,12 @@
 package innohack.gem.example;
 
 import innohack.gem.entity.GEMFile;
+import innohack.gem.entity.feature.AbstractFeature;
 import innohack.gem.example.tika.TikaUtil;
 import innohack.gem.example.util.FileUtil;
 import java.nio.file.Path;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 public class TikaExtractor {
@@ -23,6 +26,16 @@ public class TikaExtractor {
 
         GEMFile gFile = new GEMFile(result);
         gFile.extract();
+        Collection<AbstractFeature> abstractFeatureC = gFile.getData();
+
+        Iterator<AbstractFeature> iterator = abstractFeatureC.iterator();
+        while (iterator.hasNext()) {
+          AbstractFeature abs = iterator.next();
+          if (abs.getMetadata() != null) {
+              abs.printMetadata();
+
+          }
+        }
       }
 
     } catch (Exception ex) {
