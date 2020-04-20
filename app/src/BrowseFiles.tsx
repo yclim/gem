@@ -55,10 +55,10 @@ const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
   }
 
   function handleSynchronize() {
-    setLoading(true)
+    setLoading(true);
     fileService.sync(directory).then(response => {
       setFiles(response.data);
-      setLoading(false)
+      setLoading(false);
     });
   }
 
@@ -66,7 +66,7 @@ const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
     <div className="vertical-container">
       <div>
         <Button
-          icon={isLoading ? <Spinner size={Spinner.SIZE_SMALL}/>:"refresh"}
+          icon={isLoading ? <Spinner size={Spinner.SIZE_SMALL} /> : "refresh"}
           text="Synchronize"
           onClick={() => handleSynchronize()}
           disabled={isLoading}
