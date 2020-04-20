@@ -74,25 +74,25 @@ class GemApplicationTests {
 
     Map<String, String> metaData = tikaFeature.getMetadata();
     int metaDataCount = 0;
-    for (Map.Entry<String, String> entry : metaData.entrySet()) {
-      if (metaDataCount == 0) {
-        assert(entry.getKey().equals("X-Parsed-By"));
-        assert(entry.getValue().equals("org.apache.tika.parser.DefaultParser"));
+    if (metaData != null) {
+      for (Map.Entry<String, String> entry : metaData.entrySet()) {
+        System.out.println("Key is " + entry.getKey() + " value is " + entry.getValue());
+        if (metaDataCount == 0) {
+          assert (entry.getKey().equals("X-Parsed-By"));
+          assert (entry.getValue().equals("org.apache.tika.parser.DefaultParser"));
+        } else if (metaDataCount == 1) {
+          assert (entry.getKey().equals("Content-Encoding"));
+          assert (entry.getValue().equals("windows-1252"));
+        } else if (metaDataCount == 2) {
+          assert (entry.getKey().equals("csv:delimiter"));
+          assert (entry.getValue().equals("comma"));
+        } else if (metaDataCount == 3) {
+          assert (entry.getKey().equals("Content-Type"));
+          assert (entry.getValue().equals("text/csv; charset=windows-1252; delimiter=comma"));
+        }
+        metaDataCount++;
       }
-      else if (metaDataCount == 1) {
-        assert(entry.getKey().equals("Content-Encoding"));
-        assert(entry.getValue().equals("windows-1252"));
-      }else if (metaDataCount == 2) {
-        assert(entry.getKey().equals("csv:delimiter"));
-        assert(entry.getValue().equals("comma"));
-      }else if (metaDataCount == 3) {
-        assert(entry.getKey().equals("Content-Type"));
-        assert(entry.getValue().equals("text/csv; charset=windows-1252; delimiter=comma"));
-
-      }
-       metaDataCount++;
     }
-
    }
 
    void testCSVContents (CsvFeature abs) {
