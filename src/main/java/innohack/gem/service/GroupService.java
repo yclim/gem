@@ -1,7 +1,7 @@
 package innohack.gem.service;
 
 import innohack.gem.dao.IGroupDao;
-import innohack.gem.entity.Group;
+import innohack.gem.entity.rule.Group;
 import innohack.gem.service.event.EventListener;
 import innohack.gem.service.event.NewEvent;
 import java.util.Collection;

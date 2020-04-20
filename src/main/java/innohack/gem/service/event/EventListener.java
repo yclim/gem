@@ -1,7 +1,7 @@
 package innohack.gem.service.event;
 
 import innohack.gem.entity.GEMFile;
-import innohack.gem.entity.Group;
+import innohack.gem.entity.rule.Group;
 import innohack.gem.service.MatcherService;
 
 public abstract class EventListener {
