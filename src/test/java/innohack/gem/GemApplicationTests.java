@@ -8,6 +8,6 @@ class GemApplicationTests {
 
   @Test
   void contextLoads() {
-    assert (true);
+    assert (false);
   }
 }
