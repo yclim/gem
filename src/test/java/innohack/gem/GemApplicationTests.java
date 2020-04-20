@@ -10,5 +10,6 @@ class GemApplicationTests {
   void contextLoads() {
     assert (false);
     // test
+    // test
   }
 }
