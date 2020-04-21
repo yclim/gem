@@ -55,31 +55,31 @@ const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
   }
 
   function handleSynchronize() {
-    setLoading(true)
+    setLoading(true);
     fileService.sync(directory).then(response => {
       setFiles(response.data);
-      setLoading(false)
+      setLoading(false);
     });
   }
 
   return (
-    <div className="vertical-container">
+    <div className="stack">
       <div>
-        <Button
-          icon={isLoading ? <Spinner size={Spinner.SIZE_SMALL}/>:"refresh"}
-          text="Synchronize"
-          onClick={() => handleSynchronize()}
-          disabled={isLoading}
-        />
         <label className="editable-label"> Directory: </label>
         <EditableText
           className="editable-text"
           value={directory}
           onChange={e => setDirectory(e)}
         />
+        <Button
+          icon={isLoading ? <Spinner size={Spinner.SIZE_SMALL} /> : "refresh"}
+          text="Synchronize"
+          onClick={() => handleSynchronize()}
+          disabled={isLoading}
+        />
       </div>
-      <div className="horizontal-container">
-        <div className="left-nav-section">
+      <div className="grid2">
+        <div className="box">
           <ButtonGroup vertical={true}>
             <Button
               intent={currentType === ALL ? Intent.PRIMARY : Intent.NONE}
@@ -90,7 +90,7 @@ const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
             {renderTypeButton()}
           </ButtonGroup>
         </div>
-        <div className="stretch">
+        <div>
           <FileList files={files} setFiles={setFiles} />
         </div>
       </div>
