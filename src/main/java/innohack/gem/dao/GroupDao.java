@@ -1,6 +1,6 @@
 package innohack.gem.dao;
 
-import innohack.gem.entity.Group;
+import innohack.gem.entity.rule.Group;
 import java.util.Collection;
 import java.util.HashMap;
 import org.springframework.stereotype.Repository;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
  * @author TC
  */
 @Repository
-public class BasicGroupDao implements IGroupDao {
+public class GroupDao implements IGroupDao {
   public static HashMap<String, Group> featureStore = new HashMap<String, Group>();
 
   @Override
@@ -26,7 +26,7 @@ public class BasicGroupDao implements IGroupDao {
 
   @Override
   public boolean saveGroup(Group group) {
-    featureStore.put(group.getGroupName(), group);
+    featureStore.put(group.getName(), group);
     return true;
   }
 

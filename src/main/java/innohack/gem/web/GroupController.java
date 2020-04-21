@@ -1,7 +1,6 @@
 package innohack.gem.web;
 
-import innohack.gem.entity.GEMFile;
-import innohack.gem.entity.Group;
+import innohack.gem.entity.rule.Group;
 import innohack.gem.service.GroupService;
 import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,21 +15,21 @@ public class GroupController {
   @Autowired private GroupService groupService;
 
   // get all group
-  @GetMapping
+  @GetMapping("/list")
   public Collection<Group> getGroups() {
     return groupService.getGroups();
   }
 
   // get group by groupName
   @RequestMapping
-  public Group getGroup(@RequestBody String groupName) {
-    return groupService.getGroup(groupName);
+  public Group getGroup(@RequestParam(name = "name") String name) {
+    return groupService.getGroup(name);
   }
 
   // delete group by groupName
   @RequestMapping(method = RequestMethod.DELETE)
-  public ResponseEntity<Object> deleteGroup(@RequestBody String groupName) {
-    if (groupService.deleteGroup(groupName)) {
+  public ResponseEntity<Object> deleteGroup(@RequestParam(name = "name") String name) {
+    if (groupService.deleteGroup(name)) {
       return new ResponseEntity<>("", HttpStatus.OK);
     } else {
       return new ResponseEntity<>("", HttpStatus.EXPECTATION_FAILED);
@@ -44,11 +43,5 @@ public class GroupController {
     } else {
       return new ResponseEntity<>("", HttpStatus.EXPECTATION_FAILED);
     }
-  }
-
-  // get files that matches the group
-  @RequestMapping("/files")
-  public Collection<GEMFile> getMatchFile(@RequestBody String groupName) {
-    return groupService.getGroup(groupName).getMatches();
   }
 }

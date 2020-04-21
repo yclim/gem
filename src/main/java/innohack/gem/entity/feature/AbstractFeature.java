@@ -1,9 +1,17 @@
 package innohack.gem.entity.feature;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes({
+  @JsonSubTypes.Type(value = CsvFeature.class),
+  @JsonSubTypes.Type(value = TikaFeature.class),
+  @JsonSubTypes.Type(value = ExcelFeature.class)
+})
 public abstract class AbstractFeature {
   private Map<String, String> metadata = null;
 

@@ -1,6 +1,6 @@
 package innohack.gem.example.util;
 
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -33,5 +33,26 @@ public class FileUtil {
     } finally {
       return results;
     }
+  }
+
+  public static String fileToString(File file) {
+    String fileAsString = null;
+    InputStream is = null;
+    try {
+      is = new FileInputStream(file);
+      BufferedReader buf = new BufferedReader(new InputStreamReader(is));
+      String line = buf.readLine();
+      StringBuilder sb = new StringBuilder();
+      while (line != null) {
+        sb.append(line).append("\n");
+        line = buf.readLine();
+      }
+      fileAsString = sb.toString();
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return fileAsString;
   }
 }

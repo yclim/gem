@@ -3,7 +3,7 @@ package innohack.gem.service;
 import innohack.gem.dao.IGEMFileDao;
 import innohack.gem.dao.IGroupDao;
 import innohack.gem.entity.GEMFile;
-import innohack.gem.entity.Group;
+import innohack.gem.entity.rule.Group;
 import innohack.gem.service.event.EventListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
