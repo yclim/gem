@@ -50,6 +50,33 @@ public class CsvFileGenerator {
     return table;
   }
 
+  public static List<List<String>> generateFixedDataTables(int rows, int custIdVariable) {
+    List<List<String>> table = new ArrayList<>();
+    List<String> headers =
+        Arrays.asList(
+            "Customer ID", "Customer Name", "Gender", "Address", "Contact Number", "Email");
+    table.add(headers);
+    for (int i = 0; i < rows; i++) {
+      int custIdInt = i + custIdVariable;
+      String custId = String.valueOf(custIdInt);
+      String name = custId + "_" + "SampleName";
+      String gender = "F";
+      String emailSuffix = "@gmail.com";
+      if (i % 2 == 0) {
+        gender = "M";
+        emailSuffix = "@yahoo.com";
+      }
+      String address = custId + "_" + "SampleAddress";
+
+      String contactNumber = custIdInt + 900000000 + "";
+      String email = name + emailSuffix;
+
+      table.add(Arrays.asList(custId, name, gender, address, contactNumber, email));
+    }
+    return table;
+  }
+
+
   public static List<String> toCsv(List<String> row) {
     // just add double quotes for each cell for now
     return row.stream().map(col -> String.format("\"%s\"", col)).collect(Collectors.toList());
@@ -69,6 +96,25 @@ public class CsvFileGenerator {
           dest,
           filename);
     }
+
+  }
+
+
+  public static void generateFixedCustomerCsvFiles(int numOfFiles, Path dest, int custVariable)
+      throws FileNotFoundException {
+
+    String filenamePrefix = "customer_";
+    for (int i = 0; i < numOfFiles; i++) {
+      String filename = filenamePrefix + i + ".csv";
+      GenUtil.writeToFile(
+          generateFixedDataTables(100, custVariable).stream()
+              .map(CsvFileGenerator::toCsv)
+              .map(row -> String.join(",", row))
+              .collect(Collectors.toList()),
+          dest,
+          filename);
+    }
+
   }
 
   public static void main(String[] args) throws FileNotFoundException {
