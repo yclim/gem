@@ -87,6 +87,12 @@ class GemApplicationTests {
     String filenamePrefix = "customer_";
     String filename = filenamePrefix + 0 + ".csv";
 
+    // to delete after every use case
+    System.out.println("Deleting " + path + filename);
+    File delFile = new File(path + filename);
+    deleteTestFile(delFile);
+
+
     CsvFileGenerator.generateFixedCustomerCsvFiles(1, Paths.get(path),
         100000, filename);
 
@@ -112,9 +118,7 @@ class GemApplicationTests {
 
       }
     }
-    // to delete after every use case
-    System.out.println("Deleting " + path + filename);
-    FileUtils.forceDelete(new File(path + filename));
+
    }
 
   void TestCSVContents (CsvFeature abs) {
@@ -199,6 +203,12 @@ class GemApplicationTests {
     String filenamePrefix = "customer_";
     String filename = filenamePrefix + 0 + ".csv";
 
+    // to delete after every use case
+    System.out.println("Deleting " + path + filename);
+    File delFile = new File(path + filename);
+    deleteTestFile(delFile);
+
+
     CsvFileGenerator.generateFixedCustomerCsvFiles(1, Paths.get(path),
         100000, filename);
 
@@ -224,9 +234,7 @@ class GemApplicationTests {
 
       }
     }
-    // to delete after every use case
-    System.out.println("Deleting " + path + filename);
-    FileUtils.forceDelete(new File(path + filename));
+
   }
 
 
@@ -264,6 +272,12 @@ class GemApplicationTests {
 
     String filenamePrefix = "cars_";
     String filename = filenamePrefix + 0 + ".xls";
+
+    // to delete after every use case
+    System.out.println("Deleting " + path + filename);
+
+    File delFile = new File(path + filename);
+    deleteTestFile(delFile);
 
 
     File file = new File(path);
@@ -362,5 +376,10 @@ class GemApplicationTests {
 
     }
 
+  }
+
+  void deleteTestFile (File f) throws IOException {
+    if (f.exists())
+      FileUtils.forceDelete(f);
   }
 }
