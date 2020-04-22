@@ -1,27 +1,40 @@
 package innohack.gem.entity.rule.rules;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.collect.Lists;
+
 import innohack.gem.entity.GEMFile;
 import innohack.gem.entity.rule.ParamType;
 import innohack.gem.entity.rule.Parameter;
 import innohack.gem.entity.rule.RuleType;
-import java.util.Collection;
+import innohack.gem.util.Util;
 
 public class FileExtension extends Rule {
+  
+  private static final Logger LOGGER = LoggerFactory.getLogger(FileExtension.class);
 
-  static final String LABEL = "File Extension";
-  static final RuleType RULE_TYPE = RuleType.FILE;
-  static final Collection<Parameter> PARAMETERS =
-      Lists.newArrayList(new Parameter("extension", "string", ParamType.STRING));
-
+  private static final String LABEL = "File Extension";
+  private static final RuleType RULE_TYPE = RuleType.FILE;
+  
   public FileExtension() {
-    this.setLabel(LABEL);
-    this.setRuleType(RULE_TYPE);
-    this.setParams(PARAMETERS);
+    this(null);
+  }
+  
+  public FileExtension(String value) {
+	  Parameter param = new Parameter("extension", "string", ParamType.STRING, value);
+		
+	  this.setLabel(LABEL);
+	  this.setRuleType(RULE_TYPE);
+	  this.setParams(Lists.newArrayList(param));
   }
 
   @Override
   public boolean check(GEMFile gemFile) {
-    return true;
+	  final String ext = Util.first(getParams()).getValue();
+	  LOGGER.debug("File Extension {} rule: {}", ext, gemFile.getExtension());
+	  return ext.equalsIgnoreCase(gemFile.getExtension());
   }
+  
 }

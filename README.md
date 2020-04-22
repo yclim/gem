@@ -21,5 +21,9 @@ mvn package
 java -cp target/gem-0.1-SNAPSHOT.jar -Dloader.main=innohack.gem.filegen.GenerateMockFiles org.springframework.boot.loader.PropertiesLauncher [</path/to/output-dir> <numOfFiles>]
 ```
 
+Alternatively in IDE
+* run `innohack.gem.filegen.GenerateMockFiles`
+* the output will be in target/samples
+
 ### Devops
 Jenkins: [Go!](https://tinyurl.com/y8n27x3z)
