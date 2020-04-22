@@ -10,11 +10,16 @@ public class Parameter {
   public Parameter() {}
 
   public Parameter(String label, String placeholder, ParamType type) {
-    this.label = label;
-    this.placeholder = placeholder;
-    this.type = type;
+    this(label, placeholder, type, null);
   }
-
+  
+  public Parameter(String label, String placeholder, ParamType type, String value) {
+	this.label = label;
+	this.placeholder = placeholder;
+	this.type = type;
+	this.value = value;
+  }
+  
   public String getLabel() {
     return label;
   }
