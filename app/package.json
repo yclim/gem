@@ -8,7 +8,7 @@
     "watch": "parcel watch src/index.html --out-dir ../target/classes/static",
     "clear-build-cache": "rm -rf .cache/ dist/",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
-    "lint": "tslint --project . src/**/*.ts",
+    "lint": "tslint --project . src/**/*.{ts,tsx}",
     "test": "echo \"Error: no test specified\"",
     "typecheck": "tsc --noEmit"
   },

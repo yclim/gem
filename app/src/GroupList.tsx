@@ -41,8 +41,8 @@ const GroupList: FunctionComponent<IProps> = ({
   }
 
   return (
-    <div className="flex-container-vertical">
-      <div className="toolbar">
+    <div className="stack">
+      <div>
         <Button
           icon="add"
           large={false}
@@ -52,7 +52,7 @@ const GroupList: FunctionComponent<IProps> = ({
         />
         <Button icon="export" text="Export Spec" />
       </div>
-      <div className="flex-wrap">
+      <div className="stack">
         {Array.from(groups, ([k, v]) => v).map(g => (
           <GroupCard
             key={g.groupName}
@@ -62,12 +62,8 @@ const GroupList: FunctionComponent<IProps> = ({
             setFocusGrp={setCurrentGroup}
           />
         ))}
-        <Card
-          interactive={false}
-          elevation={Elevation.ZERO}
-          className="card no-group-card"
-        >
-          <div className="rule-header">
+        <Card interactive={false} elevation={Elevation.ZERO}>
+          <div className="group-card-header">
             <div className="label">No matches</div>
             <div className="counter">
               <Tag round={true} intent={Intent.WARNING}>
@@ -75,7 +71,7 @@ const GroupList: FunctionComponent<IProps> = ({
               </Tag>
             </div>
           </div>
-          <div className="rule-header">
+          <div className="group-card-header">
             <div className="label">Conflicts</div>
             <div className="counter">
               <Tag round={true} intent={Intent.DANGER}>

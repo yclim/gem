@@ -49,7 +49,7 @@ const GroupCard: FunctionComponent<IProps> = ({
           alignText={Alignment.LEFT}
           rightIcon="more"
           text={ri.label}
-          className="rule"
+          className="group-card-rule"
         />
       </Popover>
     );
@@ -73,16 +73,13 @@ const GroupCard: FunctionComponent<IProps> = ({
       key={group.groupName}
       interactive={false}
       elevation={focusGrp === group ? Elevation.FOUR : Elevation.ONE}
-      className={`card group-card ${
-        focusGrp === group ? "group-card-focus" : ""
-      }`}
+      className={`group-card ${focusGrp === group ? "group-card-focus" : ""}`}
       onClick={handleClick}
     >
-      <div className="rule-topbar">
-        {" "}
-        <Icon icon="cross" />{" "}
+      <div className="group-card-topbar">
+        <Icon icon="cross" />
       </div>
-      <div className="rule-header">
+      <div className="group-card-header">
         <div className="label">
           <EditableText
             value={grp.groupName}
@@ -94,7 +91,7 @@ const GroupCard: FunctionComponent<IProps> = ({
           <Tag round={true}>123</Tag>
         </div>
       </div>
-      <div className="flex-wrap">
+      <div>
         {group.rules.map(ri => {
           return renderGroupRule(ri);
         })}

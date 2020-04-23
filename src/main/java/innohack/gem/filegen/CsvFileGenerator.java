@@ -76,7 +76,6 @@ public class CsvFileGenerator {
     return table;
   }
 
-
   public static List<String> toCsv(List<String> row) {
     // just add double quotes for each cell for now
     return row.stream().map(col -> String.format("\"%s\"", col)).collect(Collectors.toList());
@@ -100,11 +99,12 @@ public class CsvFileGenerator {
   }
 
 
-  public static void generateFixedCustomerCsvFiles(int numOfFiles, Path dest, int custVariable,
-      String filename)
+  public static void generateFixedCustomerCsvFiles(int numOfFiles, Path dest, int custVariable)
       throws FileNotFoundException {
 
+    String filenamePrefix = "customer_";
     for (int i = 0; i < numOfFiles; i++) {
+      String filename = filenamePrefix + i + ".csv";
       GenUtil.writeToFile(
           generateFixedDataTables(100, custVariable).stream()
               .map(CsvFileGenerator::toCsv)

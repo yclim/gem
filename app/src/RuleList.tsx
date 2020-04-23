@@ -240,7 +240,7 @@ const RuleList: FunctionComponent<IProps> = ({ groups, setGroups }) => {
   }
 
   return (
-    <div>
+    <div className="box">
       <ButtonGroup
         vertical={true}
         alignText={Alignment.LEFT}

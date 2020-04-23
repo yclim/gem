@@ -28,6 +28,10 @@ public class GEMFile {
   public GEMFile(String fileName, String directory) {
     this.directory = directory;
     this.fileName = fileName;
+    
+    this._file = new File(getAbsolutePath());
+    this.extension = FilenameUtils.getExtension(_file.getName());
+    this.size = _file.length();
   }
 
   public String getFileName() {
@@ -97,9 +101,6 @@ public class GEMFile {
   }
   // Perform extraction
   public GEMFile extract() throws Exception {
-    this._file = new File(getAbsolutePath());
-    this.extension = FilenameUtils.getExtension(_file.getName());
-    this.size = _file.length();
     this._mediaType = FeatureExtractorUtil.extractMime(new TikaConfig(), this._file.toPath());
 
     String subtype = _mediaType.getSubtype();
