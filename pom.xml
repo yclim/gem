@@ -361,8 +361,8 @@
 		            <!-- image>gem</image-->
 		            <image>037562003025.dkr.ecr.ap-southeast-1.amazonaws.com/docker-repo:gem</image>
 		            <auth>
-		            	<username>AKIAQRPW6VZIQFQ2DHZA</username>
-		            	<password>pzK5AMLjED4i2K24/RnT3tjghznQUDUtVaJaL8gb</password>
+		            	<username>jenkins</username>
+		            	<password>jenkinJENKIN123</password>
 		            </auth>
 		          </to>
 		        </configuration>
