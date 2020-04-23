@@ -359,7 +359,7 @@
 		        <configuration>
 		          <to>
 		            <!-- image>gem</image-->
-		            <image>037562003025.dkr.ecr.ap-southeast-1.amazonaws.com/docker-repo</image>
+		            <image>037562003025.dkr.ecr.ap-southeast-1.amazonaws.com/docker-repo/gem-0.1</image>
 		          </to>
 		        </configuration>
 		        <executions>
