@@ -29,18 +29,14 @@ const EditGroups: FunctionComponent<RouteComponentProps> = () => {
   }, [currentGroup]);
 
   return (
-    <div className="horizontal-container">
-      <div className="left-nav-section">
-        <RuleList groups={groups} setGroups={setGroups} />
-      </div>
-      <div className="right-main-section">
-        <GroupList
-          groups={groups}
-          setGroups={setGroups}
-          currentGroup={currentGroup}
-          setCurrentGroup={setCurrentGroup}
-        />
-      </div>
+    <div className="grid3">
+      <RuleList groups={groups} setGroups={setGroups} />
+      <GroupList
+        groups={groups}
+        setGroups={setGroups}
+        currentGroup={currentGroup}
+        setCurrentGroup={setCurrentGroup}
+      />
       <FileList files={files} setFiles={setFiles} />
     </div>
   );

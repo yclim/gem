@@ -219,8 +219,8 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
   }
 
   return (
-    <div className="files-section">
-      <div className="file-list">
+    <div className="grid2">
+      <div className="box">
         <Table
           numRows={files.length}
           defaultColumnWidth={320}
@@ -230,7 +230,7 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
           <Column name="Matched filenames" cellRenderer={cellRenderer} />
         </Table>
       </div>
-      <div className="file-details">
+      <div className="box">
         <Tabs
           id="TabsExample"
           selectedTabId={activeTab}
