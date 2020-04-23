@@ -10,6 +10,7 @@ import java.util.List;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  * Code to generate Excel files with two sheets - first sheet contains car data that looks like:
@@ -79,27 +80,35 @@ public class ExcelFileGenerator {
     }
   }
 
-  public static void generateFixedCarsExcelFiles(boolean multiSheets, int numLines, int numOfFiles, Path dest,
+  public static void generateFixedCarsExcelFiles(String excelType, boolean multiSheets,
+      int numLines, int numOfFiles, Path dest,
       String fileNamePrefix) throws IOException {
     int numOfLines = numLines;
 
     for (int i = 0; i < numOfFiles; i++) {
-      try (Workbook workbook = new HSSFWorkbook()) {
-        List<List<String>> sheetOneTable = generateFixedSheetOneDataTables(numOfLines);
-        populateSheet(workbook, "Cars", sheetOneTable);
+      Workbook workbook;
 
-        if (multiSheets) {
-          List<List<String>> sheetTwoTable = generateFixedSheetTwoDataTables(numOfLines);
-          populateSheet(workbook, "Cars Dealer", sheetTwoTable);
-        }
-        String filename = fileNamePrefix + i + ".xls";
-
-        FileOutputStream outputStream =
-            new FileOutputStream(Paths.get(dest.toString(), filename).toFile());
-        workbook.write(outputStream);
-
-        //outputStream.close();
+      if (excelType.equals("xls")) {
+        workbook = new HSSFWorkbook();
+      }else {
+        workbook = new XSSFWorkbook();
       }
+      List<List<String>> sheetOneTable = generateFixedSheetOneDataTables(numOfLines);
+      populateSheet(workbook, "Cars", sheetOneTable);
+
+      if (multiSheets) {
+        List<List<String>> sheetTwoTable = generateFixedSheetTwoDataTables(numOfLines);
+        populateSheet(workbook, "Cars Dealer", sheetTwoTable);
+      }
+      String filename = fileNamePrefix + i + ".xls";
+
+      FileOutputStream outputStream =
+          new FileOutputStream(Paths.get(dest.toString(), filename).toFile());
+      workbook.write(outputStream);
+
+      workbook.close();
+      outputStream.close();
+
     }
   }
 
@@ -197,7 +206,13 @@ public class ExcelFileGenerator {
   public static CellStyle fontStyle(
       Workbook workbook, String fontname, int heightPoints, boolean isBold) {
     CellStyle headerStyle = workbook.createCellStyle();
-    HSSFFont font = ((HSSFWorkbook) workbook).createFont();
+
+    Font font;
+    if (workbook.getClass().getName().equals("org.apache.poi.hssf.usermodel.HSSFWorkbook")) {
+      font = ((HSSFWorkbook) workbook).createFont();
+    }else {
+      font = ((XSSFWorkbook) workbook).createFont();
+    }
     font.setFontName(fontname);
     font.setFontHeightInPoints((short) heightPoints);
     font.setBold(isBold);
