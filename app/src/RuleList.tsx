@@ -4,7 +4,7 @@ import React, {
   useEffect,
   useState
 } from "react";
-import { Group, ParamDef, Parameter, Rule, RuleDef } from "./api";
+import { Group, Parameter, Rule } from "./api";
 import groupRuleService from "./api/GroupRuleService";
 import {
   Alignment,

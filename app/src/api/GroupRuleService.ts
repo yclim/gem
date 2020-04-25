@@ -1,6 +1,6 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import Api from "./Api";
-import { File, Group, Rule } from ".";
+import { Group, Rule } from ".";
 
 class GroupRuleService extends Api {
   public constructor() {

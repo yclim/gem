@@ -1,15 +1,3 @@
-export interface RuleDef {
-  ruleId: string;
-  alias: string;
-  paramDefs: ParamDef[];
-  target: string;
-}
-
-export interface ParamDef {
-  label: string;
-  type: string;
-}
-
 export interface Group {
   name: string;
   rules: Rule[];
