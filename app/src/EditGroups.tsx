@@ -7,7 +7,7 @@ import React, {
 import RuleList from "./RuleList";
 import GroupList from "./GroupList";
 import { RouteComponentProps } from "@reach/router";
-import { File, Group, Rule } from "./api";
+import { File, Group } from "./api";
 import groupRuleService from "./api/GroupRuleService";
 import "@blueprintjs/table/lib/css/table.css";
 import FileList from "./FileList";
@@ -32,7 +32,7 @@ export interface UpdateRuleNameInput {
 }
 
 export type GroupAction =
-  | { type: "INIT_GROUPS_ACTION"; groups: Group[] }
+  | { type: "INIT_GROUPS"; groups: Group[] }
   | { type: "NEW_GROUP" }
   | { type: "REMOVE_GROUP"; groupName: string }
   | { type: "ADD_GROUP_RULE"; addGroupRuleInput: AddGroupRuleInput }
@@ -41,7 +41,7 @@ export type GroupAction =
 
 export abstract class GroupActions {
   static initGroupAction(groups: Group[]): GroupAction {
-    return { type: "INIT_GROUPS_ACTION", groups };
+    return { type: "INIT_GROUPS", groups };
   }
   static newGroupAction(): GroupAction {
     return { type: "NEW_GROUP" };
@@ -68,7 +68,7 @@ export abstract class GroupActions {
 
 export function groupsReducer(state: Map<string, Group>, action: GroupAction) {
   switch (action.type) {
-    case "INIT_GROUPS_ACTION":
+    case "INIT_GROUPS":
       return new Map(action.groups.map(g => [g.name, g]));
     case "NEW_GROUP":
       return handleNewGroup(state);
