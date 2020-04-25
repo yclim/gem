@@ -55,20 +55,18 @@ const RuleList: FunctionComponent<IProps> = ({ groups, setGroups }) => {
     //         setGroups([...groups]);
     //     })
     // })
-    if (ruleName && param1 && currentRule && currentGroup) {
-      currentGroup.rules = [
-        ...currentGroup.rules,
-        { ruleId: currentRule.ruleId, label: ruleName, paramValues: [param1] }
-      ];
-      setGroups(new Map(groups.set(currentGroup.groupName, currentGroup)));
-    }
+    // if (ruleName && param1 && currentRule && currentGroup) {
+    //   currentGroup.rules = [
+    //     ...currentGroup.rules,
+    //     { ruleId: currentRule.ruleId, label: ruleName, paramValues: [param1] }
+    //   ];
+    //   setGroups(new Map(groups.set(currentGroup.groupName, currentGroup)));
+    // }
   }
 
   function handleOpen(gname: string, rid: string) {
     const grp = groups.get(gname);
     if (typeof grp !== "undefined") {
-      // grp.rules = [... grp.rules, {ruleId: rid, label: rlabel, paramValues: [param1]}]
-      // setGroups(new Map(groups.set(gname, grp)))
       const ruleDef = rules.find(r => r.ruleId === rid);
       if (typeof ruleDef !== "undefined") {
         setCurrentRule(ruleDef);
@@ -106,11 +104,11 @@ const RuleList: FunctionComponent<IProps> = ({ groups, setGroups }) => {
         <MenuDivider title="Add to Group" />
         {Array.from(groups, ([k, v]) => v).map(g => (
           <MenuItem
-            key={g.groupName}
-            text={g.groupName}
+            key={g.name}
+            text={g.name}
             icon="group-objects"
             onClick={() => {
-              handleOpen(g.groupName, rule.ruleId);
+              handleOpen(g.name, rule.ruleId);
             }}
           />
         ))}
@@ -228,7 +226,7 @@ const RuleList: FunctionComponent<IProps> = ({ groups, setGroups }) => {
                 className="bp3-button bp3-intent-primary"
                 onClick={e => handleAdd()}
               >
-                Add to {currentGroup ? currentGroup.groupName : ""}
+                Add to {currentGroup ? currentGroup.name : ""}
               </button>
             </div>
           </div>

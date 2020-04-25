@@ -4,8 +4,10 @@ import GroupList from "./GroupList";
 import { RouteComponentProps } from "@reach/router";
 import { File, Group } from "./api";
 import ruleService from "./api/mock";
+import groupService from "./api/GroupRuleService";
 import "@blueprintjs/table/lib/css/table.css";
 import FileList from "./FileList";
+import { AxiosResponse } from "axios";
 
 const EditGroups: FunctionComponent<RouteComponentProps> = () => {
   const [groups, setGroups] = useState(new Map<string, Group>());
@@ -13,10 +15,9 @@ const EditGroups: FunctionComponent<RouteComponentProps> = () => {
   const [files, setFiles] = useState<File[]>([]);
 
   useEffect(() => {
-    console.log("getGroups from api");
     if (groups.size === 0) {
-      ruleService.getGroups().then((grps: Group[]) => {
-        setGroups(new Map(grps.map(g => [g.name, g])));
+      groupService.getGroups().then((resp: AxiosResponse<Group[]>) => {
+        setGroups(new Map(resp.data.map(g => [g.name, g])));
       });
     }
   }, []);

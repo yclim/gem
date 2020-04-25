@@ -48,7 +48,7 @@ const GroupCard: FunctionComponent<IProps> = ({
           key={`button-${ri.label}`}
           alignText={Alignment.LEFT}
           rightIcon="more"
-          text={ri.label}
+          text={ri.name}
           className="group-card-rule"
         />
       </Popover>
