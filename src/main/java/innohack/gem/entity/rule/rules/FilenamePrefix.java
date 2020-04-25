@@ -5,13 +5,13 @@ import innohack.gem.entity.GEMFile;
 import innohack.gem.entity.rule.ParamType;
 import innohack.gem.entity.rule.Parameter;
 import innohack.gem.entity.rule.RuleType;
-import java.util.Collection;
+import java.util.List;
 
 public class FilenamePrefix extends Rule {
 
   static final String LABEL = "Filename Prefix";
   static final RuleType RULE_TYPE = RuleType.FILE;
-  static final Collection<Parameter> PARAMETERS =
+  static final List<Parameter> PARAMETERS =
       Lists.newArrayList(new Parameter("prefix", "string", ParamType.STRING));
 
   public FilenamePrefix() {

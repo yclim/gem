@@ -2,7 +2,7 @@ package innohack.gem.web;
 
 import innohack.gem.entity.rule.Group;
 import innohack.gem.service.GroupService;
-import java.util.Collection;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ public class GroupController {
 
   // get all group
   @GetMapping("/list")
-  public Collection<Group> getGroups() {
+  public List<Group> getGroups() {
     return groupService.getGroups();
   }
 

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import innohack.gem.entity.GEMFile;
 import innohack.gem.entity.rule.Parameter;
 import innohack.gem.entity.rule.RuleType;
-import java.util.Collection;
+import java.util.List;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "ruleId")
 @JsonSubTypes({
@@ -17,7 +17,7 @@ public abstract class Rule {
   private String label;
   private RuleType ruleType;
   private String name;
-  private Collection<Parameter> params;
+  private List<Parameter> params;
 
   public String getLabel() {
     return label;
@@ -43,11 +43,11 @@ public abstract class Rule {
     this.name = name;
   }
 
-  public Collection<Parameter> getParams() {
+  public List<Parameter> getParams() {
     return params;
   }
 
-  public void setParams(Collection<Parameter> params) {
+  public void setParams(List<Parameter> params) {
     this.params = params;
   }
 
