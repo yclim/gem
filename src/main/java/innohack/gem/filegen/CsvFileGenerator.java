@@ -95,15 +95,17 @@ public class CsvFileGenerator {
           dest,
           filename);
     }
+
   }
 
-  public static void generateFixedCustomerCsvFiles(int numOfFiles, Path dest, int custVariable)
+
+  public static void generateFixedCustomerCsvFiles(int numOfFiles, Path dest, int custVariable,
+      String filename)
       throws FileNotFoundException {
 
-    String filenamePrefix = "customer_";
+
     for (int i = 0; i < numOfFiles; i++) {
-      String filename = filenamePrefix + i + ".csv";
-      GenUtil.writeToFile(
+         GenUtil.writeToFile(
           generateFixedDataTables(100, custVariable).stream()
               .map(CsvFileGenerator::toCsv)
               .map(row -> String.join(",", row))
@@ -111,6 +113,7 @@ public class CsvFileGenerator {
           dest,
           filename);
     }
+
   }
 
   public static void main(String[] args) throws FileNotFoundException {
