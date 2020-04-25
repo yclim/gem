@@ -18,17 +18,17 @@ export interface Group {
 
 export interface Rule {
   ruleId: string;
-  label: string;
-  ruleType: string;
+  label?: string;
+  ruleType?: string;
   name: string;
   params: Parameter[];
 }
 
 export interface Parameter {
-  label: string;
-  placeholder: string;
+  label?: string;
+  placeholder?: string;
   value: string;
-  type: string;
+  type?: string;
 }
 
 export interface ExcelFeature {

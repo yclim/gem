@@ -1,9 +1,7 @@
 package innohack.gem.dao;
 
 import innohack.gem.entity.rule.Group;
-import innohack.gem.entity.rule.rules.FileExtension;
-import innohack.gem.entity.rule.rules.Rule;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import org.springframework.stereotype.Repository;
@@ -19,16 +17,7 @@ public class GroupDao implements IGroupDao {
 
   @Override
   public List<Group> getGroups() {
-    Rule fileExtensionRule = new FileExtension();
-    fileExtensionRule.setName("fer-1");
-    fileExtensionRule.getParams().get(0).setValue("xls");
-    Group group = new Group();
-    group.setName("mock group 1");
-    group.setMatchedCount(100);
-    group.setRules(Arrays.asList(fileExtensionRule));
-
-    return Arrays.asList(group);
-    // return featureStore.values();
+    return new ArrayList(featureStore.values());
   }
 
   @Override
@@ -47,12 +36,4 @@ public class GroupDao implements IGroupDao {
     featureStore.remove(groupName);
     return true;
   }
-
-  /*
-  private List<Group> mockGroups() {
-  	Group g = new Group();
-  	g.setGroupName("test");
-  	return Lists.newArrayList(g);
-  }
-  */
 }

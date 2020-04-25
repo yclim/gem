@@ -19,6 +19,11 @@ public abstract class Rule {
   private String name;
   private List<Parameter> params;
 
+  /**
+   * Use for render UI Label
+   *
+   * @return
+   */
   public String getLabel() {
     return label;
   }
@@ -27,6 +32,11 @@ public abstract class Rule {
     this.label = label;
   }
 
+  /**
+   * Use to organize rule in UI
+   *
+   * @return RuleType
+   */
   public RuleType getRuleType() {
     return ruleType;
   }
@@ -35,6 +45,11 @@ public abstract class Rule {
     this.ruleType = ruleType;
   }
 
+  /**
+   * Unique identifier for each rule instance
+   *
+   * @return
+   */
   public String getName() {
     return name;
   }
@@ -43,6 +58,11 @@ public abstract class Rule {
     this.name = name;
   }
 
+  /**
+   * list of parameter use for the rule
+   *
+   * @return
+   */
   public List<Parameter> getParams() {
     return params;
   }

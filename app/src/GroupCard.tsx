@@ -40,12 +40,11 @@ const GroupCard: FunctionComponent<IProps> = ({
   function renderGroupRule(ri: Rule) {
     return (
       <Popover
-        key={`popover-${ri.label}`}
+        key={`popover-${ri.name}`}
         position={Position.RIGHT_TOP}
         content={renderMenu()}
       >
         <Button
-          key={`button-${ri.label}`}
           alignText={Alignment.LEFT}
           rightIcon="more"
           text={ri.name}
