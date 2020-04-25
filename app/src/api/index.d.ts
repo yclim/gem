@@ -11,19 +11,24 @@ export interface ParamDef {
 }
 
 export interface Group {
-  groupName: string;
+  name: string;
   rules: Rule[];
+  matchedCount?: bigint;
 }
 
 export interface Rule {
   ruleId: string;
   label: string;
-  paramValues: string[];
+  ruleType: string;
+  name: string;
+  params: Parameter[];
 }
 
-export interface GroupFiles {
-  groupName: string;
-  files: File[];
+export interface Parameter {
+  label: string;
+  placeholder: string;
+  value: string;
+  type: string;
 }
 
 export interface ExcelFeature {

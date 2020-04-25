@@ -60,17 +60,17 @@ const GroupCard: FunctionComponent<IProps> = ({
   }
 
   function handleChangeGroupName(e: string) {
-    const g = { groupName: e, rules: grp.rules };
+    const g = { name: e, rules: grp.rules };
     setGrp(g);
   }
 
   function handleConfirm() {
-    updateGroups(group.groupName, grp);
+    updateGroups(group.name, grp);
   }
 
   return (
     <Card
-      key={group.groupName}
+      key={group.name}
       interactive={false}
       elevation={focusGrp === group ? Elevation.FOUR : Elevation.ONE}
       className={`group-card ${focusGrp === group ? "group-card-focus" : ""}`}
@@ -82,7 +82,7 @@ const GroupCard: FunctionComponent<IProps> = ({
       <div className="group-card-header">
         <div className="label">
           <EditableText
-            value={grp.groupName}
+            value={grp.name}
             onChange={e => handleChangeGroupName(e)}
             onConfirm={() => handleConfirm()}
           />

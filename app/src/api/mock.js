@@ -95,7 +95,7 @@ var rules = {
 var groups = {
   groups: [
     {
-      groupName: "xls-1",
+      group: "xls-1",
       rules: [
         { ruleId: "Filename Regex", label: "fn-regex-1", paramValues: [".+"] },
         {
@@ -106,7 +106,7 @@ var groups = {
       ]
     },
     {
-      groupName: "xls-2",
+      group: "xls-2",
       rules: [
         {
           ruleId: "Filename Prefix",
@@ -121,7 +121,7 @@ var groups = {
       ]
     },
     {
-      groupName: "csv-1",
+      group: "csv-1",
       rules: [
         {
           ruleId: "Filename Prefix",
@@ -137,7 +137,7 @@ var groups = {
       ]
     },
     {
-      groupName: "txt-1",
+      group: "txt-1",
       rules: [
         {
           ruleId: "Filename Prefix",
@@ -345,18 +345,18 @@ var filenames = eightyNames.map((n, i) => {
 });
 
 var groupRules = [
-  { groupName: "xls-1", files: [...filenames.slice(0, 30)] },
-  { groupName: "xls-2", files: [...filenames.slice(30, 40)] },
-  { groupName: "csv-1", files: [...filenames.slice(40, 75)] },
-  { groupName: "txt-1", files: [...filenames.slice(75, 80)] }
+  { group: "xls-1", files: [...filenames.slice(0, 30)] },
+  { group: "xls-2", files: [...filenames.slice(30, 40)] },
+  { group: "csv-1", files: [...filenames.slice(40, 75)] },
+  { group: "txt-1", files: [...filenames.slice(75, 80)] }
 ];
 
-function getFiles(groupName) {
-  if (groupName === "xls-1") {
+function getFiles(group) {
+  if (group === "xls-1") {
     return groupRules[0];
-  } else if (groupName === "xls-2") {
+  } else if (group === "xls-2") {
     return groupRules[1];
-  } else if (groupName === "csv-1") {
+  } else if (group === "csv-1") {
     return groupRules[2];
   } else {
     return groupRules[3];
@@ -392,7 +392,7 @@ const ruleService = {
   addRuleToGroup: (gname, rid, rlabel) =>
     new Promise(resolve => {
       groups.groups
-        .filter(g => g.groupName === gname)
+        .filter(g => g.group === gname)
         .map(g =>
           g.rules.push({
             ruleId: rid,
@@ -402,7 +402,7 @@ const ruleService = {
         );
       resolve("success");
     }),
-  getGroupFiles: groupName => delay(getFiles(groupName)),
+  getGroupFiles: group => delay(getFiles(group)),
   getFileTypes: () => delay(fileExt),
   getFilesByType: type => delay(getFilesByTypeHelper(type))
 };

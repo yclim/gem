@@ -16,14 +16,14 @@ const EditGroups: FunctionComponent<RouteComponentProps> = () => {
     console.log("getGroups from api");
     if (groups.size === 0) {
       ruleService.getGroups().then((grps: Group[]) => {
-        setGroups(new Map(grps.map(g => [g.groupName, g])));
+        setGroups(new Map(grps.map(g => [g.name, g])));
       });
     }
   }, []);
 
   useEffect(() => {
     if (currentGroup)
-      ruleService.getGroupFiles(currentGroup.groupName).then(gfs => {
+      ruleService.getGroupFiles(currentGroup.name).then(gfs => {
         setFiles(gfs.files);
       });
   }, [currentGroup]);
