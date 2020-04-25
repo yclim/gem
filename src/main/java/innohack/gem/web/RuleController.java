@@ -1,6 +1,5 @@
 package innohack.gem.web;
 
-import innohack.gem.entity.rule.RuleType;
 import innohack.gem.entity.rule.rules.Rule;
 import innohack.gem.service.RuleService;
 import java.util.HashMap;
@@ -20,7 +19,7 @@ public class RuleController {
    * @return Map of lists of rules by RuleType {@link HashMap < RuleType , List < Rule >>}
    */
   @GetMapping("/list")
-  public HashMap<RuleType, List<Rule>> getRules() {
+  public List<Rule> getRules() {
     return ruleService.getRules();
   }
 

@@ -3,7 +3,7 @@ package innohack.gem.web;
 import com.google.common.collect.Lists;
 import innohack.gem.entity.GEMFile;
 import innohack.gem.service.GEMFileService;
-import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -45,14 +45,13 @@ public class GEMFileController {
    */
   // get list of files from feature store
   @GetMapping("/list")
-  public Collection<GEMFile> getFileList() {
+  public List<GEMFile> getFileList() {
     return fileService.getFileList();
   }
 
   // get list of files and perform data extraction
   @GetMapping("/sync")
-  public Collection<GEMFile> sync(@RequestParam(name = "directory") String directory)
-      throws Exception {
+  public List<GEMFile> sync(@RequestParam(name = "directory") String directory) throws Exception {
     if (directory.trim().length() > 0) {
       return fileService.syncFiles(directory);
     } else {
@@ -67,7 +66,7 @@ public class GEMFileController {
    * @return list of metadata {@link GEMFile @DocumentMetadata}
    */
   @RequestMapping("/findByName/{name:.+}")
-  public Collection<GEMFile> findByName(@PathVariable String name) {
+  public List<GEMFile> findByName(@PathVariable String name) {
     return fileService.findByName(name);
   }
 
@@ -79,7 +78,7 @@ public class GEMFileController {
    * @return list of metadata {@link GEMFile @DocumentMetadata}
    */
   @RequestMapping("/findByExtension/{extension}")
-  public Collection<GEMFile> findByExtension(@PathVariable String extension) {
+  public List<GEMFile> findByExtension(@PathVariable String extension) {
     return fileService.findByExtension(extension);
   }
 

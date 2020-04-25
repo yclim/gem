@@ -4,9 +4,9 @@ import com.google.common.collect.Lists;
 import innohack.gem.entity.GEMFile;
 import java.io.File;
 import java.nio.file.Paths;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.springframework.stereotype.Repository;
 
@@ -49,8 +49,8 @@ public class GEMFileDao implements IGEMFileDao {
   }
 
   @Override
-  public Collection<GEMFile> findByName(String filename) {
-    Collection<GEMFile> l = Lists.newArrayList();
+  public List<GEMFile> findByName(String filename) {
+    List<GEMFile> l = Lists.newArrayList();
     for (GEMFile f : featureStore.values()) {
       if (f.getFileName().contains(filename)) {
         l.add(f);
@@ -65,8 +65,8 @@ public class GEMFileDao implements IGEMFileDao {
    * @return list of document metadata
    */
   @Override
-  public Collection<GEMFile> findByExtension(String extension) {
-    Collection<GEMFile> l = Lists.newArrayList();
+  public List<GEMFile> findByExtension(String extension) {
+    List<GEMFile> l = Lists.newArrayList();
     for (GEMFile f : featureStore.values()) {
       if (f.getExtension().toLowerCase().contains(extension.toLowerCase())) {
         l.add(f);
@@ -81,8 +81,8 @@ public class GEMFileDao implements IGEMFileDao {
    * @return list of metadata {@link GEMFile @GEMFile}
    */
   @Override
-  public Collection<GEMFile> getFiles() {
-    Collection<GEMFile> l = Lists.newArrayList();
+  public List<GEMFile> getFiles() {
+    List<GEMFile> l = Lists.newArrayList();
     for (GEMFile f : featureStore.values()) {
       l.add(new GEMFile(f.getFileName(), f.getDirectory()));
     }
@@ -91,9 +91,9 @@ public class GEMFileDao implements IGEMFileDao {
 
   // Get list of local files from directory
   @Override
-  public Collection<GEMFile> getLocalFiles(String directory) {
+  public List<GEMFile> getLocalFiles(String directory) {
     File dir = new File(directory);
-    Collection<GEMFile> resultList = Lists.newArrayList();
+    List<GEMFile> resultList = Lists.newArrayList();
     File[] fList = dir.listFiles();
     if (fList != null) {
       for (File file : fList) {
@@ -144,8 +144,8 @@ public class GEMFileDao implements IGEMFileDao {
 
 
 
-  private Collection<GEMFile> mockFileList() {
-  	Collection<GEMFile>  l = Lists.newArrayList();
+  private List<GEMFile> mockFileList() {
+  	List<GEMFile>  l = Lists.newArrayList();
   	if(featureStore.size()>0){
   		for (GEMFile f:featureStore.values()) {
   			l.add(new GEMFile( f.getName(),  f.getDirectory()));

@@ -19,13 +19,10 @@ const GroupList: FunctionComponent<IProps> = ({
   function createGroup() {
     const name = "untitled";
     let counter = 1;
-    console.log(groups);
     while (true) {
       const modName = name + "-" + counter;
       if (!groups.has(modName)) {
-        setGroups(
-          new Map(groups.set(modName, { groupName: modName, rules: [] }))
-        );
+        setGroups(new Map(groups.set(modName, { name: modName, rules: [] })));
         return;
       } else {
         counter++;
@@ -35,9 +32,7 @@ const GroupList: FunctionComponent<IProps> = ({
 
   function updateGroup(oldname: string, group: Group) {
     groups.delete(oldname);
-    setGroups(
-      new Map([...groups.set(group.groupName, group).entries()].sort())
-    );
+    setGroups(new Map([...groups.set(group.name, group).entries()].sort()));
   }
 
   return (
@@ -55,7 +50,7 @@ const GroupList: FunctionComponent<IProps> = ({
       <div className="stack">
         {Array.from(groups, ([k, v]) => v).map(g => (
           <GroupCard
-            key={g.groupName}
+            key={g.name}
             group={g}
             updateGroups={updateGroup}
             focusGrp={currentGroup}

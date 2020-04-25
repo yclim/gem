@@ -4,8 +4,8 @@ import React, {
   useEffect,
   useState
 } from "react";
-import { Group, ParamDef, RuleDef } from "./api";
-import ruleService from "./api/mock";
+import { Group, Parameter, Rule } from "./api";
+import groupRuleService from "./api/GroupRuleService";
 import {
   Alignment,
   Button,
@@ -27,9 +27,9 @@ interface IProps {
   setGroups: (group: Map<string, Group>) => void;
 }
 const RuleList: FunctionComponent<IProps> = ({ groups, setGroups }) => {
-  const [rules, setRules] = useState([] as RuleDef[]);
+  const [rules, setRules] = useState([] as Rule[]);
   const [isOpen, setIsOpen] = useState(false);
-  const [currentRule, setCurrentRule] = useState<RuleDef | null>(null);
+  const [currentRule, setCurrentRule] = useState<Rule | null>(null);
   const [currentGroup, setCurrentGroup] = useState<Group | null>(null);
   const [ruleName, setRuleName] = useState<string>("");
   const [param1, setParam1] = useState<string>("");
@@ -37,41 +37,46 @@ const RuleList: FunctionComponent<IProps> = ({ groups, setGroups }) => {
   const [param3, setParam3] = useState<string>("");
 
   useEffect(() => {
-    if (currentRule && currentGroup) {
-      setRuleName(getLabel(currentGroup, currentRule.alias));
+    groupRuleService.getRules().then(r => {
+      setRules(r.data);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (currentRule && groups) {
+      setRuleName(generateLabel(currentRule));
       setParam1("");
     }
   }, [currentRule]);
 
-  useEffect(() => {
-    ruleService.getRules().then(r => {
-      setRules(r);
-    });
-  }, []);
-
   function addRuleToGroup() {
-    // ruleService.addRuleToGroup(gname, rid, rlabel).then(status => {
-    //     ruleService.getGroups().then(groups => {
-    //         setGroups([...groups]);
-    //     })
-    // })
     if (ruleName && param1 && currentRule && currentGroup) {
       currentGroup.rules = [
         ...currentGroup.rules,
-        { ruleId: currentRule.ruleId, label: ruleName, paramValues: [param1] }
+        {
+          ruleId: currentRule.ruleId,
+          name: ruleName,
+          params: [{ value: param1 }]
+        }
       ];
-      setGroups(new Map(groups.set(currentGroup.groupName, currentGroup)));
+      groupRuleService.saveGroup(currentGroup).then(response => {
+        if (response.status !== 200) {
+          alert("saveGroup fail with status: " + response.status);
+        }
+      });
+
+      // Should we trigger a api getGroups again (in EditGroup) to stay consistent with backend?
+      setGroups(new Map(groups.set(currentGroup.name, currentGroup)));
+      setCurrentRule(null);
     }
   }
 
   function handleOpen(gname: string, rid: string) {
     const grp = groups.get(gname);
     if (typeof grp !== "undefined") {
-      // grp.rules = [... grp.rules, {ruleId: rid, label: rlabel, paramValues: [param1]}]
-      // setGroups(new Map(groups.set(gname, grp)))
-      const ruleDef = rules.find(r => r.ruleId === rid);
-      if (typeof ruleDef !== "undefined") {
-        setCurrentRule(ruleDef);
+      const rule = rules.find(r => r.ruleId === rid);
+      if (typeof rule !== "undefined") {
+        setCurrentRule(rule);
         setIsOpen(true);
         setCurrentGroup(grp);
       }
@@ -87,30 +92,52 @@ const RuleList: FunctionComponent<IProps> = ({ groups, setGroups }) => {
     handleClose();
   }
 
-  function getLabel(group: Group, alias: string) {
-    let counter = 1;
-    while (true) {
-      const label = alias + "-" + counter;
-      const ruleInstance = group.rules.find(r => r.label === label);
-      if (typeof ruleInstance === "undefined") {
-        return label;
-      } else {
-        counter++;
+  /**
+   *
+   * generate rule name base on rule label
+   * take first letter of each word in the label and add counter suffix because rule name must be unique
+   * e.g Filename Extension -> FE-1
+   */
+  function generateLabel(rule: Rule) {
+    if (rule.label) {
+      let counter = 1;
+      const alias = rule.label
+        .split(" ")
+        .map(word => word[0])
+        .join("");
+      while (true) {
+        const finalName = alias + "-" + counter;
+        if (!rulenameExist(finalName)) {
+          return finalName;
+        } else {
+          counter++;
+        }
       }
+    } else {
+      alert("illegal state: rule label is undefined");
+      return "undefined";
     }
   }
 
-  function renderGroupMenu(rule: RuleDef) {
+  function rulenameExist(name: string): boolean {
+    return (
+      Array.from(groups).findIndex(
+        e => e[1].rules.findIndex(r => r.name === name) > -1
+      ) > -1
+    );
+  }
+
+  function renderGroupMenu(rule: Rule) {
     return (
       <Menu>
         <MenuDivider title="Add to Group" />
         {Array.from(groups, ([k, v]) => v).map(g => (
           <MenuItem
-            key={g.groupName}
-            text={g.groupName}
+            key={g.name}
+            text={g.name}
             icon="group-objects"
             onClick={() => {
-              handleOpen(g.groupName, rule.ruleId);
+              handleOpen(g.name, rule.ruleId);
             }}
           />
         ))}
@@ -118,48 +145,34 @@ const RuleList: FunctionComponent<IProps> = ({ groups, setGroups }) => {
     );
   }
 
-  function renderButton(rule: RuleDef) {
+  function renderButton(rule: Rule) {
     return (
       <Popover
         key={rule.ruleId}
         position={Position.RIGHT_TOP}
         content={renderGroupMenu(rule)}
       >
-        <Button rightIcon="plus" text={rule.ruleId} />
+        <Button rightIcon="plus" text={rule.label} />
       </Popover>
     );
   }
 
-  function getPlaceholder(type: string) {
-    if (type === "regex") {
-      return ".*[a-Z]+";
-    } else if (type === "string") {
-      return "string";
-    } else if (type === "int") {
-      return "123";
-    } else if (type === "string_list") {
-      return "aaa,bbb,ccc";
-    } else {
-      return "";
-    }
-  }
-
   function renderParamInput(
-    p: ParamDef,
-    r: RuleDef,
+    p: Parameter,
+    r: Rule,
     paramValue: string,
     setParamValue: (e: string) => void
   ) {
     return (
-      <div key={r.ruleId + "_" + p.label}>
+      <div key={r.name}>
         <div className="dialog-input-group">
           <label className="dialog-label">{p.label}</label>
-
           <InputGroup
             className="dialog-input"
-            placeholder={getPlaceholder(p.type)}
+            placeholder={p.placeholder}
             value={paramValue}
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              // TODO: handle multiple params
               setParamValue(e.target.value)
             }
             rightElement={
@@ -175,19 +188,19 @@ const RuleList: FunctionComponent<IProps> = ({ groups, setGroups }) => {
     );
   }
 
-  function renderParamForm(r: RuleDef) {
-    const len = r.paramDefs.length;
+  function renderParamForm(r: Rule) {
+    const len = r.params.length;
 
     return (
       <div>
-        {renderParamInput(r.paramDefs[0], r, param1, setParam1)}
+        {renderParamInput(r.params[0], r, param1, setParam1)}
         {len >= 2 ? (
-          renderParamInput(r.paramDefs[1], r, param2, setParam2)
+          renderParamInput(r.params[1], r, param2, setParam2)
         ) : (
           <span />
         )}
         {len === 3 ? (
-          renderParamInput(r.paramDefs[2], r, param3, setParam3)
+          renderParamInput(r.params[2], r, param3, setParam3)
         ) : (
           <span />
         )}
@@ -195,7 +208,7 @@ const RuleList: FunctionComponent<IProps> = ({ groups, setGroups }) => {
     );
   }
 
-  function renderDialogBody(r: RuleDef) {
+  function renderDialogBody(r: Rule) {
     if (r !== null) {
       return (
         <div>
@@ -228,7 +241,7 @@ const RuleList: FunctionComponent<IProps> = ({ groups, setGroups }) => {
                 className="bp3-button bp3-intent-primary"
                 onClick={e => handleAdd()}
               >
-                Add to {currentGroup ? currentGroup.groupName : ""}
+                Add to {currentGroup ? currentGroup.name : ""}
               </button>
             </div>
           </div>
@@ -249,30 +262,22 @@ const RuleList: FunctionComponent<IProps> = ({ groups, setGroups }) => {
       >
         <h4> FILE DETAIL RULES</h4>
         <Divider />
-        {rules
-          .filter(r => r.target.startsWith("file"))
-          .map(r => renderButton(r))}
+        {rules.filter(r => r.ruleType === "FILE").map(r => renderButton(r))}
         <h4> TIKA RULES</h4>
         <Divider />
-        {rules
-          .filter(r => r.target.startsWith("tika"))
-          .map(r => renderButton(r))}
+        {rules.filter(r => r.ruleType === "TIKA").map(r => renderButton(r))}
         <h4> CSV RULES</h4>
         <Divider />
-        {rules
-          .filter(r => r.target.startsWith("csv"))
-          .map(r => renderButton(r))}
+        {rules.filter(r => r.ruleType === "CSV").map(r => renderButton(r))}
         <h4> EXCEL RULES</h4>
         <Divider />
-        {rules
-          .filter(r => r.target.startsWith("xls"))
-          .map(r => renderButton(r))}
+        {rules.filter(r => r.ruleType === "EXCEL").map(r => renderButton(r))}
       </ButtonGroup>
       <Dialog
         isOpen={isOpen}
         icon="annotation"
         onClose={handleClose}
-        title={`Edit ${currentRule ? currentRule.ruleId : "-"}`}
+        title={`${currentRule ? currentRule.label : "-"}`}
         transitionDuration={100}
       >
         {currentRule ? renderDialogBody(currentRule) : ""}
