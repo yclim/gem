@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from "react";
+import React, { Dispatch, FunctionComponent, useState } from "react";
 import {
   Alignment,
   Button,
@@ -13,16 +13,17 @@ import {
   Tag
 } from "@blueprintjs/core";
 import { Group, Rule } from "./api";
+import { GroupAction, GroupActions } from "./EditGroups";
 
 interface IProps {
   group: Group;
-  updateGroups: (oldname: string, g: Group) => void;
+  groupDispatcher: Dispatch<GroupAction>;
   focusGrp: Group | null;
   setFocusGrp: (g: Group) => void;
 }
 const GroupCard: FunctionComponent<IProps> = ({
   group,
-  updateGroups,
+  groupDispatcher,
   focusGrp,
   setFocusGrp
 }) => {
@@ -64,7 +65,12 @@ const GroupCard: FunctionComponent<IProps> = ({
   }
 
   function handleConfirm() {
-    updateGroups(group.name, grp);
+    groupDispatcher(
+      GroupActions.updateGroupNameAction({
+        oldGroupName: group.name,
+        newGroupName: grp.name
+      })
+    );
   }
 
   return (
