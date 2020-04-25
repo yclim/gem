@@ -28,7 +28,7 @@ public class GEMFile {
   public GEMFile(String fileName, String directory) {
     this.directory = directory;
     this.fileName = fileName;
-    
+
     this._file = new File(getAbsolutePath());
     this.extension = FilenameUtils.getExtension(_file.getName());
     this.size = _file.length();
