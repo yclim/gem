@@ -25,7 +25,6 @@ class CSVFeatureTests {
 
   private String CsvFeature = "innohack.gem.entity.feature.CsvFeature";
 
-
   @Test
   void TestCSVContentParser() throws Exception {
 
@@ -33,7 +32,6 @@ class CSVFeatureTests {
     String path = "target/samples/csv/";
     File file = new File(path);
     file.mkdirs();
-
 
     String filenamePrefix = "customer_";
     String filename = filenamePrefix + 0 + ".csv";
@@ -43,9 +41,7 @@ class CSVFeatureTests {
     File delFile = new File(path + filename);
     FileUtilForTesting.deleteTestFile(delFile);
 
-
-    CsvFileGenerator.generateFixedCustomerCsvFiles(1, Paths.get(path),
-        100000, filename);
+    CsvFileGenerator.generateFixedCustomerCsvFiles(1, Paths.get(path), 100000, filename);
 
     TikaUtil tikaUtil = new TikaUtil();
     List<Path> results = FileUtil.walkPath(path);
@@ -59,20 +55,18 @@ class CSVFeatureTests {
 
       Iterator<AbstractFeature> iterator = abstractFeatureC.iterator();
 
-      //contains both tika and csv feature
+      // contains both tika and csv feature
       assertTrue(abstractFeatureC.size() == 2);
       while (iterator.hasNext()) {
         AbstractFeature abs = iterator.next();
         if (abs.getClass().getName().equals(CsvFeature)) {
-          TestCSVContents((CsvFeature)abs);
+          TestCSVContents((CsvFeature) abs);
         }
-
       }
     }
+  }
 
-   }
-
-  void TestCSVContents (CsvFeature abs) {
+  void TestCSVContents(CsvFeature abs) {
     CsvFeature csvFeature = (CsvFeature) abs;
     List<List<String>> dataTable = csvFeature.getTableData();
     int rowCount = 0;
@@ -81,36 +75,41 @@ class CSVFeatureTests {
       if (rowCount == 0) {
         for (int i = 0; i < row.size(); i++) {
           switch (i) {
-            case 0: assertTrue(row.get(i).equals("Customer ID"));
+            case 0:
+              assertTrue(row.get(i).equals("Customer ID"));
               break;
-            case 1: assertTrue(row.get(i).equals("Customer Name"));
+            case 1:
+              assertTrue(row.get(i).equals("Customer Name"));
               break;
-            case 2: assertTrue(row.get(i).equals("Gender"));
+            case 2:
+              assertTrue(row.get(i).equals("Gender"));
               break;
-            case 3: assertTrue(row.get(i).equals("Address"));
+            case 3:
+              assertTrue(row.get(i).equals("Address"));
               break;
-            case 4: assertTrue(row.get(i).equals("Contact Number"));
+            case 4:
+              assertTrue(row.get(i).equals("Contact Number"));
               break;
-            case 5: assertTrue(row.get(i).equals("Email"));
+            case 5:
+              assertTrue(row.get(i).equals("Email"));
               break;
             default:
               break;
           }
-
         }
 
-      }else {
+      } else {
         int custIdVariable = 100000;
 
         for (int i = 0; i < row.size(); i++) {
 
           // System.out.println("i is " + i + " value is " + row.get(i));
-          int custIdInt = (rowCount-1) + custIdVariable;
+          int custIdInt = (rowCount - 1) + custIdVariable;
           String custId = String.valueOf(custIdInt);
           String name = custId + "_" + "SampleName";
           String gender = "F";
           String emailSuffix = "@gmail.com";
-          if ((rowCount-1) % 2 == 0) {
+          if ((rowCount - 1) % 2 == 0) {
             gender = "M";
             emailSuffix = "@yahoo.com";
           }
@@ -120,29 +119,30 @@ class CSVFeatureTests {
           String email = name + emailSuffix;
 
           switch (i) {
-            case 0: assertTrue(row.get(i).equals(custIdInt+""));
+            case 0:
+              assertTrue(row.get(i).equals(custIdInt + ""));
               break;
-            case 1: assertTrue(row.get(i).equals(name));
+            case 1:
+              assertTrue(row.get(i).equals(name));
               break;
-            case 2: assertTrue(row.get(i).equals(gender));
+            case 2:
+              assertTrue(row.get(i).equals(gender));
               break;
-            case 3: assertTrue(row.get(i).equals(address));
+            case 3:
+              assertTrue(row.get(i).equals(address));
               break;
-            case 4: assertTrue(row.get(i).equals(contactNumber));
+            case 4:
+              assertTrue(row.get(i).equals(contactNumber));
               break;
-            case 5: assertTrue(row.get(i).equals(email));
+            case 5:
+              assertTrue(row.get(i).equals(email));
               break;
             default:
               break;
           }
-
         }
       }
       rowCount++;
-
     }
-
   }
-
-
 }

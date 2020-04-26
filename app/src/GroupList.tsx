@@ -1,38 +1,24 @@
-import React, { FunctionComponent } from "react";
+import React, { Dispatch, FunctionComponent } from "react";
 import { Button, Card, Elevation, Intent, Tag } from "@blueprintjs/core";
 import { Group } from "./api";
 import GroupCard from "./GroupCard";
+import { GroupAction, GroupActions } from "./EditGroups";
 
 interface IProps {
   groups: Map<string, Group>;
-  setGroups: (group: Map<string, Group>) => void;
+  groupDispatcher: Dispatch<GroupAction>;
   currentGroup: Group | null;
   setCurrentGroup: (group: Group) => void;
 }
 
 const GroupList: FunctionComponent<IProps> = ({
   groups,
-  setGroups,
+  groupDispatcher,
   currentGroup,
   setCurrentGroup
 }) => {
   function createGroup() {
-    const name = "untitled";
-    let counter = 1;
-    while (true) {
-      const modName = name + "-" + counter;
-      if (!groups.has(modName)) {
-        setGroups(new Map(groups.set(modName, { name: modName, rules: [] })));
-        return;
-      } else {
-        counter++;
-      }
-    }
-  }
-
-  function updateGroup(oldname: string, group: Group) {
-    groups.delete(oldname);
-    setGroups(new Map([...groups.set(group.name, group).entries()].sort()));
+    groupDispatcher(GroupActions.newGroupAction());
   }
 
   return (
@@ -52,7 +38,7 @@ const GroupList: FunctionComponent<IProps> = ({
           <GroupCard
             key={g.name}
             group={g}
-            updateGroups={updateGroup}
+            groupDispatcher={groupDispatcher}
             focusGrp={currentGroup}
             setFocusGrp={setCurrentGroup}
           />

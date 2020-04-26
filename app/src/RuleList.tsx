@@ -1,5 +1,6 @@
 import React, {
   ChangeEvent,
+  Dispatch,
   FunctionComponent,
   useEffect,
   useState
@@ -21,12 +22,13 @@ import {
   Popover,
   Position
 } from "@blueprintjs/core";
+import { GroupAction, GroupActions, rulenameExist } from "./EditGroups";
 
 interface IProps {
   groups: Map<string, Group>;
-  setGroups: (group: Map<string, Group>) => void;
+  groupDispatcher: Dispatch<GroupAction>;
 }
-const RuleList: FunctionComponent<IProps> = ({ groups, setGroups }) => {
+const RuleList: FunctionComponent<IProps> = ({ groups, groupDispatcher }) => {
   const [rules, setRules] = useState([] as Rule[]);
   const [isOpen, setIsOpen] = useState(false);
   const [currentRule, setCurrentRule] = useState<Rule | null>(null);
@@ -51,22 +53,14 @@ const RuleList: FunctionComponent<IProps> = ({ groups, setGroups }) => {
 
   function addRuleToGroup() {
     if (ruleName && param1 && currentRule && currentGroup) {
-      currentGroup.rules = [
-        ...currentGroup.rules,
-        {
+      groupDispatcher(
+        GroupActions.addGroupRuleAction({
+          groupName: currentGroup.name,
+          ruleName,
           ruleId: currentRule.ruleId,
-          name: ruleName,
-          params: [{ value: param1 }]
-        }
-      ];
-      groupRuleService.saveGroup(currentGroup).then(response => {
-        if (response.status !== 200) {
-          alert("saveGroup fail with status: " + response.status);
-        }
-      });
-
-      // Should we trigger a api getGroups again (in EditGroup) to stay consistent with backend?
-      setGroups(new Map(groups.set(currentGroup.name, currentGroup)));
+          ruleParams: [param1]
+        })
+      );
       setCurrentRule(null);
     }
   }
@@ -93,7 +87,6 @@ const RuleList: FunctionComponent<IProps> = ({ groups, setGroups }) => {
   }
 
   /**
-   *
    * generate rule name base on rule label
    * take first letter of each word in the label and add counter suffix because rule name must be unique
    * e.g Filename Extension -> FE-1
@@ -107,7 +100,7 @@ const RuleList: FunctionComponent<IProps> = ({ groups, setGroups }) => {
         .join("");
       while (true) {
         const finalName = alias + "-" + counter;
-        if (!rulenameExist(finalName)) {
+        if (!rulenameExist(groups, finalName)) {
           return finalName;
         } else {
           counter++;
@@ -117,14 +110,6 @@ const RuleList: FunctionComponent<IProps> = ({ groups, setGroups }) => {
       alert("illegal state: rule label is undefined");
       return "undefined";
     }
-  }
-
-  function rulenameExist(name: string): boolean {
-    return (
-      Array.from(groups).findIndex(
-        e => e[1].rules.findIndex(r => r.name === name) > -1
-      ) > -1
-    );
   }
 
   function renderGroupMenu(rule: Rule) {

@@ -1,15 +1,10 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import Api from "./Api";
 import { File } from ".";
 
 class FileService extends Api {
   public constructor() {
     super();
-    this.sync = this.sync.bind(this);
-    this.getFiles = this.getFiles.bind(this);
-    this.getFileByExtension = this.getFileByExtension.bind(this);
-    this.getCurrentDirectory = this.getCurrentDirectory.bind(this);
-    this.getExtensions = this.getExtensions.bind(this);
   }
 
   public sync(directory: string): Promise<AxiosResponse<File[]>> {
