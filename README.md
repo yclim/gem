@@ -28,4 +28,5 @@ Alternatively in IDE
 * the output will be in target/samples
 
 ### Devops
-Jenkins: [Go!](https://tinyurl.com/y8n27x3z)
+* Travis: [https://travis-ci.org/github/yclim/gem](https://travis-ci.org/github/yclim/gem)
+* (To be removed) Jenkins: [Go!](https://tinyurl.com/y8n27x3z)
