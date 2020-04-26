@@ -141,14 +141,14 @@
 
 .highlight-effect {
   border-radius: 3px;
-  animation: highlight 1000ms ease-out;
+  animation: highlight 1500ms ease-out;
 }
 
 @keyframes highlight {
   from {
-    background-color: yellow;
+    background-color: $green5;
   }
   to {
-    background-color: white;
+    background-color: $white;
   }
 }

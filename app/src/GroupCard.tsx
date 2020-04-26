@@ -20,12 +20,14 @@ interface IProps {
   groupDispatcher: Dispatch<GroupAction>;
   focusGrp: Group | null;
   setFocusGrp: (g: Group) => void;
+  focusedGroupRuleName: string | null;
 }
 const GroupCard: FunctionComponent<IProps> = ({
   group,
   groupDispatcher,
   focusGrp,
-  setFocusGrp
+  setFocusGrp,
+  focusedGroupRuleName
 }) => {
   const [grp, setGrp] = useState(group);
 
@@ -49,7 +51,9 @@ const GroupCard: FunctionComponent<IProps> = ({
           alignText={Alignment.LEFT}
           rightIcon="more"
           text={ri.name}
-          className="group-card-rule"
+          className={`group-card-rule ${
+            focusedGroupRuleName === ri.name ? "highlight-effect" : ""
+          }`}
         />
       </Popover>
     );

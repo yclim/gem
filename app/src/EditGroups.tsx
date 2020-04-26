@@ -194,6 +194,9 @@ const EditGroups: FunctionComponent<RouteComponentProps> = () => {
     groupsReducer,
     new Map<string, Group>()
   );
+  const [focusedGroupRuleName, setFocusedGroupRuleName] = useState<
+    string | null
+  >(null);
   const [currentGroup, setCurrentGroup] = useState<Group | null>(null);
   const [files, setFiles] = useState<File[]>([]);
 
@@ -211,12 +214,17 @@ const EditGroups: FunctionComponent<RouteComponentProps> = () => {
 
   return (
     <div className="grid3">
-      <RuleList groups={groups} groupDispatcher={dispatcher} />
+      <RuleList
+        groups={groups}
+        groupDispatcher={dispatcher}
+        setFocusedGroupRuleName={setFocusedGroupRuleName}
+      />
       <GroupList
         groups={groups}
         groupDispatcher={dispatcher}
         currentGroup={currentGroup}
         setCurrentGroup={setCurrentGroup}
+        focusedGroupRuleName={focusedGroupRuleName}
       />
       <FileList files={files} setFiles={setFiles} />
     </div>

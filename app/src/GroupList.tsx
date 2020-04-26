@@ -9,13 +9,15 @@ interface IProps {
   groupDispatcher: Dispatch<GroupAction>;
   currentGroup: Group | null;
   setCurrentGroup: (group: Group) => void;
+  focusedGroupRuleName: string | null;
 }
 
 const GroupList: FunctionComponent<IProps> = ({
   groups,
   groupDispatcher,
   currentGroup,
-  setCurrentGroup
+  setCurrentGroup,
+  focusedGroupRuleName
 }) => {
   function createGroup() {
     groupDispatcher(GroupActions.newGroupAction());
@@ -41,6 +43,7 @@ const GroupList: FunctionComponent<IProps> = ({
             groupDispatcher={groupDispatcher}
             focusGrp={currentGroup}
             setFocusGrp={setCurrentGroup}
+            focusedGroupRuleName={focusedGroupRuleName}
           />
         ))}
         <Card interactive={false} elevation={Elevation.ZERO}>
