@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/yclim/gem.svg?branch=master)](https://travis-ci.org/yclim/gem)
+
 # GEM
 App to help build rules to group structurally similar files together.
 
