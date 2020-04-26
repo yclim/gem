@@ -31,54 +31,64 @@ export interface UpdateRuleNameInput {
   newRuleName: string;
 }
 
+const INIT_GROUPS = "INIT_GROUPS";
+const NEW_GROUP = "NEW_GROUP";
+const REMOVE_GROUP = "REMOVE_GROUP";
+const ADD_GROUP_RULE = "ADD_GROUP_RULE";
+const UPDATE_GROUP_NAME = "UPDATE_GROUP_NAME";
+const UPDATE_RULE_NAME = "UPDATE_RULE_NAME";
+
 export type GroupAction =
-  | { type: "INIT_GROUPS"; groups: Group[] }
-  | { type: "NEW_GROUP" }
-  | { type: "REMOVE_GROUP"; groupName: string }
-  | { type: "ADD_GROUP_RULE"; addGroupRuleInput: AddGroupRuleInput }
-  | { type: "UPDATE_GROUP_NAME"; updateGroupNameInput: UpdateGroupNameInput }
-  | { type: "UPDATE_RULE_NAME"; updateRuleNameInput: UpdateRuleNameInput };
+  | { type: typeof INIT_GROUPS; groups: Group[] }
+  | { type: typeof NEW_GROUP }
+  | { type: typeof REMOVE_GROUP; groupName: string }
+  | { type: typeof ADD_GROUP_RULE; addGroupRuleInput: AddGroupRuleInput }
+  | {
+      type: typeof UPDATE_GROUP_NAME;
+      updateGroupNameInput: UpdateGroupNameInput;
+    }
+  | { type: typeof UPDATE_RULE_NAME; updateRuleNameInput: UpdateRuleNameInput };
 
 export abstract class GroupActions {
   static initGroupAction(groups: Group[]): GroupAction {
-    return { type: "INIT_GROUPS", groups };
+    return { type: INIT_GROUPS, groups };
   }
   static newGroupAction(): GroupAction {
-    return { type: "NEW_GROUP" };
+    return { type: NEW_GROUP };
   }
   static removeGroupAction(groupName: string): GroupAction {
     // TODO implement UI and backend api to use this
-    return { type: "REMOVE_GROUP", groupName };
+    return { type: REMOVE_GROUP, groupName };
   }
   static addGroupRuleAction(addGroupRuleInput: AddGroupRuleInput): GroupAction {
-    return { type: "ADD_GROUP_RULE", addGroupRuleInput };
+    return { type: ADD_GROUP_RULE, addGroupRuleInput };
   }
   static updateGroupNameAction(
     updateGroupNameInput: UpdateGroupNameInput
   ): GroupAction {
     // TODO need a backend api to update group name
-    return { type: "UPDATE_GROUP_NAME", updateGroupNameInput };
+    return { type: UPDATE_GROUP_NAME, updateGroupNameInput };
   }
   static updateRuleNameAction(
     updateRuleNameInput: UpdateRuleNameInput
   ): GroupAction {
-    return { type: "UPDATE_RULE_NAME", updateRuleNameInput };
+    return { type: UPDATE_RULE_NAME, updateRuleNameInput };
   }
 }
 
 export function groupsReducer(state: Map<string, Group>, action: GroupAction) {
   switch (action.type) {
-    case "INIT_GROUPS":
+    case INIT_GROUPS:
       return new Map(action.groups.map(g => [g.name, g]));
-    case "NEW_GROUP":
+    case NEW_GROUP:
       return handleNewGroup(state);
-    case "REMOVE_GROUP":
+    case REMOVE_GROUP:
       return handleRemoveGroup(state, action.groupName);
-    case "ADD_GROUP_RULE":
+    case ADD_GROUP_RULE:
       return handleAddGroupRule(state, action.addGroupRuleInput);
-    case "UPDATE_GROUP_NAME":
+    case UPDATE_GROUP_NAME:
       return handleUpdateGroupName(state, action.updateGroupNameInput);
-    case "UPDATE_RULE_NAME":
+    case UPDATE_RULE_NAME:
       return handleUpdateRuleName(state, action.updateRuleNameInput);
     default:
       throw new Error();
