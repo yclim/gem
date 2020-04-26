@@ -54,7 +54,7 @@ const RuleList: FunctionComponent<IProps> = ({ groups, groupDispatcher }) => {
   function addRuleToGroup() {
     if (ruleName && param1 && currentRule && currentGroup) {
       groupDispatcher(
-        GroupActions.addGroupRuleAction({
+        GroupActions.addGroupRule({
           groupName: currentGroup.name,
           ruleName,
           ruleId: currentRule.ruleId,

@@ -66,7 +66,7 @@ const GroupCard: FunctionComponent<IProps> = ({
 
   function handleConfirm() {
     groupDispatcher(
-      GroupActions.updateGroupNameAction({
+      GroupActions.updateGroupName({
         oldGroupName: group.name,
         newGroupName: grp.name
       })
