@@ -15,7 +15,7 @@ class GroupRuleService extends Api {
     return this.get<Rule[]>("rule/list");
   }
 
-  public deleteGroup(groupName: String): Promise<AxiosResponse<Rule[]>> {
+  public deleteGroup(groupName: string): Promise<AxiosResponse<Rule[]>> {
     return this.delete("group?name=" + groupName);
   }
 
