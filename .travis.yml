@@ -16,9 +16,11 @@ notifications:
     on_failure: always
 jobs:
   include:
+    - stage: compile
+      script: mvn clean package
     - stage: ecr_deploy
       # sudo: required #is required to use docker service in travis
-      script: mvn clean package -P dockerize
+      script: mvn package -P dockerize
       services:
         - docker
       after_success:
@@ -29,7 +31,7 @@ jobs:
         - docker load --input target/jib-image.tar
         - docker tag gem 037562003025.dkr.ecr.ap-southeast-1.amazonaws.com/docker-repo:gem
         - docker push 037562003025.dkr.ecr.ap-southeast-1.amazonaws.com/docker-repo:gem
-# stages:
-#   - name: ecr_deploy
-#     # require the branch name to be master (note for PRs this is the base branch name)
-#     if: branch = master
+stages:
+  - name: compile
+  - name: ecr_deploy
+    if: branch = master
