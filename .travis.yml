@@ -1,5 +1,4 @@
 language: java
-script: skip
 cache:
   directories:
     - $HOME/.m2
@@ -7,12 +6,12 @@ cache:
 notifications:
   email:
     recipients:
-      # - duotayct@gmail.com
+      - duotayct@gmail.com
       - leethiamchye@gmail.com
-      # - metamagpie@gmail.com
-      # - neojunjie87@gmail.com
-      # - shaojieyew@gmail.com
-      # - yowchenglim+dev@gmail.com
+      - metamagpie@gmail.com
+      - neojunjie87@gmail.com
+      - shaojieyew@gmail.com
+      - yowchenglim+dev@gmail.com
     on_success: never
     on_failure: always
 jobs:
@@ -34,4 +33,4 @@ jobs:
 stages:
   - name: compile
   - name: ecr_deploy
-    if: branch = 72-jenkins-cd
+    if: branch = master
