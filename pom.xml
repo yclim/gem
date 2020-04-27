@@ -358,7 +358,7 @@
 		        <version>2.2.0</version>
 		        <configuration>
 		          <to>
-		            <image>gem</image>
+		            <image>gem:latest</image>
 		            <!-- image>037562003025.dkr.ecr.ap-southeast-1.amazonaws.com/docker-repo:gem</image-->
 		          </to>
 		        </configuration>

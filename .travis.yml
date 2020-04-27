@@ -18,5 +18,6 @@ after_success:
   - pip install --user awscli # install aws cli w/o sudo
   - export PATH=$PATH:$HOME/.local/bin # put aws in the path
   - eval $(aws ecr get-login --no-include-email --region ap-southeast-1) #needs AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY envvars
-  - docker tag target/jib-image 037562003025.dkr.ecr.ap-southeast-1.amazonaws.com/docker-repo/gem:latest
+  - docker load --input target/jib-image.tar
+  - docker tag gem:latest 037562003025.dkr.ecr.ap-southeast-1.amazonaws.com/docker-repo/gem:latest
   - docker push 037562003025.dkr.ecr.ap-southeast-1.amazonaws.com/docker-repo/gem:latest
