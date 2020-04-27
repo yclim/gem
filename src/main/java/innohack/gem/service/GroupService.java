@@ -2,16 +2,15 @@ package innohack.gem.service;
 
 import innohack.gem.dao.IGroupDao;
 import innohack.gem.entity.rule.Group;
-import innohack.gem.service.event.EventListener;
-import innohack.gem.service.event.NewEvent;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class GroupService extends NewEvent {
+public class GroupService {
 
   @Autowired private IGroupDao groupDao;
+  @Autowired private MatchService matcherService;
 
   public List<Group> getGroups() {
     return groupDao.getGroups();
@@ -22,12 +21,16 @@ public class GroupService extends NewEvent {
   }
 
   public boolean deleteGroup(String groupName) {
-    return groupDao.deleteGroup(groupName);
+    Group group = new Group();
+    group.setName(groupName);
+    boolean result = groupDao.deleteGroup(groupName);
+    matcherService.onUpdateGroupRule(group);
+    return result;
   }
 
-  public boolean saveGroup(Group group) {
-    boolean result = groupDao.saveGroup(group);
-    if (result) newEvent(EventListener.Event.NEW_GROUP, group);
-    return result;
+  public Group saveGroup(Group group) {
+    group = groupDao.saveGroup(group);
+    matcherService.onUpdateGroupRule(group);
+    return group;
   }
 }

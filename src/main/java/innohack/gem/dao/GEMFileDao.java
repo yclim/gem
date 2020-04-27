@@ -36,6 +36,17 @@ public class GEMFileDao implements IGEMFileDao {
   public Set<String> getFileTypes() {
     return fileTypeStore;
   }
+
+  @Override
+  public void deleteAll() {
+    featureStore = new HashMap<String, GEMFile>();
+  }
+
+  @Override
+  public void delete(String absolutePath) {
+    featureStore.remove(absolutePath);
+  }
+
   // This method get file data from feature store
   @Override
   public GEMFile getFile(String filename, String directory) {

@@ -2,12 +2,11 @@ package innohack.gem.service;
 
 import innohack.gem.entity.rule.RuleFactory;
 import innohack.gem.entity.rule.rules.Rule;
-import innohack.gem.service.event.NewEvent;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
-public class RuleService extends NewEvent {
+public class RuleService {
 
   /**
    * List of rules grouped by RuleType; eg CSV, TIKA, EXCEL
