@@ -1,4 +1,5 @@
 language: java
+script: mvn clean
 cache:
   directories:
     - $HOME/.m2
@@ -34,4 +35,4 @@ jobs:
 stages:
   - name: compile
   - name: ecr_deploy
-    if: branch = master
+    if: branch = 72-jenkins-cd
