@@ -84,6 +84,7 @@
 }
 
 .group-card {
+  width: #{$group-card-width}px;
   padding-top: 0px;
 }
 
@@ -136,4 +137,18 @@
   margin-left: 10px;
   margin-right: 10px;
   width: 120px;
+}
+
+.highlight-effect {
+  border-radius: 3px;
+  animation: highlight 1500ms ease-out;
+}
+
+@keyframes highlight {
+  from {
+    background-color: $green5;
+  }
+  to {
+    background-color: $white;
+  }
 }

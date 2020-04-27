@@ -4,7 +4,7 @@ import innohack.gem.dao.IGroupDao;
 import innohack.gem.entity.rule.Group;
 import innohack.gem.service.event.EventListener;
 import innohack.gem.service.event.NewEvent;
-import java.util.Collection;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +13,7 @@ public class GroupService extends NewEvent {
 
   @Autowired private IGroupDao groupDao;
 
-  public Collection<Group> getGroups() {
+  public List<Group> getGroups() {
     return groupDao.getGroups();
   }
 

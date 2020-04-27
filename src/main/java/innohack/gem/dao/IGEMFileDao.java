@@ -1,7 +1,7 @@
 package innohack.gem.dao;
 
 import innohack.gem.entity.GEMFile;
-import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -41,7 +41,7 @@ public interface IGEMFileDao {
    * @param filename document file extension
    * @return list of document metadata
    */
-  Collection<GEMFile> findByName(String filename);
+  List<GEMFile> findByName(String filename);
 
   /**
    * Find document metadata by document file extension
@@ -49,17 +49,17 @@ public interface IGEMFileDao {
    * @param extension document file extension
    * @return list of document metadata
    */
-  Collection<GEMFile> findByExtension(String extension);
+  List<GEMFile> findByExtension(String extension);
 
   /**
    * Retrieves all stored documents It should return the minimun; file name and directory
    *
    * @return list of metadata {@link GEMFile @GEMFile}
    */
-  Collection<GEMFile> getFiles();
+  List<GEMFile> getFiles();
 
   // Get list of local files from directory
-  Collection<GEMFile> getLocalFiles(String directory);
+  List<GEMFile> getLocalFiles(String directory);
 
   // save file to feature store
   void saveFile(GEMFile files);

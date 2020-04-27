@@ -10,6 +10,7 @@ import java.util.List;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  * Code to generate Excel files with two sheets - first sheet contains car data that looks like:
@@ -59,6 +60,7 @@ public class ExcelFileGenerator {
               + "Cabrio City-Coupé Forfour Roadster")
           .split("\\s+");
 
+
   public static void generateCarsExcelFiles(int numOfFiles, Path dest) throws IOException {
     int numOfLines = GenUtil.randomInt(300);
     String filenamePrefix = "cars_";
@@ -74,8 +76,42 @@ public class ExcelFileGenerator {
           new FileOutputStream(Paths.get(dest.toString(), filename).toFile());
       workbook.write(outputStream);
       workbook.close();
+      outputStream.close();
     }
   }
+
+  public static void generateFixedCarsExcelFiles(String excelType, boolean multiSheets,
+      int numLines, int numOfFiles, Path dest,
+      String fileNamePrefix) throws IOException {
+    int numOfLines = numLines;
+
+    for (int i = 0; i < numOfFiles; i++) {
+      Workbook workbook;
+
+      if (excelType.equals("xls")) {
+        workbook = new HSSFWorkbook();
+      }else {
+        workbook = new XSSFWorkbook();
+      }
+      List<List<String>> sheetOneTable = generateFixedSheetOneDataTables(numOfLines);
+      populateSheet(workbook, "Cars", sheetOneTable);
+
+      if (multiSheets) {
+        List<List<String>> sheetTwoTable = generateFixedSheetTwoDataTables(numOfLines);
+        populateSheet(workbook, "Cars Dealer", sheetTwoTable);
+      }
+      String filename = fileNamePrefix + i + ".xls";
+
+      FileOutputStream outputStream =
+          new FileOutputStream(Paths.get(dest.toString(), filename).toFile());
+      workbook.write(outputStream);
+
+      workbook.close();
+      outputStream.close();
+
+    }
+  }
+
 
   public static List<List<String>> generateSheetOneDataTables(int rows) {
     List<List<String>> table = new ArrayList<>();
@@ -92,12 +128,47 @@ public class ExcelFileGenerator {
     return table;
   }
 
+  public static List<List<String>> generateFixedSheetOneDataTables(int rows) {
+    List<List<String>> table = new ArrayList<>();
+    List<String> headers = Arrays.asList("CAR_ID", "CAR_BRAND", "CAR_MODEL", "YEAR", "CAPACITY");
+    table.add(headers);
+    for (int i = 0; i < rows; i++) {
+      String id = String.valueOf(i);
+
+      String brand = carBrands[i % carBrands.length];
+      String model = carModels[i % carModels.length];
+      String year = (1970 + i) + "";
+      String capacity = (i % 8) + "";
+      table.add(Arrays.asList(id, brand, model, year, capacity));
+    }
+    return table;
+  }
+
+  public static List<List<String>> generateFixedSheetTwoDataTables(int rows) {
+    List<List<String>> table = new ArrayList<>();
+    List<String> headers = Arrays.asList("CAR_ID", "CAR_DEALER", "PRICE");
+    table.add(headers);
+    for (int i = 0; i < rows; i++) {
+      String id = String.valueOf(i);
+      String[] carDealerArray =
+          ("Huat Huat Car, Best Auto, Fast Car Ptd Ltd, Dealer X, Premium Auto, "
+                  + "Luxury Automobile, Prestige Auto")
+                  .split(",");
+
+      String carDealer = carDealerArray[i % carDealerArray.length];
+      String price = String.valueOf((i * 1000) + 1000000);
+      table.add(Arrays.asList(id, carDealer, price));
+    }
+    return table;
+  }
+
   public static List<List<String>> generateSheetTwoDataTables(int rows) {
     List<List<String>> table = new ArrayList<>();
     List<String> headers = Arrays.asList("CAR_ID", "CAR_DEALER", "PRICE");
     table.add(headers);
     for (int i = 0; i < rows; i++) {
       String id = String.valueOf(i);
+
       String carDealer =
           GenUtil.oneOf(
               "Huat Huat Car",
@@ -135,7 +206,13 @@ public class ExcelFileGenerator {
   public static CellStyle fontStyle(
       Workbook workbook, String fontname, int heightPoints, boolean isBold) {
     CellStyle headerStyle = workbook.createCellStyle();
-    HSSFFont font = ((HSSFWorkbook) workbook).createFont();
+
+    Font font;
+    if (workbook.getClass().getName().equals("org.apache.poi.hssf.usermodel.HSSFWorkbook")) {
+      font = ((HSSFWorkbook) workbook).createFont();
+    }else {
+      font = ((XSSFWorkbook) workbook).createFont();
+    }
     font.setFontName(fontname);
     font.setFontHeightInPoints((short) heightPoints);
     font.setBold(isBold);

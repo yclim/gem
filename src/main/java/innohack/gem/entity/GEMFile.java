@@ -9,7 +9,7 @@ import innohack.gem.entity.feature.common.FeatureExtractorUtil;
 import innohack.gem.example.tika.TikaMimeEnum;
 import java.io.File;
 import java.nio.file.Paths;
-import java.util.Collection;
+import java.util.List;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.mime.MediaType;
@@ -20,7 +20,7 @@ public class GEMFile {
   private Long size;
   private String extension;
   private String directory;
-  private Collection<AbstractFeature> data;
+  private List<AbstractFeature> data;
 
   private MediaType _mediaType;
   private File _file;
@@ -28,7 +28,7 @@ public class GEMFile {
   public GEMFile(String fileName, String directory) {
     this.directory = directory;
     this.fileName = fileName;
-    
+
     this._file = new File(getAbsolutePath());
     this.extension = FilenameUtils.getExtension(_file.getName());
     this.size = _file.length();
@@ -70,7 +70,7 @@ public class GEMFile {
     this.extension = extension;
   }
 
-  public void addAllData(Collection<AbstractFeature> data) {
+  public void addAllData(List<AbstractFeature> data) {
     if (this.data == null) {
       this.data = Lists.newArrayList();
     }
@@ -84,11 +84,11 @@ public class GEMFile {
     this.data.add(data);
   }
 
-  public Collection<AbstractFeature> getData() {
+  public List<AbstractFeature> getData() {
     return data;
   }
 
-  public void setData(Collection<AbstractFeature> data) {
+  public void setData(List<AbstractFeature> data) {
     this.data = data;
   }
 

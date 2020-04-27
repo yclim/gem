@@ -1,11 +1,11 @@
 package innohack.gem.entity.rule;
 
 import innohack.gem.entity.rule.rules.Rule;
-import java.util.Collection;
+import java.util.List;
 
 public class Group {
   private String name;
-  private Collection<Rule> rules;
+  private List<Rule> rules;
   private int matchedCount;
 
   public String getName() {
@@ -16,11 +16,11 @@ public class Group {
     this.name = name;
   }
 
-  public Collection<Rule> getRules() {
+  public List<Rule> getRules() {
     return rules;
   }
 
-  public void setRules(Collection<Rule> rules) {
+  public void setRules(List<Rule> rules) {
     this.rules = rules;
   }
 

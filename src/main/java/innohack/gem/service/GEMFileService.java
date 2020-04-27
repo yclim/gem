@@ -4,7 +4,7 @@ import innohack.gem.dao.IGEMFileDao;
 import innohack.gem.entity.GEMFile;
 import innohack.gem.service.event.EventListener;
 import innohack.gem.service.event.NewEvent;
-import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ public class GEMFileService extends NewEvent {
     return gemFileDao.getFileByAbsolutePath(absolutePath);
   }
 
-  public Collection<GEMFile> getFileList() {
+  public List<GEMFile> getFileList() {
     return gemFileDao.getFiles();
   }
 
@@ -36,8 +36,8 @@ public class GEMFileService extends NewEvent {
    * @param folderPath directory path of files to sync
    * @return list of files that was processed and stored {@link GEMFile @GEMFile}
    */
-  public Collection<GEMFile> syncFiles(String folderPath) throws Exception {
-    Collection<GEMFile> filelist = gemFileDao.getLocalFiles(folderPath);
+  public List<GEMFile> syncFiles(String folderPath) throws Exception {
+    List<GEMFile> filelist = gemFileDao.getLocalFiles(folderPath);
     for (GEMFile file : filelist) {
 
       // perform extraction
@@ -56,7 +56,7 @@ public class GEMFileService extends NewEvent {
    * @param name document name
    * @return list of metadata {@link GEMFile @DocumentMetadata}
    */
-  public Collection<GEMFile> findByName(String name) {
+  public List<GEMFile> findByName(String name) {
     return gemFileDao.findByName(name);
   }
 
@@ -66,7 +66,7 @@ public class GEMFileService extends NewEvent {
    * @param extension file name extension
    * @return list of metadata {@link GEMFile @DocumentMetadata}
    */
-  public Collection<GEMFile> findByExtension(String extension) {
+  public List<GEMFile> findByExtension(String extension) {
     return gemFileDao.findByExtension(extension);
   }
 

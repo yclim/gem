@@ -1,29 +1,22 @@
-export interface RuleDef {
-  ruleId: string;
-  alias: string;
-  paramDefs: ParamDef[];
-  target: string;
-}
-
-export interface ParamDef {
-  label: string;
-  type: string;
-}
-
 export interface Group {
-  groupName: string;
+  name: string;
   rules: Rule[];
+  matchedCount?: bigint;
 }
 
 export interface Rule {
   ruleId: string;
-  label: string;
-  paramValues: string[];
+  label?: string;
+  ruleType?: string;
+  name: string;
+  params: Parameter[];
 }
 
-export interface GroupFiles {
-  groupName: string;
-  files: File[];
+export interface Parameter {
+  label?: string;
+  placeholder?: string;
+  value: string;
+  type?: string;
 }
 
 export interface ExcelFeature {

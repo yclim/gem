@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from "react";
+import React, { Dispatch, FunctionComponent, useState } from "react";
 import {
   Alignment,
   Button,
@@ -13,18 +13,21 @@ import {
   Tag
 } from "@blueprintjs/core";
 import { Group, Rule } from "./api";
+import { GroupAction, GroupActions } from "./EditGroups";
 
 interface IProps {
   group: Group;
-  updateGroups: (oldname: string, g: Group) => void;
+  groupDispatcher: Dispatch<GroupAction>;
   focusGrp: Group | null;
   setFocusGrp: (g: Group) => void;
+  focusedGroupRuleName: string | null;
 }
 const GroupCard: FunctionComponent<IProps> = ({
   group,
-  updateGroups,
+  groupDispatcher,
   focusGrp,
-  setFocusGrp
+  setFocusGrp,
+  focusedGroupRuleName
 }) => {
   const [grp, setGrp] = useState(group);
 
@@ -40,16 +43,17 @@ const GroupCard: FunctionComponent<IProps> = ({
   function renderGroupRule(ri: Rule) {
     return (
       <Popover
-        key={`popover-${ri.label}`}
+        key={`popover-${ri.name}`}
         position={Position.RIGHT_TOP}
         content={renderMenu()}
       >
         <Button
-          key={`button-${ri.label}`}
           alignText={Alignment.LEFT}
           rightIcon="more"
-          text={ri.label}
-          className="group-card-rule"
+          text={ri.name}
+          className={`group-card-rule ${
+            focusedGroupRuleName === ri.name ? "highlight-effect" : ""
+          }`}
         />
       </Popover>
     );
@@ -60,17 +64,22 @@ const GroupCard: FunctionComponent<IProps> = ({
   }
 
   function handleChangeGroupName(e: string) {
-    const g = { groupName: e, rules: grp.rules };
+    const g = { name: e, rules: grp.rules };
     setGrp(g);
   }
 
   function handleConfirm() {
-    updateGroups(group.groupName, grp);
+    groupDispatcher(
+      GroupActions.updateGroupName({
+        oldGroupName: group.name,
+        newGroupName: grp.name
+      })
+    );
   }
 
   return (
     <Card
-      key={group.groupName}
+      key={group.name}
       interactive={false}
       elevation={focusGrp === group ? Elevation.FOUR : Elevation.ONE}
       className={`group-card ${focusGrp === group ? "group-card-focus" : ""}`}
@@ -82,7 +91,7 @@ const GroupCard: FunctionComponent<IProps> = ({
       <div className="group-card-header">
         <div className="label">
           <EditableText
-            value={grp.groupName}
+            value={grp.name}
             onChange={e => handleChangeGroupName(e)}
             onConfirm={() => handleConfirm()}
           />

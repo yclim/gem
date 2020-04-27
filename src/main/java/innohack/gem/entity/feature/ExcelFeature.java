@@ -27,17 +27,21 @@ public class ExcelFeature extends AbstractFeature {
   public void extract(File f) throws Exception {
 
     File file = new File(String.valueOf(f.toPath().toAbsolutePath()));
-    Workbook workbook = WorkbookFactory.create(file);
+    try (Workbook workbook = WorkbookFactory.create(file)) {
 
-    if (workbook.getNumberOfSheets() > 0) {
-      sheetTableData = new HashMap<>();
-      for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
-        String sheetName = sheetParser(workbook, i, sheetTableData);
-        System.out.println(
-            "SheetNo: " + (i + 1) + "sheetFeatures is " + sheetTableData.get(sheetName).toString());
+      if (workbook.getNumberOfSheets() > 0) {
+        sheetTableData = new HashMap<>();
+        for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+          String sheetName = sheetParser(workbook, i, sheetTableData);
+          System.out.println(
+              "SheetNo: "
+                  + (i + 1)
+                  + "sheetFeatures is "
+                  + sheetTableData.get(sheetName).toString());
+        }
       }
     }
-    workbook.close();
+
   }
 
   private String sheetParser(
@@ -62,7 +66,6 @@ public class ExcelFeature extends AbstractFeature {
       contents.add(recordBuilder);
     }
     tableData.put(sheetName, contents);
-
     return sheetName;
   }
 
