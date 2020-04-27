@@ -346,9 +346,9 @@
       </properties>
     </profile>
     <profile>
-    	<id>cd</id>
+    	<id>master</id>
     	<activation>
-        <activeByDefault>true</activeByDefault>
+        <activeByDefault>false</activeByDefault>
       </activation>
     	<build>
     		<plugins>
