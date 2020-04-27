@@ -358,8 +358,8 @@
 		        <version>2.2.0</version>
 		        <configuration>
 		          <to>
-		            <!-- image>gem</image-->
-		            <image>037562003025.dkr.ecr.ap-southeast-1.amazonaws.com/docker-repo:gem</image>
+		            <image>gem</image>
+		            <!-- image>037562003025.dkr.ecr.ap-southeast-1.amazonaws.com/docker-repo:gem</image-->
 		          </to>
 		        </configuration>
 		        <executions>
@@ -367,8 +367,8 @@
                 <id>dockerize</id>
                 <phase>package</phase>
                 <goals>
-                  <!-- goal>buildTar</goal-->
-                  <goal>build</goal>
+                  <goal>buildTar</goal>
+                  <!--  goal>build</goal -->
                 </goals>
               </execution>
 		        </executions>
