@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 public class CsvHeaderColumnValueTest {
 
   @Test
-  public void testCheckValidHeader() throws Exception {
+  public void testCheckValidCSVHeader() throws Exception {
 
     CsvHeaderColumnValue csvHeader = new CsvHeaderColumnValue("Customer Name,Contact Number,Email");
     System.out.println("Testing testCSVContentParser");
@@ -56,7 +56,7 @@ public class CsvHeaderColumnValueTest {
   }
 
   @Test
-  public void testCheckInvalidHeaderCustomerName() throws Exception {
+  public void testCheckInvalidCSVHeaderCustomerName() throws Exception {
 
     CsvHeaderColumnValue csvHeader = new CsvHeaderColumnValue("Customer Name,Contact Number,Email");
     System.out.println("Testing testCSVContentParser");
@@ -96,7 +96,7 @@ public class CsvHeaderColumnValueTest {
   }
 
   @Test
-  public void testCheckInvalidHeaderEmail() throws Exception {
+  public void testCheckInvalidCSVHeaderEmail() throws Exception {
 
     CsvHeaderColumnValue csvHeader = new CsvHeaderColumnValue("Customer Name,Contact Number,MailADDR");
     System.out.println("Testing testCSVContentParser");
