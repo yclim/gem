@@ -1,5 +1,4 @@
 language: java
-script: mvn clean package -P $TRAVIS_BRANCH
 notifications:
   email:
     recipients:
@@ -11,14 +10,22 @@ notifications:
       - yowchenglim+dev@gmail.com
     on_success: never
     on_failure: always
-sudo: required #is required to use docker service in travis
-services:
-  - test $TRAVIS_BRANCH = "master" && docker
-after_success:
-  - test $TRAVIS_BRANCH = "master" && docker --version  # document the version travis is using
-  - test $TRAVIS_BRANCH = "master" && pip install --user awscli # install aws cli w/o sudo
-  - test $TRAVIS_BRANCH = "master" && export PATH=$PATH:$HOME/.local/bin # put aws in the path
-  - test $TRAVIS_BRANCH = "master" && eval $(aws ecr get-login --no-include-email --region ap-southeast-1) #needs AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY envvars
-  - test $TRAVIS_BRANCH = "master" && docker load --input target/jib-image.tar
-  - test $TRAVIS_BRANCH = "master" && docker tag gem 037562003025.dkr.ecr.ap-southeast-1.amazonaws.com/docker-repo:gem
-  - test $TRAVIS_BRANCH = "master" && docker push 037562003025.dkr.ecr.ap-southeast-1.amazonaws.com/docker-repo:gem
+jobs:
+  include:
+    - stage: ecr_deploy
+      sudo: required #is required to use docker service in travis
+      script: mvn clean package -P dockerize
+      services:
+       - docker
+      after_success:
+       - docker --version  # document the version travis is using
+       - pip install --user awscli # install aws cli w/o sudo
+       - export PATH=$PATH:$HOME/.local/bin # put aws in the path
+       - eval $(aws ecr get-login --no-include-email --region ap-southeast-1) #needs AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY envvars
+       - docker load --input target/jib-image.tar
+       - docker tag gem 037562003025.dkr.ecr.ap-southeast-1.amazonaws.com/docker-repo:gem
+       - docker push 037562003025.dkr.ecr.ap-southeast-1.amazonaws.com/docker-repo:gem
+stages:
+  - name: ecr_deploy
+    # require the branch name to be master (note for PRs this is the base branch name)
+    if: branch = master

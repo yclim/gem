@@ -346,7 +346,7 @@
       </properties>
     </profile>
     <profile>
-    	<id>72-jenkins-cd</id>
+    	<id>dockerize</id>
     	<activation>
         <activeByDefault>false</activeByDefault>
       </activation>
