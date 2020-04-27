@@ -1,18 +1,18 @@
 language: java
-  cache:
-    directories:
-      - $HOME/.m2
-      - node_modules
-  email:
-    recipients:
-      - duotayct@gmail.com
-      - leethiamchye@gmail.com
-      - metamagpie@gmail.com
-      - neojunjie87@gmail.com
-      - shaojieyew@gmail.com
-      - yowchenglim+dev@gmail.com
-    on_success: never
-    on_failure: always
+cache:
+  directories:
+    - $HOME/.m2
+    - node_modules
+email:
+  recipients:
+    # - duotayct@gmail.com
+    - leethiamchye@gmail.com
+    # - metamagpie@gmail.com
+    # - neojunjie87@gmail.com
+    # - shaojieyew@gmail.com
+    # - yowchenglim+dev@gmail.com
+  on_success: never
+  on_failure: always
 jobs:
   include:
     - stage: ecr_deploy
