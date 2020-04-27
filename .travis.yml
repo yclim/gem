@@ -28,7 +28,7 @@ jobs:
         - docker load --input target/jib-image.tar
         - docker tag gem 037562003025.dkr.ecr.ap-southeast-1.amazonaws.com/docker-repo:gem
         - docker push 037562003025.dkr.ecr.ap-southeast-1.amazonaws.com/docker-repo:gem
-stages:
-  - name: ecr_deploy
-    # require the branch name to be master (note for PRs this is the base branch name)
-    if: branch = master
+# stages:
+#   - name: ecr_deploy
+#     # require the branch name to be master (note for PRs this is the base branch name)
+#     if: branch = master
