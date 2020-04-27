@@ -138,3 +138,17 @@
   margin-right: 10px;
   width: 120px;
 }
+
+.highlight-effect {
+  border-radius: 3px;
+  animation: highlight 1500ms ease-out;
+}
+
+@keyframes highlight {
+  from {
+    background-color: $green5;
+  }
+  to {
+    background-color: $white;
+  }
+}

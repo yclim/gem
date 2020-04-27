@@ -27,8 +27,13 @@ import { GroupAction, GroupActions, rulenameExist } from "./EditGroups";
 interface IProps {
   groups: Map<string, Group>;
   groupDispatcher: Dispatch<GroupAction>;
+  setFocusedGroupRuleName: (g: string | null) => void;
 }
-const RuleList: FunctionComponent<IProps> = ({ groups, groupDispatcher }) => {
+const RuleList: FunctionComponent<IProps> = ({
+  groups,
+  groupDispatcher,
+  setFocusedGroupRuleName
+}) => {
   const [rules, setRules] = useState([] as Rule[]);
   const [isOpen, setIsOpen] = useState(false);
   const [currentRule, setCurrentRule] = useState<Rule | null>(null);
@@ -54,13 +59,14 @@ const RuleList: FunctionComponent<IProps> = ({ groups, groupDispatcher }) => {
   function addRuleToGroup() {
     if (ruleName && param1 && currentRule && currentGroup) {
       groupDispatcher(
-        GroupActions.addGroupRuleAction({
+        GroupActions.addGroupRule({
           groupName: currentGroup.name,
           ruleName,
           ruleId: currentRule.ruleId,
           ruleParams: [param1]
         })
       );
+      setFocusedGroupRuleName(ruleName);
       setCurrentRule(null);
     }
   }

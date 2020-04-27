@@ -25,61 +25,70 @@ export interface UpdateGroupNameInput {
   newGroupName: string;
 }
 
-export interface UpdateRuleNameInput {
+export interface UpdateRuleInput {
   groupName: string;
   oldRuleName: string;
   newRuleName: string;
+  ruleParams: string[];
 }
 
+const INIT_GROUPS = "INIT_GROUPS";
+const NEW_GROUP = "NEW_GROUP";
+const REMOVE_GROUP = "REMOVE_GROUP";
+const ADD_GROUP_RULE = "ADD_GROUP_RULE";
+const UPDATE_GROUP_NAME = "UPDATE_GROUP_NAME";
+const UPDATE_RULE = "UPDATE_RULE";
+
 export type GroupAction =
-  | { type: "INIT_GROUPS"; groups: Group[] }
-  | { type: "NEW_GROUP" }
-  | { type: "REMOVE_GROUP"; groupName: string }
-  | { type: "ADD_GROUP_RULE"; addGroupRuleInput: AddGroupRuleInput }
-  | { type: "UPDATE_GROUP_NAME"; updateGroupNameInput: UpdateGroupNameInput }
-  | { type: "UPDATE_RULE_NAME"; updateRuleNameInput: UpdateRuleNameInput };
+  | { type: typeof INIT_GROUPS; groups: Group[] }
+  | { type: typeof NEW_GROUP }
+  | { type: typeof REMOVE_GROUP; groupName: string }
+  | { type: typeof ADD_GROUP_RULE; addGroupRuleInput: AddGroupRuleInput }
+  | {
+      type: typeof UPDATE_GROUP_NAME;
+      updateGroupNameInput: UpdateGroupNameInput;
+    }
+  | { type: typeof UPDATE_RULE; updateRuleInput: UpdateRuleInput };
 
 export abstract class GroupActions {
-  static initGroupAction(groups: Group[]): GroupAction {
-    return { type: "INIT_GROUPS", groups };
+  static initGroup(groups: Group[]): GroupAction {
+    return { type: INIT_GROUPS, groups };
   }
   static newGroupAction(): GroupAction {
-    return { type: "NEW_GROUP" };
+    return { type: NEW_GROUP };
   }
-  static removeGroupAction(groupName: string): GroupAction {
+  static removeGroup(groupName: string): GroupAction {
     // TODO implement UI and backend api to use this
-    return { type: "REMOVE_GROUP", groupName };
+    return { type: REMOVE_GROUP, groupName };
   }
-  static addGroupRuleAction(addGroupRuleInput: AddGroupRuleInput): GroupAction {
-    return { type: "ADD_GROUP_RULE", addGroupRuleInput };
+  static addGroupRule(addGroupRuleInput: AddGroupRuleInput): GroupAction {
+    return { type: ADD_GROUP_RULE, addGroupRuleInput };
   }
-  static updateGroupNameAction(
+  static updateGroupName(
     updateGroupNameInput: UpdateGroupNameInput
   ): GroupAction {
     // TODO need a backend api to update group name
-    return { type: "UPDATE_GROUP_NAME", updateGroupNameInput };
+    return { type: UPDATE_GROUP_NAME, updateGroupNameInput };
   }
-  static updateRuleNameAction(
-    updateRuleNameInput: UpdateRuleNameInput
-  ): GroupAction {
-    return { type: "UPDATE_RULE_NAME", updateRuleNameInput };
+  static updateRule(updateRuleInput: UpdateRuleInput): GroupAction {
+    return { type: UPDATE_RULE, updateRuleInput };
   }
 }
 
 export function groupsReducer(state: Map<string, Group>, action: GroupAction) {
   switch (action.type) {
-    case "INIT_GROUPS":
+    case INIT_GROUPS:
       return new Map(action.groups.map(g => [g.name, g]));
-    case "NEW_GROUP":
+    case NEW_GROUP:
       return handleNewGroup(state);
-    case "REMOVE_GROUP":
+    case REMOVE_GROUP:
       return handleRemoveGroup(state, action.groupName);
-    case "ADD_GROUP_RULE":
+    case ADD_GROUP_RULE:
       return handleAddGroupRule(state, action.addGroupRuleInput);
-    case "UPDATE_GROUP_NAME":
+    case UPDATE_GROUP_NAME:
       return handleUpdateGroupName(state, action.updateGroupNameInput);
-    case "UPDATE_RULE_NAME":
-      return handleUpdateRuleName(state, action.updateRuleNameInput);
+    case UPDATE_RULE:
+      return handleUpdateRule(state, action.updateRuleInput);
     default:
       throw new Error();
   }
@@ -146,9 +155,9 @@ function handleUpdateGroupName(
   }
 }
 
-function handleUpdateRuleName(
+function handleUpdateRule(
   groups: Map<string, Group>,
-  input: UpdateRuleNameInput
+  input: UpdateRuleInput
 ): Map<string, Group> {
   if (rulenameExist(groups, input.newRuleName)) {
     alert("rulename already exist!");
@@ -157,7 +166,12 @@ function handleUpdateRuleName(
     const group = groups.get(input.groupName);
     if (group) {
       const rule = group.rules.find(r => r.name === input.oldRuleName);
-      if (rule) rule.name = input.newRuleName;
+      if (rule) {
+        rule.name = input.newRuleName;
+        rule.params = input.ruleParams.map(p => {
+          return { value: p };
+        });
+      }
     }
   }
 
@@ -180,13 +194,16 @@ const EditGroups: FunctionComponent<RouteComponentProps> = () => {
     groupsReducer,
     new Map<string, Group>()
   );
+  const [focusedGroupRuleName, setFocusedGroupRuleName] = useState<
+    string | null
+  >(null);
   const [currentGroup, setCurrentGroup] = useState<Group | null>(null);
   const [files, setFiles] = useState<File[]>([]);
 
   useEffect(() => {
     if (groups.size === 0) {
       groupRuleService.getGroups().then((resp: AxiosResponse<Group[]>) => {
-        dispatcher(GroupActions.initGroupAction(resp.data));
+        dispatcher(GroupActions.initGroup(resp.data));
       });
     }
   }, []);
@@ -197,12 +214,17 @@ const EditGroups: FunctionComponent<RouteComponentProps> = () => {
 
   return (
     <div className="grid3">
-      <RuleList groups={groups} groupDispatcher={dispatcher} />
+      <RuleList
+        groups={groups}
+        groupDispatcher={dispatcher}
+        setFocusedGroupRuleName={setFocusedGroupRuleName}
+      />
       <GroupList
         groups={groups}
         groupDispatcher={dispatcher}
         currentGroup={currentGroup}
         setCurrentGroup={setCurrentGroup}
+        focusedGroupRuleName={focusedGroupRuleName}
       />
       <FileList files={files} setFiles={setFiles} />
     </div>
