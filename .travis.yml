@@ -13,7 +13,7 @@ notifications:
     on_failure: always
 sudo: required #is required to use docker service in travis
 services:
-  - docker
+  - test $TRAVIS_BRANCH = "master" && docker
 after_success:
   - test $TRAVIS_BRANCH = "master" && docker --version  # document the version travis is using
   - test $TRAVIS_BRANCH = "master" && pip install --user awscli # install aws cli w/o sudo
