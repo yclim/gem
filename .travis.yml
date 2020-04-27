@@ -1,8 +1,8 @@
 language: java
-cache:
-  directories:
-  - $HOME/.m2
-  - node_modules
+  cache:
+    directories:
+      - $HOME/.m2
+      - node_modules
   email:
     recipients:
       - duotayct@gmail.com
@@ -16,7 +16,7 @@ cache:
 jobs:
   include:
     - stage: ecr_deploy
-      sudo: required #is required to use docker service in travis
+      # sudo: required #is required to use docker service in travis
       script: mvn clean package -P dockerize
       services:
         - docker
