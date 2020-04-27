@@ -1,5 +1,8 @@
 language: java
-notifications:
+cache:
+  directories:
+  - $HOME/.m2
+  - node_modules
   email:
     recipients:
       - duotayct@gmail.com
