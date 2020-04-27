@@ -346,7 +346,7 @@
       </properties>
     </profile>
     <profile>
-    	<id>master</id>
+    	<id>72-jenkins-cd</id>
     	<activation>
         <activeByDefault>false</activeByDefault>
       </activation>

@@ -1,5 +1,5 @@
 language: java
-script: mvn clean package -P $(git rev-parse --abbrev-ref HEAD)
+script: mvn clean package -P $TRAVIS_BRANCH
 notifications:
   email:
     recipients:
