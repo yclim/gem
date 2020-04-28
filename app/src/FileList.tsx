@@ -165,6 +165,7 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
         // not sure why Array.from(data.sheetTableData).map(...) doesn't work
         // this is the only way i tried that work so far
         const data = currentFile.data[index] as ExcelFeature;
+
         const sheets = Object.keys(data.sheetTableData);
         const tables = Object.values(data.sheetTableData);
         const sheetsTables = sheets.map((s, i) => [s, tables[i]]);
