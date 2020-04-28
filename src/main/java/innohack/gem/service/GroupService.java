@@ -4,9 +4,10 @@ import innohack.gem.dao.IGroupDao;
 import innohack.gem.entity.rule.Group;
 import innohack.gem.service.event.EventListener;
 import innohack.gem.service.event.NewEvent;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class GroupService extends NewEvent {
@@ -19,6 +20,10 @@ public class GroupService extends NewEvent {
 
   public Group getGroup(String groupName) {
     return groupDao.getGroup(groupName);
+  }
+
+  public boolean updateGroupName(String oldGroupName, String newGroupName) {
+    return groupDao.updateGroupName(oldGroupName, newGroupName);
   }
 
   public boolean deleteGroup(String groupName) {

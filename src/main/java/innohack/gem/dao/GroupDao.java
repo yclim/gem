@@ -1,10 +1,11 @@
 package innohack.gem.dao;
 
 import innohack.gem.entity.rule.Group;
+import org.springframework.stereotype.Repository;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import org.springframework.stereotype.Repository;
 
 /**
  * A basic group dao using everything in-memory
@@ -23,6 +24,19 @@ public class GroupDao implements IGroupDao {
   @Override
   public Group getGroup(String groupName) {
     return featureStore.get(groupName);
+  }
+
+  @Override
+  public boolean updateGroupName(String oldGroupName, String newGroupName) {
+    if (featureStore.containsKey(oldGroupName)) {
+      Group existingGroup = featureStore.get(oldGroupName);
+      featureStore.remove(oldGroupName);
+      existingGroup.setName(newGroupName);
+      featureStore.put(existingGroup.getName(), existingGroup);
+      return true;
+    } else {
+      return false;
+    }
   }
 
   @Override
