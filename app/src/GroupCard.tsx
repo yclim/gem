@@ -77,6 +77,12 @@ const GroupCard: FunctionComponent<IProps> = ({
     );
   }
 
+  function handleDeleteGroup() {
+    groupDispatcher(
+        GroupActions.removeGroup(grp.name)
+    );
+  }
+
   return (
     <Card
       key={group.name}
@@ -86,7 +92,7 @@ const GroupCard: FunctionComponent<IProps> = ({
       onClick={handleClick}
     >
       <div className="group-card-topbar">
-        <Icon icon="cross" />
+        <Icon icon="cross" onClick={() => handleDeleteGroup()} />
       </div>
       <div className="group-card-header">
         <div className="label">
