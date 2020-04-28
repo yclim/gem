@@ -76,6 +76,30 @@ public class CsvFileGenerator {
     return table;
   }
 
+  public static List<List<String>> generateFixedDataTablesWithHeader(int rows, int custIdVariable,
+      List<String> headers) {
+    List<List<String>> table = new ArrayList<>();
+    table.add(headers);
+    for (int i = 0; i < rows; i++) {
+      int custIdInt = i + custIdVariable;
+      String custId = String.valueOf(custIdInt);
+      String name = custId + "_" + "SampleName";
+      String gender = "F";
+      String emailSuffix = "@gmail.com";
+      if (i % 2 == 0) {
+        gender = "M";
+        emailSuffix = "@yahoo.com";
+      }
+      String address = custId + "_" + "SampleAddress";
+
+      String contactNumber = custIdInt + 900000000 + "";
+      String email = name + emailSuffix;
+
+      table.add(Arrays.asList(custId, name, gender, address, contactNumber, email));
+    }
+    return table;
+  }
+
   public static List<String> toCsv(List<String> row) {
     // just add double quotes for each cell for now
     return row.stream().map(col -> String.format("\"%s\"", col)).collect(Collectors.toList());
@@ -99,13 +123,30 @@ public class CsvFileGenerator {
   }
 
 
+  public static void generateFixedCustomerCsvFilesWithHeader(int numOfFiles, Path dest, int custVariable,
+      String filename, List<String> header)
+      throws FileNotFoundException {
+
+
+    for (int i = 0; i < numOfFiles; i++) {
+         GenUtil.writeToFile(
+          generateFixedDataTablesWithHeader(100, custVariable, header).stream()
+              .map(CsvFileGenerator::toCsv)
+              .map(row -> String.join(",", row))
+              .collect(Collectors.toList()),
+          dest,
+          filename);
+    }
+
+  }
+
   public static void generateFixedCustomerCsvFiles(int numOfFiles, Path dest, int custVariable,
       String filename)
       throws FileNotFoundException {
 
 
     for (int i = 0; i < numOfFiles; i++) {
-         GenUtil.writeToFile(
+      GenUtil.writeToFile(
           generateFixedDataTables(100, custVariable).stream()
               .map(CsvFileGenerator::toCsv)
               .map(row -> String.join(",", row))
