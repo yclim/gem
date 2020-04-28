@@ -2,8 +2,8 @@ package innohack.gem.dao;
 
 import innohack.gem.entity.rule.Group;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -13,7 +13,8 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public class GroupDao implements IGroupDao {
-  public static HashMap<String, Group> featureStore = new HashMap<String, Group>();
+  public static ConcurrentHashMap<String, Group> featureStore =
+      new ConcurrentHashMap<String, Group>();
 
   @Override
   public List<Group> getGroups() {

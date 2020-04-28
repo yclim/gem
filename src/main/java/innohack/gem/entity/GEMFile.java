@@ -10,6 +10,7 @@ import innohack.gem.example.tika.TikaMimeEnum;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Objects;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.mime.MediaType;
@@ -21,7 +22,6 @@ public class GEMFile implements Comparable<GEMFile> {
   private String extension;
   private String directory;
   private List<AbstractFeature> data;
-
   private MediaType _mediaType;
   private File _file;
 
@@ -145,31 +145,24 @@ public class GEMFile implements Comparable<GEMFile> {
   public int compareTo(GEMFile gemFile) {
     if (this.equals(gemFile)) {
       return 0;
+    } else {
+      return this.getAbsolutePath().compareTo(gemFile.getAbsolutePath());
     }
-    return -1;
   }
 
   @Override
-  public boolean equals(Object object) {
-    GEMFile gemFile = (GEMFile) object;
-    if (this.directory.equals(gemFile.getDirectory())
-        && this.fileName.equals(gemFile.getFileName())
-        && this._file.length() == gemFile._file.length()
-        && this._file.lastModified() == gemFile._file.lastModified()) {
-      return true;
-    }
-    return false;
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof GEMFile)) return false;
+    GEMFile gemFile = (GEMFile) o;
+    return fileName.equals(gemFile.fileName)
+        && directory.equals(gemFile.directory)
+        && _file.length() == gemFile._file.length()
+        && _file.lastModified() == gemFile._file.lastModified();
   }
 
   @Override
   public int hashCode() {
-    return (this.directory
-            + "|"
-            + this.fileName
-            + "|"
-            + _file.lastModified()
-            + "|"
-            + _file.length())
-        .hashCode();
+    return Objects.hash(fileName, directory, _file.lastModified(), _file.length());
   }
 }

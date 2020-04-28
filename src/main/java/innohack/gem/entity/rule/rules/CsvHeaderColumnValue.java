@@ -7,12 +7,10 @@ import innohack.gem.entity.feature.CsvFeature;
 import innohack.gem.entity.rule.ParamType;
 import innohack.gem.entity.rule.Parameter;
 import innohack.gem.entity.rule.RuleType;
-import innohack.gem.util.Util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import org.apache.commons.collections.ArrayStack;
 
 public class CsvHeaderColumnValue extends Rule {
 
@@ -37,57 +35,50 @@ public class CsvHeaderColumnValue extends Rule {
 
   @Override
   public boolean check(GEMFile gemFile) {
-      Collection<AbstractFeature> abstractFeatureC = gemFile.getData();
+    Collection<AbstractFeature> abstractFeatureC = gemFile.getData();
 
-      Iterator<AbstractFeature> iterator = abstractFeatureC.iterator();
+    Iterator<AbstractFeature> iterator = abstractFeatureC.iterator();
 
-      // contains both tika and csv feature
-      while (iterator.hasNext()) {
-        AbstractFeature abs = iterator.next();
-        if (abs.getClass().getName().equals(CsvFeature.class.getName())) {
-          List<Boolean> boolChecker = checkCSVHeader((CsvFeature)abs);
-          if (!boolChecker.contains((boolean)false)) {
-            return true;
-          }
-          else
-          {
-            return false;
-          }
+    // contains both tika and csv feature
+    while (iterator.hasNext()) {
+      AbstractFeature abs = iterator.next();
+      if (abs.getClass().getName().equals(CsvFeature.class.getName())) {
+        List<Boolean> boolChecker = checkCSVHeader((CsvFeature) abs);
+        if (!boolChecker.contains((boolean) false)) {
+          return true;
+        } else {
+          return false;
         }
       }
+    }
 
-
-    //LOGGER.debug("File Extension {} rule: {}", ext, gemFile.getExtension());
+    // LOGGER.debug("File Extension {} rule: {}", ext, gemFile.getExtension());
     return true;
   }
 
   private List<Boolean> checkCSVHeader(CsvFeature abs) {
-      CsvFeature csvFeature = (CsvFeature) abs;
-      List<List<String>> dataTable = csvFeature.getTableData();
-      int rowCount = 0;
-      List<String> csvHeader = csvFeature.getHeaders();
-      List<Boolean> counterList = new ArrayList<Boolean>();
+    CsvFeature csvFeature = (CsvFeature) abs;
+    List<List<String>> dataTable = csvFeature.getTableData();
+    int rowCount = 0;
+    List<String> csvHeader = csvFeature.getHeaders();
+    List<Boolean> counterList = new ArrayList<Boolean>();
 
-      for (Parameter param : getParams()) {
-        String[] headerValue = param.getValue().split(",");
+    for (Parameter param : getParams()) {
+      String[] headerValue = param.getValue().split(",");
 
-        for (String col: headerValue) {
+      for (String col : headerValue) {
 
-          boolean checkCounter = false;
-          for (String csvCol : csvHeader) {
-            if (col.trim().toLowerCase().equals(csvCol.trim().toLowerCase())) {
-              checkCounter = true;
-              break;
-            }
-
+        boolean checkCounter = false;
+        for (String csvCol : csvHeader) {
+          if (col.trim().toLowerCase().equals(csvCol.trim().toLowerCase())) {
+            checkCounter = true;
+            break;
           }
-          counterList.add(checkCounter);
-
         }
+        counterList.add(checkCounter);
       }
+    }
 
-      return counterList;
+    return counterList;
   }
-
-
 }
