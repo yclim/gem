@@ -41,7 +41,6 @@ public class ExcelFeature extends AbstractFeature {
         }
       }
     }
-
   }
 
   private String sheetParser(
