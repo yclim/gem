@@ -25,7 +25,7 @@ public class GEMFileServiceTest {
   GEMFile txtFile = new GEMFile("dump.txt", "src/test/resources");
   GEMFile datFile = new GEMFile("data.dat", "src/test/resources");
 
-  private List<File> getFiles(String path){
+  private List<File> getFiles(String path) {
     File dir = new File(path);
     List<File> resultList = Lists.newArrayList();
     File[] fList = dir.listFiles();

@@ -65,19 +65,28 @@ public class MatchServiceTests {
         GEMFile f = files.get(i / 2);
         gemFileDao.saveFile(f);
         matchService.onUpdateEvent(f);
+        System.out.println("Add new file: "+f.getAbsolutePath());
       } else {
         Group g = groups.get((i - 1) / 2);
         groupDao.saveGroup(g);
         matchService.onUpdateEvent(g);
+        System.out.println("Add new group: "+g.getName());
       }
     }
-
     // ext_csv_group: check matched list
+    for (Group group : groups) {
+        System.out.println(group.getName()+" matched file count: " + group.getMatchedFile().size());
+      for (GEMFile f : group.getMatchedFile()) {
+        System.out.println(f.getAbsolutePath());
+      }
+    }
     assert (ext_csv_group.getMatchedFile().contains(csvFile));
     assert (ext_csv_group.getMatchedFile().contains(csvcsvFile));
     assert (ext_csv_group.getMatchedFile().size() == 2);
     // ext_dat_group: check matched list
+
     assert (ext_dat_group.getMatchedFile().contains(datFile));
+    System.out.println(ext_dat_group.getMatchedFile().size());
     assert (ext_dat_group.getMatchedFile().size() == 1);
     // prefix_d_group: check matched list
     assert (prefix_d_group.getMatchedFile().contains(datFile));
@@ -85,6 +94,14 @@ public class MatchServiceTests {
 
     // prefix_d_group: check conflict and file not matched
     matchService.calculateAbnormalMatchCount();
+    System.out.println("matchService.getFilesWithoutMatch: "+matchService.getFilesWithoutMatch().size());
+    for (GEMFile f : matchService.getFilesWithoutMatch()) {
+      System.out.println(f.getAbsolutePath());
+    }
+    System.out.println("matchService.getFilesWithConflictMatch: "+matchService.getFilesWithConflictMatch().size());
+    for (GEMFile f : matchService.getFilesWithConflictMatch()) {
+      System.out.println(f.getAbsolutePath());
+    }
     assert (matchService.getFilesWithoutMatch().contains(txtFile));
     assert (matchService.getFilesWithoutMatch().size() == 1);
     assert (matchService.getFilesWithConflictMatch().contains(datFile));
