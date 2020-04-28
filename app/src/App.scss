@@ -145,6 +145,15 @@
   animation: highlight 1500ms ease-out;
 }
 
+.filelist-box {
+  height: 85vh;
+}
+
+.detail-box {
+  height: 80vh;
+  overflow: scroll;
+}
+
 @keyframes highlight {
   from {
     background-color: $green5;
