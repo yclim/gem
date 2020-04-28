@@ -90,7 +90,6 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>2.11.0.rc1</version>
     </dependency>
 
     <dependency>
@@ -151,6 +150,17 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+      	<groupId>org.apache.maven.plugins</groupId>
+      	<artifactId>maven-jar-plugin</artifactId>
+      	<configuration>
+      		<archive>
+      			<manifest>
+      				<mainClass>innohack.gem.GemApplication</mainClass>
+      			</manifest>
+      		</archive>
+      	</configuration>
       </plugin>
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
@@ -338,6 +348,37 @@
       <properties>
         <spring.profiles.active>prod</spring.profiles.active>
       </properties>
+    </profile>
+    <profile>
+    	<id>dockerize</id>
+    	<activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+    	<build>
+    		<plugins>
+    			<plugin>
+		        <groupId>com.google.cloud.tools</groupId>
+		        <artifactId>jib-maven-plugin</artifactId>
+		        <version>2.2.0</version>
+		        <configuration>
+		          <to>
+		            <image>gem:latest</image>
+		            <!-- image>037562003025.dkr.ecr.ap-southeast-1.amazonaws.com/docker-repo:gem</image-->
+		          </to>
+		        </configuration>
+		        <executions>
+		        	<execution>
+                <id>dockerize</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>buildTar</goal>
+                  <!--  goal>build</goal -->
+                </goals>
+              </execution>
+		        </executions>
+		      </plugin>
+    		</plugins>
+    	</build>
     </profile>
 
   </profiles>
