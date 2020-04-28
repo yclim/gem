@@ -10,15 +10,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MatchService {
-  private static HashMap<String, Collection<Group>> matchedFileGroupTable =
-      new HashMap<String, Collection<Group>>();
-  private static HashMap<String, HashMap<Rule, Boolean>> matchedFileRuleTable =
-      new HashMap<String, HashMap<Rule, Boolean>>();
+  private static ConcurrentHashMap<String, Collection<Group>> matchedFileGroupTable =
+      new ConcurrentHashMap<String, Collection<Group>>();
+  private static ConcurrentHashMap<String, HashMap<Rule, Boolean>> matchedFileRuleTable =
+      new ConcurrentHashMap<String, HashMap<Rule, Boolean>>();
 
   private List<GEMFile> filesWithConflictMatch = new ArrayList<GEMFile>();
   private List<GEMFile> filesWithoutMatch = new ArrayList<GEMFile>();
@@ -26,25 +27,24 @@ public class MatchService {
   @Autowired IGroupDao groupDao;
   @Autowired IGEMFileDao gemFileDao;
 
-  public static HashMap<String, Collection<Group>> getMatchedFileGroupTable() {
+  public static ConcurrentHashMap<String, Collection<Group>> getMatchedFileGroupTable() {
     return matchedFileGroupTable;
   }
 
-  public static void setMatchedFileGroupTable(
-      HashMap<String, Collection<Group>> matchedFileGroupTable) {
-    MatchService.matchedFileGroupTable = matchedFileGroupTable;
-  }
-
-  public static HashMap<String, HashMap<Rule, Boolean>> getMatchedFileRuleTable() {
+  public static ConcurrentHashMap<String, HashMap<Rule, Boolean>> getMatchedFileRuleTable() {
     return matchedFileRuleTable;
   }
 
-  public static void setMatchedFileRuleTable(
-      HashMap<String, HashMap<Rule, Boolean>> matchedFileRuleTable) {
-    MatchService.matchedFileRuleTable = matchedFileRuleTable;
+  public synchronized void onUpdateEvent(Object o) {
+    if (o instanceof GEMFile) {
+      onUpdateFile((GEMFile) o);
+    }
+    if (o instanceof Group) {
+      onUpdateGroupRule((Group) o);
+    }
   }
 
-  public synchronized boolean checkMatching(Group group, GEMFile file) {
+  boolean checkMatching(Group group, GEMFile file) {
     boolean result = true;
     String fileKey = file.getAbsolutePath();
     HashMap<Rule, Boolean> matchedRuleTable;
@@ -80,7 +80,7 @@ public class MatchService {
     return result;
   }
 
-  public synchronized void onUpdateFile(GEMFile updatedFile) {
+  private void onUpdateFile(GEMFile updatedFile) {
     List<Group> groupList = groupDao.getGroups();
     GEMFile storedFile = gemFileDao.getFileByAbsolutePath(updatedFile.getAbsolutePath());
     if (storedFile != null) {
@@ -105,7 +105,7 @@ public class MatchService {
     }
   }
 
-  public synchronized void onUpdateGroupRule(Group updatedGroupRule) {
+  private void onUpdateGroupRule(Group updatedGroupRule) {
     List<GEMFile> gemFileList = gemFileDao.getFiles();
     Group storedGroupRule = groupDao.getGroup(updatedGroupRule.getName());
 
@@ -138,6 +138,8 @@ public class MatchService {
   }
 
   public void calculateAbnormalMatchCount() {
+    filesWithConflictMatch.clear();
+    filesWithoutMatch.clear();
     for (GEMFile file : gemFileDao.getFiles()) {
       String fileKey = file.getAbsolutePath();
       if (matchedFileGroupTable.get(fileKey).size() > 1) {
@@ -154,16 +156,8 @@ public class MatchService {
     return filesWithConflictMatch;
   }
 
-  public void setFilesWithConflictMatch(List<GEMFile> filesWithConflictMatch) {
-    this.filesWithConflictMatch = filesWithConflictMatch;
-  }
-
   public List<GEMFile> getFilesWithoutMatch() {
     return filesWithoutMatch;
-  }
-
-  public void setFilesWithoutMatch(List<GEMFile> filesWithoutMatch) {
-    this.filesWithoutMatch = filesWithoutMatch;
   }
 
   /*

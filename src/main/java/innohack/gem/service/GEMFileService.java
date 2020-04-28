@@ -44,7 +44,7 @@ public class GEMFileService {
     for (GEMFile oldFile : oldfilelist) {
       if (!newFilelist.contains(oldFile)) {
         gemFileDao.delete(oldFile.getAbsolutePath());
-        matcherService.onUpdateFile(oldFile);
+        matcherService.onUpdateEvent(oldFile);
       } else {
         newFilelist.remove(oldFile);
       }
@@ -56,7 +56,7 @@ public class GEMFileService {
         LOGGER.debug("{}: {}", GEMFileService.class, ex.getStackTrace());
       }
       gemFileDao.saveFile(file);
-      matcherService.onUpdateFile(file);
+      matcherService.onUpdateEvent(file);
     }
     return getFileList();
   }

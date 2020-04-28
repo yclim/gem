@@ -6,6 +6,7 @@ import innohack.gem.entity.GEMFile;
 import innohack.gem.entity.rule.Parameter;
 import innohack.gem.entity.rule.RuleType;
 import java.util.List;
+import java.util.Objects;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "ruleId")
 @JsonSubTypes({
@@ -24,48 +25,36 @@ public abstract class Rule implements Comparable<Rule> {
     if (this.equals(rule)) {
       return 0;
     } else {
+      int result = this.label.compareTo(this.label);
+      if (result != 0) {
+        return result;
+      }
       return -1;
     }
   }
 
   @Override
-  public boolean equals(Object obj) {
-    Rule rule = (Rule) obj;
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Rule)) return false;
+    Rule rule = (Rule) o;
     if (!this.getClass().getCanonicalName().equals(rule.getClass().getCanonicalName())) {
       return false;
     }
-
+    /*
     if (this.params.size() != rule.getParams().size()) {
       return false;
-    }
-    for (Parameter param : rule.getParams()) {
-      if (!this.params.contains(param)) {
-        return false;
-      }
-    }
-    if (!this.label.equals(rule.getLabel())) {
-      return false;
-    }
-    if (this.ruleType != rule.getRuleType()) {
-      return false;
-    }
-    return true;
+    }*/
+    return label.equals(rule.label)
+        && ruleType == rule.ruleType
+        && Objects.equals(name, rule.name)
+        && params.equals(rule.params);
   }
 
   @Override
   public int hashCode() {
-    String hash = "";
-    for (Parameter para : this.params) {
-      hash = hash + para.hashCode() + "|";
-    }
-    hash = hash + this.getClass().getCanonicalName() + "|";
-    hash = hash + this.label + "|";
-    hash = hash + this.name + "|";
-    hash = hash + this.ruleType;
-
-    return hash.hashCode();
+    return Objects.hash(label, ruleType, name, params, this.getClass().getCanonicalName());
   }
-
   /**
    * Use for render UI Label
    *

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -63,11 +64,11 @@ public class MatchServiceTests {
       if (i % 2 == 0) {
         GEMFile f = files.get(i / 2);
         gemFileDao.saveFile(f);
-        matchService.onUpdateFile(f);
+        matchService.onUpdateEvent(f);
       } else {
         Group g = groups.get((i - 1) / 2);
         groupDao.saveGroup(g);
-        matchService.onUpdateGroupRule(g);
+        matchService.onUpdateEvent(g);
       }
     }
 
@@ -89,14 +90,16 @@ public class MatchServiceTests {
     assert (matchService.getFilesWithConflictMatch().contains(datFile));
     assert (matchService.getFilesWithConflictMatch().size() == 1);
 
-    HashMap<String, HashMap<Rule, Boolean>> mapFileRule = MatchService.getMatchedFileRuleTable();
-    HashMap<String, Collection<Group>> mapFileGroup = MatchService.getMatchedFileGroupTable();
+    ConcurrentHashMap<String, HashMap<Rule, Boolean>> mapFileRule =
+        MatchService.getMatchedFileRuleTable();
+    ConcurrentHashMap<String, Collection<Group>> mapFileGroup =
+        MatchService.getMatchedFileGroupTable();
 
     assert (mapFileRule.get(datFile.getAbsolutePath()).get(prefix_d_group.getRules().get(0))
         == true);
     assert (mapFileGroup.get(datFile.getAbsolutePath()).contains(prefix_d_group) == true);
     groupDao.deleteGroup(prefix_d_group.getName());
-    matchService.onUpdateGroupRule(prefix_d_group);
+    matchService.onUpdateEvent(prefix_d_group);
     assert (mapFileRule.get(datFile.getAbsolutePath()).get(prefix_d_group.getRules().get(0))
         == null);
     assert (mapFileGroup.get(datFile.getAbsolutePath()).contains(prefix_d_group) == false);
@@ -104,7 +107,7 @@ public class MatchServiceTests {
     assert (mapFileRule.get(txtFile.getAbsolutePath()) != null);
     assert (mapFileGroup.get(txtFile.getAbsolutePath()) != null);
     gemFileDao.delete(txtFile.getAbsolutePath());
-    matchService.onUpdateFile(txtFile);
+    matchService.onUpdateEvent(txtFile);
     assert (mapFileRule.get(txtFile.getAbsolutePath()) == null);
     assert (mapFileGroup.get(txtFile.getAbsolutePath()) == null);
   }
@@ -130,88 +133,4 @@ public class MatchServiceTests {
         .get(datFile.getAbsolutePath())
         .get(ext_csv_group.getRules().get(0)));
   }
-
-  /*
-  @Test
-  public void testNewFileWithNoGroup() throws Exception {
-    MatchService matchService = new MatchService();
-    gemFileDao.saveFile(csvFile);
-    matchService.onNewFile(csvFile);
-    assertTrue(MatchService.matchedGroupTable.size() ==1);
-    assertTrue(MatchService.matchedGroupTable.get(csvFile.getAbsolutePath()).size() ==0);
-    gemFileDao.saveFile(txtFile);
-    matchService.onNewFile(txtFile);
-    assertTrue(MatchService.matchedGroupTable.size() ==2);
-    assertTrue(MatchService.matchedGroupTable.get(txtFile.getAbsolutePath()).size() ==0);
-    gemFileDao.saveFile(datFile);
-    matchService.onNewFile(datFile);
-    assertTrue(MatchService.matchedGroupTable.size() ==3);
-    assertTrue(MatchService.matchedGroupTable.get(datFile.getAbsolutePath()).size() ==0);
-  }
-
-  @Test
-  public void testNewGroupWithNoFile() throws Exception {
-    GroupController groupController = new GroupController();
-    MatchService matchService = new MatchService();
-    groupDao.saveGroup(data_group);
-    matchService.onNewGroup(data_group);
-    assertTrue(MatchService.matchedGroupTable.size() ==0);
-  }
-
-  @Test
-  public void testNewFileWithExistingGroup() throws Exception {
-    MatchService matchService = new MatchService();
-    //new group
-    groupDao.saveGroup(data_group);
-    matchService.onNewGroup(data_group);
-
-    //new file
-    gemFileDao.saveFile(csvFile);
-    matchService.onNewFile(csvFile);
-    assertTrue(MatchService.matchedGroupTable.size() ==1);
-    assertTrue(MatchService.matchedGroupTable.get(csvFile.getAbsolutePath()).size() ==1);
-    assertTrue(MatchService.matchedGroupTable.get(csvFile.getAbsolutePath()).get(data_group.getName()) ==false);
-
-    //new file
-    gemFileDao.saveFile(txtFile);
-    matchService.onNewFile(txtFile);
-    assertTrue(MatchService.matchedGroupTable.size() ==2);
-    assertTrue(MatchService.matchedGroupTable.get(txtFile.getAbsolutePath()).size() ==1);
-    assertTrue(MatchService.matchedGroupTable.get(txtFile.getAbsolutePath()).get(data_group.getName()) ==false);
-    assertTrue(MatchService.matchedGroupTable.get(csvFile.getAbsolutePath()).size() ==1);
-    assertTrue(MatchService.matchedGroupTable.get(csvFile.getAbsolutePath()).get(data_group.getName()) ==false);
-
-    //new group
-    groupDao.saveGroup(csv_group);
-    matchService.onNewGroup(csv_group);
-    assertTrue(MatchService.matchedGroupTable.size() ==2);
-    assertTrue(MatchService.matchedGroupTable.get(csvFile.getAbsolutePath()).size() ==2);
-    assertTrue(MatchService.matchedGroupTable.get(txtFile.getAbsolutePath()).size() ==2);
-    assertTrue(MatchService.matchedGroupTable.get(csvFile.getAbsolutePath()).get(csv_group.getName()) ==true);
-    assertTrue(MatchService.matchedGroupTable.get(txtFile.getAbsolutePath()).get(csv_group.getName()) ==false);
-
-
-    //new file
-    gemFileDao.saveFile(datFile);
-    matchService.onNewFile(datFile);
-    assertTrue(MatchService.matchedGroupTable.size() ==3);
-    assertTrue(MatchService.matchedGroupTable.get(txtFile.getAbsolutePath()).size() ==2);
-    assertTrue(MatchService.matchedGroupTable.get(csvFile.getAbsolutePath()).size() ==2);
-    assertTrue(MatchService.matchedGroupTable.get(datFile.getAbsolutePath()).size() ==2);
-    assertTrue(MatchService.matchedGroupTable.get(datFile.getAbsolutePath()).get(csv_group.getName()) ==false);
-    assertTrue(MatchService.matchedGroupTable.get(datFile.getAbsolutePath()).get(data_group.getName()) ==true);
-
-    matchService.calculateMatchCount();
-    //remove group
-    groupDao.deleteGroup(data_group.getName());
-    matchService.onRemoveGroup(data_group.getName());
-    assertTrue(MatchService.matchedGroupTable.size() ==3);
-    assertTrue(MatchService.matchedGroupTable.get(txtFile.getAbsolutePath()).size() ==1);
-    assertTrue(MatchService.matchedGroupTable.get(csvFile.getAbsolutePath()).size() ==1);
-    assertTrue(MatchService.matchedGroupTable.get(datFile.getAbsolutePath()).size() ==1);
-
-    matchService.calculateMatchCount();
-
-  }*/
-
 }
