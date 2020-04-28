@@ -48,34 +48,46 @@ public class MatchService {
     boolean result = true;
     String fileKey = file.getAbsolutePath();
     HashMap<Rule, Boolean> matchedRuleTable;
+    // get rule hashmap of the file. rule hash map contains the result of rule checks on the file
     if (matchedFileRuleTable.get(fileKey) == null) {
       matchedRuleTable = new HashMap<Rule, Boolean>();
     } else {
       matchedRuleTable = matchedFileRuleTable.get(fileKey);
     }
-
+    // for each rule in the group, check against the rule hashmap for previously checked result
     for (Rule r : group.getRules()) {
       if (matchedRuleTable.get(r) == null) {
+        // when no result of previously checked file and rule, do a check now and store into rule hashmap
         result = r.check(file);
         matchedRuleTable.put(r, result);
-        if (result == false) {
-          break;
-        }
+      } else {
+        // when there is a result of rule checked previously inside rule hashmap,
+        result = matchedRuleTable.get(r);
+      }
+      // break when one of the rule check against the file is false.
+      if (result == false) {
+        break;
       }
     }
+    // save the rule hashmap
     matchedFileRuleTable.put(fileKey, matchedRuleTable);
 
+    // FileGroupHashMap that contains all the file and its matched group
+    // get the list of groups that match the file and update it
     Collection<Group> grps = matchedFileGroupTable.get(fileKey);
     if (grps == null) {
       grps = Lists.newArrayList();
     }
     if (result) {
       if (!grps.contains(group)) {
+        // when group is not in the list and its file matched against the group. add the group to the list
         grps.add(group);
       }
     } else {
+      // when file does not match the group, remove the file from the list.
       grps.remove(group);
     }
+    // save the matched group
     matchedFileGroupTable.put(fileKey, grps);
     return result;
   }
@@ -86,6 +98,7 @@ public class MatchService {
     if (storedFile != null) {
       // on new file added
       for (Group group : groupList) {
+        // perform matching, if file match the group, add the file to the group's list else remove it
         if (checkMatching(group, storedFile)) {
           if (!group.getMatchedFile().contains(storedFile)) {
             group.getMatchedFile().add(storedFile);
@@ -96,10 +109,11 @@ public class MatchService {
       }
     } else {
       // on file removed
+      // remove all the files stored in hash and groups'list
+      String fileKey = updatedFile.getAbsolutePath();
       for (Group group : groupList) {
         group.getMatchedFile().remove(updatedFile);
       }
-      String fileKey = updatedFile.getAbsolutePath();
       matchedFileRuleTable.remove(fileKey);
       matchedFileGroupTable.remove(fileKey);
     }
@@ -112,6 +126,7 @@ public class MatchService {
     if (storedGroupRule != null) {
       // on new or update grouprule
       for (GEMFile gemFile : gemFileList) {
+        // perform matching, if file match the group, add the file to the group's list else remove it
         if (checkMatching(storedGroupRule, gemFile)) {
           if (!storedGroupRule.getMatchedFile().contains(gemFile)) {
             storedGroupRule.getMatchedFile().add(gemFile);
@@ -126,6 +141,7 @@ public class MatchService {
     }
   }
 
+  // remove all the grouprule from the hashmap
   private void removeAllAssociatedRuleFromCache(Group group) {
     for (HashMap<Rule, Boolean> map : matchedFileRuleTable.values()) {
       for (Rule r : group.getRules()) {
@@ -137,6 +153,7 @@ public class MatchService {
     }
   }
 
+  // This method calculate all the files with no match or more than 1 group match and update filesWithoutMatch and filesWithConflictMatch
   public void calculateAbnormalMatchCount() {
     filesWithConflictMatch.clear();
     filesWithoutMatch.clear();

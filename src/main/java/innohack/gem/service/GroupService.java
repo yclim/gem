@@ -53,6 +53,7 @@ public class GroupService {
         rule.setName(defaultRuleName);
         default_extension_group.setRules(Lists.newArrayList(rule));
         groupDao.saveGroup(default_extension_group);
+        matcherService.onUpdateEvent(default_extension_group);
       }
     }
   }
