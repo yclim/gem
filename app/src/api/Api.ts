@@ -5,7 +5,7 @@ export default class Api {
 
   public constructor() {
     this.api = axios.create({
-      baseURL: "http://localhost:8080/api"
+      baseURL: "api"
       //  other settings here
     });
   }

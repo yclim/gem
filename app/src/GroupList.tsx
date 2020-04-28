@@ -46,7 +46,11 @@ const GroupList: FunctionComponent<IProps> = ({
             focusedGroupRuleName={focusedGroupRuleName}
           />
         ))}
-        <Card interactive={false} elevation={Elevation.ZERO}>
+        <Card
+          interactive={false}
+          elevation={Elevation.ZERO}
+          className="no-group-card "
+        >
           <div className="group-card-header">
             <div className="label">No matches</div>
             <div className="counter">
