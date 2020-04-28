@@ -58,7 +58,6 @@ export abstract class GroupActions {
     return { type: NEW_GROUP };
   }
   static removeGroup(groupName: string): GroupAction {
-    // TODO implement UI and backend api to use this
     return { type: REMOVE_GROUP, groupName };
   }
   static addGroupRule(addGroupRuleInput: AddGroupRuleInput): GroupAction {
@@ -111,6 +110,11 @@ function handleRemoveGroup(
   groups: Map<string, Group>,
   groupName: string
 ): Map<string, Group> {
+  groupRuleService.deleteGroup(groupName).then(response => {
+    if (response.status !== 200) {
+      alert("deleteGroup fail with status: " + response.status);
+    }
+  });
   groups.delete(groupName);
   return groups;
 }
