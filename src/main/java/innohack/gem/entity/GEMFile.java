@@ -15,7 +15,7 @@ import org.apache.tika.config.TikaConfig;
 import org.apache.tika.mime.MediaType;
 
 /** Container that keeps all data extracted from a file */
-public class GEMFile {
+public class GEMFile implements Comparable<GEMFile> {
   private String fileName;
   private Long size;
   private String extension;
@@ -139,5 +139,37 @@ public class GEMFile {
     addData(tikaFeature);
 
     return this;
+  }
+
+  @Override
+  public int compareTo(GEMFile gemFile) {
+    if (this.equals(gemFile)) {
+      return 0;
+    }
+    return -1;
+  }
+
+  @Override
+  public boolean equals(Object object) {
+    GEMFile gemFile = (GEMFile) object;
+    if (this.directory.equals(gemFile.getDirectory())
+        && this.fileName.equals(gemFile.getFileName())
+        && this._file.length() == gemFile._file.length()
+        && this._file.lastModified() == gemFile._file.lastModified()) {
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return (this.directory
+            + "|"
+            + this.fileName
+            + "|"
+            + _file.lastModified()
+            + "|"
+            + _file.length())
+        .hashCode();
   }
 }

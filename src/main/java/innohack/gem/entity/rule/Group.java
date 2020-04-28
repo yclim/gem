@@ -1,6 +1,8 @@
 package innohack.gem.entity.rule;
 
+import innohack.gem.entity.GEMFile;
 import innohack.gem.entity.rule.rules.Rule;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Group {
@@ -25,10 +27,16 @@ public class Group {
   }
 
   public int getMatchedCount() {
-    return matchedCount;
+    return matchedFile.size();
   }
 
   public void setMatchedCount(int matchedCount) {
     this.matchedCount = matchedCount;
   }
+
+  public List<GEMFile> getMatchedFile() {
+    return matchedFile;
+  }
+
+  public List<GEMFile> matchedFile = new ArrayList<GEMFile>();
 }

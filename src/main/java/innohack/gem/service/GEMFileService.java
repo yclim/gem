@@ -2,17 +2,19 @@ package innohack.gem.service;
 
 import innohack.gem.dao.IGEMFileDao;
 import innohack.gem.entity.GEMFile;
-import innohack.gem.service.event.EventListener;
-import innohack.gem.service.event.NewEvent;
 import java.util.List;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class GEMFileService extends NewEvent {
+public class GEMFileService {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(GEMFileService.class);
   @Autowired private IGEMFileDao gemFileDao;
+  @Autowired private MatchService matcherService;
 
   public String getCurrentDirectory() {
     return gemFileDao.getCurrentDirectory();
@@ -37,15 +39,24 @@ public class GEMFileService extends NewEvent {
    * @return list of files that was processed and stored {@link GEMFile @GEMFile}
    */
   public List<GEMFile> syncFiles(String folderPath) throws Exception {
-    List<GEMFile> filelist = gemFileDao.getLocalFiles(folderPath);
-    for (GEMFile file : filelist) {
-
-      // perform extraction
-      file.extract();
+    List<GEMFile> oldfilelist = gemFileDao.getFiles();
+    List<GEMFile> newFilelist = gemFileDao.getLocalFiles(folderPath);
+    for (GEMFile oldFile : oldfilelist) {
+      if (!newFilelist.contains(oldFile)) {
+        gemFileDao.delete(oldFile.getAbsolutePath());
+        matcherService.onUpdateFile(oldFile);
+      } else {
+        newFilelist.remove(oldFile);
+      }
+    }
+    for (GEMFile file : newFilelist) {
+      try {
+        file.extract();
+      } catch (Exception ex) {
+        LOGGER.debug("{}: {}", GEMFileService.class, ex.getStackTrace());
+      }
       gemFileDao.saveFile(file);
-
-      // Trigger Matching
-      newEvent(EventListener.Event.NEW_FILE, file);
+      matcherService.onUpdateFile(file);
     }
     return getFileList();
   }

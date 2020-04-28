@@ -70,4 +70,10 @@ public interface IGEMFileDao {
    * @return list of file extension
    */
   Set<String> getFileTypes();
+
+  /** Clear all file stored files */
+  void deleteAll();
+
+  /** delete file by absolutePath */
+  void delete(String absolutePath);
 }

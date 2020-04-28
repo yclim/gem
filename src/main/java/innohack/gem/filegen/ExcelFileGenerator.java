@@ -7,7 +7,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -60,7 +59,6 @@ public class ExcelFileGenerator {
               + "Cabrio City-Coupé Forfour Roadster")
           .split("\\s+");
 
-
   public static void generateCarsExcelFiles(int numOfFiles, Path dest) throws IOException {
     int numOfLines = GenUtil.randomInt(300);
     String filenamePrefix = "cars_";
@@ -80,9 +78,14 @@ public class ExcelFileGenerator {
     }
   }
 
-  public static void generateFixedCarsExcelFiles(String excelType, boolean multiSheets,
-      int numLines, int numOfFiles, Path dest,
-      String fileNamePrefix) throws IOException {
+  public static void generateFixedCarsExcelFiles(
+      String excelType,
+      boolean multiSheets,
+      int numLines,
+      int numOfFiles,
+      Path dest,
+      String fileNamePrefix)
+      throws IOException {
     int numOfLines = numLines;
 
     for (int i = 0; i < numOfFiles; i++) {
@@ -90,7 +93,7 @@ public class ExcelFileGenerator {
 
       if (excelType.equals("xls")) {
         workbook = new HSSFWorkbook();
-      }else {
+      } else {
         workbook = new XSSFWorkbook();
       }
       List<List<String>> sheetOneTable = generateFixedSheetOneDataTables(numOfLines);
@@ -108,10 +111,8 @@ public class ExcelFileGenerator {
 
       workbook.close();
       outputStream.close();
-
     }
   }
-
 
   public static List<List<String>> generateSheetOneDataTables(int rows) {
     List<List<String>> table = new ArrayList<>();
@@ -153,7 +154,7 @@ public class ExcelFileGenerator {
       String[] carDealerArray =
           ("Huat Huat Car, Best Auto, Fast Car Ptd Ltd, Dealer X, Premium Auto, "
                   + "Luxury Automobile, Prestige Auto")
-                  .split(",");
+              .split(",");
 
       String carDealer = carDealerArray[i % carDealerArray.length];
       String price = String.valueOf((i * 1000) + 1000000);
@@ -210,7 +211,7 @@ public class ExcelFileGenerator {
     Font font;
     if (workbook.getClass().getName().equals("org.apache.poi.hssf.usermodel.HSSFWorkbook")) {
       font = ((HSSFWorkbook) workbook).createFont();
-    }else {
+    } else {
       font = ((XSSFWorkbook) workbook).createFont();
     }
     font.setFontName(fontname);

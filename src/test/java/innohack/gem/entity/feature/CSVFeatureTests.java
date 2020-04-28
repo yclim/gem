@@ -1,24 +1,20 @@
 package innohack.gem.entity.feature;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import innohack.gem.entity.GEMFile;
+import innohack.gem.entity.util.FileUtilForTesting;
 import innohack.gem.example.tika.TikaUtil;
 import innohack.gem.example.util.FileUtil;
 import innohack.gem.filegen.CsvFileGenerator;
-import innohack.gem.entity.util.FileUtilForTesting;
-
 import java.io.File;
-
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 class CSVFeatureTests {

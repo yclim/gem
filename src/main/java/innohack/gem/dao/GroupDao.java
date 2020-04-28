@@ -26,9 +26,9 @@ public class GroupDao implements IGroupDao {
   }
 
   @Override
-  public boolean saveGroup(Group group) {
+  public Group saveGroup(Group group) {
     featureStore.put(group.getName(), group);
-    return true;
+    return group;
   }
 
   @Override

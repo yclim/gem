@@ -12,12 +12,59 @@ import java.util.List;
   @JsonSubTypes.Type(value = FileExtension.class),
   @JsonSubTypes.Type(value = CsvHeaderColumnValue.class)
 })
-public abstract class Rule {
+public abstract class Rule implements Comparable<Rule> {
 
   private String label;
   private RuleType ruleType;
   private String name;
   private List<Parameter> params;
+
+  @Override
+  public int compareTo(Rule rule) {
+    if (this.equals(rule)) {
+      return 0;
+    } else {
+      return -1;
+    }
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    Rule rule = (Rule) obj;
+    if (!this.getClass().getCanonicalName().equals(rule.getClass().getCanonicalName())) {
+      return false;
+    }
+
+    if (this.params.size() != rule.getParams().size()) {
+      return false;
+    }
+    for (Parameter param : rule.getParams()) {
+      if (!this.params.contains(param)) {
+        return false;
+      }
+    }
+    if (!this.label.equals(rule.getLabel())) {
+      return false;
+    }
+    if (this.ruleType != rule.getRuleType()) {
+      return false;
+    }
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    String hash = "";
+    for (Parameter para : this.params) {
+      hash = hash + para.hashCode() + "|";
+    }
+    hash = hash + this.getClass().getCanonicalName() + "|";
+    hash = hash + this.label + "|";
+    hash = hash + this.name + "|";
+    hash = hash + this.ruleType;
+
+    return hash.hashCode();
+  }
 
   /**
    * Use for render UI Label
