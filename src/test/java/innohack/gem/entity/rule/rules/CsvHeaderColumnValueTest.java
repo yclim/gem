@@ -33,7 +33,6 @@ public class CsvHeaderColumnValueTest {
         Arrays.asList(
             "Customer ID", "Customer Name", "Gender", "Address", "Contact Number", "Email");
 
-
     // to delete after every use case
     System.out.println("Deleting " + path + filename);
     File delFile = new File(path + filename);
@@ -50,9 +49,7 @@ public class CsvHeaderColumnValueTest {
       GEMFile gFile = new GEMFile(result.getFileName().toString(), result.getParent().toString());
       gFile.extract();
       assertTrue(csvHeader.check(gFile));
-
     }
-
   }
 
   @Test
@@ -71,14 +68,13 @@ public class CsvHeaderColumnValueTest {
         Arrays.asList(
             "Customer ID", "CustomerName", "Gender", "Address", "Contact Number", "Email");
 
-
     // to delete after every use case
     System.out.println("Deleting " + path + filename);
     File delFile = new File(path + filename);
     FileUtilForTesting.deleteTestFile(delFile);
 
-    CsvFileGenerator.generateFixedCustomerCsvFilesWithHeader(1, Paths.get(path), 100000,
-        filename, headers);
+    CsvFileGenerator.generateFixedCustomerCsvFilesWithHeader(
+        1, Paths.get(path), 100000, filename, headers);
 
     TikaUtil tikaUtil = new TikaUtil();
     List<Path> results = FileUtil.walkPath(path);
@@ -90,15 +86,14 @@ public class CsvHeaderColumnValueTest {
       gFile.extract();
       // Test false because customer name is customername
       assertFalse(csvHeader.check(gFile));
-
     }
-
   }
 
   @Test
   public void testCheckInvalidCSVHeaderEmail() throws Exception {
 
-    CsvHeaderColumnValue csvHeader = new CsvHeaderColumnValue("Customer Name,Contact Number,MailADDR");
+    CsvHeaderColumnValue csvHeader =
+        new CsvHeaderColumnValue("Customer Name,Contact Number,MailADDR");
     System.out.println("Testing testCSVContentParser");
     String path = "target/samples/csv/";
     File file = new File(path);
@@ -111,14 +106,13 @@ public class CsvHeaderColumnValueTest {
         Arrays.asList(
             "Customer ID", "Customer Name", "Gender", "Address", "Contact Number", "Email");
 
-
     // to delete after every use case
     System.out.println("Deleting " + path + filename);
     File delFile = new File(path + filename);
     FileUtilForTesting.deleteTestFile(delFile);
 
-    CsvFileGenerator.generateFixedCustomerCsvFilesWithHeader(1, Paths.get(path), 100000,
-        filename, headers);
+    CsvFileGenerator.generateFixedCustomerCsvFilesWithHeader(
+        1, Paths.get(path), 100000, filename, headers);
 
     TikaUtil tikaUtil = new TikaUtil();
     List<Path> results = FileUtil.walkPath(path);
@@ -130,8 +124,6 @@ public class CsvHeaderColumnValueTest {
       gFile.extract();
       // Test false because emailAADR
       assertFalse(csvHeader.check(gFile));
-
     }
-
   }
 }

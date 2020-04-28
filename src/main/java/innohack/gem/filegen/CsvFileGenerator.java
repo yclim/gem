@@ -76,8 +76,8 @@ public class CsvFileGenerator {
     return table;
   }
 
-  public static List<List<String>> generateFixedDataTablesWithHeader(int rows, int custIdVariable,
-      List<String> headers) {
+  public static List<List<String>> generateFixedDataTablesWithHeader(
+      int rows, int custIdVariable, List<String> headers) {
     List<List<String>> table = new ArrayList<>();
     table.add(headers);
     for (int i = 0; i < rows; i++) {
@@ -119,17 +119,14 @@ public class CsvFileGenerator {
           dest,
           filename);
     }
-
   }
 
-
-  public static void generateFixedCustomerCsvFilesWithHeader(int numOfFiles, Path dest, int custVariable,
-      String filename, List<String> header)
+  public static void generateFixedCustomerCsvFilesWithHeader(
+      int numOfFiles, Path dest, int custVariable, String filename, List<String> header)
       throws FileNotFoundException {
 
-
     for (int i = 0; i < numOfFiles; i++) {
-         GenUtil.writeToFile(
+      GenUtil.writeToFile(
           generateFixedDataTablesWithHeader(100, custVariable, header).stream()
               .map(CsvFileGenerator::toCsv)
               .map(row -> String.join(",", row))
@@ -137,13 +134,10 @@ public class CsvFileGenerator {
           dest,
           filename);
     }
-
   }
 
-  public static void generateFixedCustomerCsvFiles(int numOfFiles, Path dest, int custVariable,
-      String filename)
-      throws FileNotFoundException {
-
+  public static void generateFixedCustomerCsvFiles(
+      int numOfFiles, Path dest, int custVariable, String filename) throws FileNotFoundException {
 
     for (int i = 0; i < numOfFiles; i++) {
       GenUtil.writeToFile(

@@ -111,26 +111,4 @@ public class MatchServiceTests {
     assert (mapFileRule.get(txtFile.getAbsolutePath()) == null);
     assert (mapFileGroup.get(txtFile.getAbsolutePath()) == null);
   }
-
-  @Test
-  public void testCheckMatching() throws Exception {
-    assert (matchService.checkMatching(ext_csv_group, csvFile));
-    assert (!matchService.checkMatching(ext_csv_group, txtFile));
-    assert (matchService.checkMatching(ext_dat_group, datFile));
-    assert (!matchService.checkMatching(ext_csv_group, datFile));
-
-    // check cache matchedFileRuleTable
-    assert (MatchService.getMatchedFileRuleTable()
-        .get(csvFile.getAbsolutePath())
-        .get(ext_csv_group.getRules().get(0)));
-    assert (!MatchService.getMatchedFileRuleTable()
-        .get(txtFile.getAbsolutePath())
-        .get(ext_csv_group.getRules().get(0)));
-    assert (MatchService.getMatchedFileRuleTable()
-        .get(datFile.getAbsolutePath())
-        .get(ext_dat_group.getRules().get(0)));
-    assert (!MatchService.getMatchedFileRuleTable()
-        .get(datFile.getAbsolutePath())
-        .get(ext_csv_group.getRules().get(0)));
-  }
 }

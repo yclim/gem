@@ -44,7 +44,7 @@ public class MatchService {
     }
   }
 
-  boolean checkMatching(Group group, GEMFile file) {
+  private boolean checkMatching(Group group, GEMFile file) {
     boolean result = true;
     String fileKey = file.getAbsolutePath();
     HashMap<Rule, Boolean> matchedRuleTable;
@@ -126,7 +126,7 @@ public class MatchService {
     }
   }
 
-  private synchronized void removeAllAssociatedRuleFromCache(Group group) {
+  private void removeAllAssociatedRuleFromCache(Group group) {
     for (HashMap<Rule, Boolean> map : matchedFileRuleTable.values()) {
       for (Rule r : group.getRules()) {
         map.remove(r);
@@ -160,64 +160,4 @@ public class MatchService {
     return filesWithoutMatch;
   }
 
-  /*
-
-  public HashMap<String,List<String>> calculateMatchCount(){
-    //HashMap<GEMFile>
-  }
-
-
-  public void calculateMatchCount(){
-    if(groupDao==null){
-      groupDao= new GroupDao();
-    }
-    if(gemFileDao==null){
-      gemFileDao = new GEMFileDao();
-    }
-
-    for(Group g: groupDao.getGroups()){
-      g.getMatchedFile().clear();
-    }
-    filesWithConflictMatch = new ArrayList<GEMFile>();
-    filesWithoutMatch = new ArrayList<GEMFile>();
-
-    for(String fileKey: matchedGroupTable.keySet()){
-      GEMFile file = gemFileDao.getFileByAbsolutePath(fileKey);
-      HashMap<String, Boolean> groupMatchResult = matchedGroupTable.get(fileKey);
-      List<Group> matchedList = new ArrayList<Group>();
-      for(String groupKey: groupMatchResult.keySet()){
-        if(groupMatchResult.get(groupKey)){
-          Group matchedGroup = groupDao.getGroup(groupKey);
-          matchedGroup.getMatchedFile().add(file);
-          matchedList.add(matchedGroup);
-        }
-        if(matchedList.size()>1){
-          filesWithConflictMatch.add(file);
-          break;
-        }
-      }
-      if(matchedList.size()==0){
-        filesWithoutMatch.add(file);
-      }
-    }
-
-    for(Group g: groupDao.getGroups()){
-      System.out.println(g.getName()+": " +g.getMatchedFile().size());
-    }
-  }
-   */
-
-  /*
-  synchronized public void onRemoveGroup(String groupName){
-    if(groupDao==null){
-      groupDao= new GroupDao();
-    }
-    if(gemFileDao==null){
-      gemFileDao = new GEMFileDao();
-    }
-    for(String fileKey: matchedGroupTable.keySet()){
-      HashMap<String, Boolean> groupMatchResult = matchedGroupTable.get(fileKey);
-      groupMatchResult.remove(groupName);
-    }
-  }*/
 }
