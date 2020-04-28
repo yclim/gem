@@ -4,15 +4,15 @@ import com.google.common.collect.Lists;
 import innohack.gem.entity.GEMFile;
 import java.io.File;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class GEMFileDao implements IGEMFileDao {
-  private static HashMap<String, GEMFile> featureStore = new HashMap<>();
+  private static ConcurrentHashMap<String, GEMFile> featureStore = new ConcurrentHashMap<>();
   private static String directoryStore = "";
   public static Set<String> fileTypeStore = new HashSet<String>();
 
@@ -36,6 +36,17 @@ public class GEMFileDao implements IGEMFileDao {
   public Set<String> getFileTypes() {
     return fileTypeStore;
   }
+
+  @Override
+  public void deleteAll() {
+    featureStore = new ConcurrentHashMap<String, GEMFile>();
+  }
+
+  @Override
+  public void delete(String absolutePath) {
+    featureStore.remove(absolutePath);
+  }
+
   // This method get file data from feature store
   @Override
   public GEMFile getFile(String filename, String directory) {
@@ -114,47 +125,4 @@ public class GEMFileDao implements IGEMFileDao {
     fileTypeStore.add(file.getExtension());
     featureStore.put(file.getAbsolutePath(), file);
   }
-
-  /*
-  private GEMFile mockFile() {
-  	GEMFile f1 = new GEMFile("AAAA.pdf","C:/Directory");
-  	TikaFeature d1 = new TikaFeature();
-  	d1.addMetadata("Compression Type","8 bits");
-  	f1.addData(d1);
-  	CsvFeature d2 = new CsvFeature();
-  	f1.addData(d2);
-  	return f1;
-  }
-
-  private GEMFile mockFile(String name, String dir) {
-  	if(featureStore.size()>0) {
-  		return featureStore.get(GEMFile.getAbsolutePath(name,dir));
-  		//return featureStore.values().iterator().next();
-  	}else{
-  		GEMFile f1 = new GEMFile("AAAA.pdf", "C:/Directory");
-  		TikaFeature d1 = new TikaFeature();
-  		d1.addMetadata("Compression Type", "8 bits");
-  		f1.addData(d1);
-  		CsvFeature d2 = new CsvFeature();
-  		f1.addData(d2);
-  		return f1;
-  	}
-  }
-
-
-
-
-  private List<GEMFile> mockFileList() {
-  	List<GEMFile>  l = Lists.newArrayList();
-  	if(featureStore.size()>0){
-  		for (GEMFile f:featureStore.values()) {
-  			l.add(new GEMFile( f.getName(),  f.getDirectory()));
-  		}
-  	}else{
-  		for(int i =0 ;i<10; i ++) {
-  			l.add(new GEMFile(String.format("Filename%d.pdf", i), "C:/Directory"));
-  		}
-  	}
-  	return l;
-  }*/
 }

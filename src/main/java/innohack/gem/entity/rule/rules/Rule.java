@@ -6,19 +6,55 @@ import innohack.gem.entity.GEMFile;
 import innohack.gem.entity.rule.Parameter;
 import innohack.gem.entity.rule.RuleType;
 import java.util.List;
+import java.util.Objects;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "ruleId")
 @JsonSubTypes({
   @JsonSubTypes.Type(value = FileExtension.class),
   @JsonSubTypes.Type(value = CsvHeaderColumnValue.class)
 })
-public abstract class Rule {
+public abstract class Rule implements Comparable<Rule> {
 
   private String label;
   private RuleType ruleType;
   private String name;
   private List<Parameter> params;
 
+  @Override
+  public int compareTo(Rule rule) {
+    if (this.equals(rule)) {
+      return 0;
+    } else {
+      int result = this.label.compareTo(this.label);
+      if (result != 0) {
+        return result;
+      }
+      return -1;
+    }
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Rule)) return false;
+    Rule rule = (Rule) o;
+    if (!this.getClass().getCanonicalName().equals(rule.getClass().getCanonicalName())) {
+      return false;
+    }
+    /*
+    if (this.params.size() != rule.getParams().size()) {
+      return false;
+    }*/
+    return label.equals(rule.label)
+        && ruleType == rule.ruleType
+        && Objects.equals(name, rule.name)
+        && params.equals(rule.params);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(label, ruleType, name, params, this.getClass().getCanonicalName());
+  }
   /**
    * Use for render UI Label
    *

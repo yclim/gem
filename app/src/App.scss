@@ -80,6 +80,7 @@
 }
 
 .no-group-card {
+  width: #{$group-card-width}px;
   //background-color: $light-gray5;
 }
 
@@ -142,6 +143,15 @@
 .highlight-effect {
   border-radius: 3px;
   animation: highlight 1500ms ease-out;
+}
+
+.filelist-box {
+  height: 85vh;
+}
+
+.detail-box {
+  height: 80vh;
+  overflow: scroll;
 }
 
 @keyframes highlight {

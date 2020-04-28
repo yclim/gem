@@ -1,6 +1,8 @@
 package innohack.gem.entity.rule;
 
-public class Parameter {
+import java.util.Objects;
+
+public class Parameter implements Comparable<Parameter> {
 
   private String label;
   private String placeholder;
@@ -50,5 +52,34 @@ public class Parameter {
 
   public void setType(ParamType type) {
     this.type = type;
+  }
+
+  @Override
+  public int compareTo(Parameter parameter) {
+    if (this.equals(parameter)) {
+      return 0;
+    } else {
+      int result = this.label.compareTo(this.label);
+      if (result != 0) {
+        return result;
+      }
+      return -1;
+    }
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Parameter)) return false;
+    Parameter parameter = (Parameter) o;
+    return label.equals(parameter.label)
+        && placeholder.equals(parameter.placeholder)
+        && Objects.equals(value, parameter.value)
+        && type == parameter.type;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(label, placeholder, value, type);
   }
 }

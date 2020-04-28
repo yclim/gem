@@ -50,11 +50,7 @@ public class GroupController {
   }
   // save group
   @RequestMapping(method = RequestMethod.POST)
-  public ResponseEntity<Object> saveGroup(@RequestBody Group group) {
-    if (groupService.saveGroup(group)) {
-      return new ResponseEntity<>("", HttpStatus.OK);
-    } else {
-      return new ResponseEntity<>("", HttpStatus.EXPECTATION_FAILED);
-    }
+  public Group saveGroup(@RequestBody Group group) {
+    return groupService.saveGroup(group);
   }
 }

@@ -10,18 +10,18 @@ import innohack.gem.example.tika.TikaMimeEnum;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Objects;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.mime.MediaType;
 
 /** Container that keeps all data extracted from a file */
-public class GEMFile {
+public class GEMFile implements Comparable<GEMFile> {
   private String fileName;
   private Long size;
   private String extension;
   private String directory;
   private List<AbstractFeature> data;
-
   private MediaType _mediaType;
   private File _file;
 
@@ -139,5 +139,30 @@ public class GEMFile {
     addData(tikaFeature);
 
     return this;
+  }
+
+  @Override
+  public int compareTo(GEMFile gemFile) {
+    if (this.equals(gemFile)) {
+      return 0;
+    } else {
+      return this.getAbsolutePath().compareTo(gemFile.getAbsolutePath());
+    }
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof GEMFile)) return false;
+    GEMFile gemFile = (GEMFile) o;
+    return fileName.equals(gemFile.fileName)
+        && directory.equals(gemFile.directory)
+        && _file.length() == gemFile._file.length()
+        && _file.lastModified() == gemFile._file.lastModified();
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(fileName, directory, _file.lastModified(), _file.length());
   }
 }

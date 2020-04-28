@@ -51,24 +51,26 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
 
   function renderTable(tableData: string[][]) {
     return (
-      <table className="bp3-html-table bp3-html-table-striped bp3-small">
-        <thead>
-          <tr>
-            {tableData[0].map((cell, i) => (
-              <th key={`header-${i}`}>{cell}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {tableData.slice(1).map((row, i) => (
-            <tr key={`row-${i}`}>
-              {row.map((cell, j) => (
-                <td key={`cell-${i}-${j}`}> {cell}</td>
+      <div className="detail-box">
+        <table className="bp3-html-table bp3-html-table-striped bp3-small">
+          <thead>
+            <tr>
+              {tableData[0].map((cell, i) => (
+                <th key={`header-${i}`}>{cell}</th>
               ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {tableData.slice(1).map((row, i) => (
+              <tr key={`row-${i}`}>
+                {row.map((cell, j) => (
+                  <td key={`cell-${i}-${j}`}> {cell}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     );
   }
 
@@ -78,22 +80,24 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
     const pairs = keys.map((k, i) => [k, values[i]]);
 
     return (
-      <table className="bp3-html-table bp3-html-table-striped keyval-table">
-        <thead>
-          <tr>
-            <th>Metadata Key</th>
-            <th>Metadata Value</th>
-          </tr>
-        </thead>
-        <tbody>
-          {pairs.map(arr => (
-            <tr key={`tr-${arr[0]}`}>
-              <td>{arr[0]}</td>
-              <td>{arr[1]}</td>
+      <div className="detail-box">
+        <table className="bp3-html-table bp3-html-table-striped keyval-table">
+          <thead>
+            <tr>
+              <th>Metadata Key</th>
+              <th>Metadata Value</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {pairs.map(arr => (
+              <tr key={`tr-${arr[0]}`}>
+                <td>{arr[0]}</td>
+                <td>{arr[1]}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     );
   }
 
@@ -207,7 +211,7 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
       if (index > -1) {
         const data = currentFile.data[index] as TikaFeature;
         return (
-          <Card elevation={Elevation.ZERO}>
+          <Card elevation={Elevation.ZERO} className="detail-box">
             <pre> {data.content} </pre>
           </Card>
         );
@@ -220,7 +224,7 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
 
   return (
     <div className="grid2">
-      <div className="box">
+      <div className="box filelist-box">
         <Table
           numRows={files.length}
           defaultColumnWidth={320}

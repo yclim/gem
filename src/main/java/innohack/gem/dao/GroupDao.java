@@ -1,11 +1,10 @@
 package innohack.gem.dao;
 
 import innohack.gem.entity.rule.Group;
-import org.springframework.stereotype.Repository;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import org.springframework.stereotype.Repository;
 
 /**
  * A basic group dao using everything in-memory
@@ -14,7 +13,8 @@ import java.util.List;
  */
 @Repository
 public class GroupDao implements IGroupDao {
-  public static HashMap<String, Group> featureStore = new HashMap<String, Group>();
+  public static ConcurrentHashMap<String, Group> featureStore =
+      new ConcurrentHashMap<String, Group>();
 
   @Override
   public List<Group> getGroups() {
@@ -40,9 +40,9 @@ public class GroupDao implements IGroupDao {
   }
 
   @Override
-  public boolean saveGroup(Group group) {
+  public Group saveGroup(Group group) {
     featureStore.put(group.getName(), group);
-    return true;
+    return group;
   }
 
   @Override

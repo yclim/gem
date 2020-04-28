@@ -3,6 +3,7 @@ package innohack.gem.web;
 import com.google.common.collect.Lists;
 import innohack.gem.entity.GEMFile;
 import innohack.gem.service.GEMFileService;
+import innohack.gem.service.GroupService;
 import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 public class GEMFileController {
 
   @Autowired private GEMFileService fileService;
+  @Autowired private GroupService groupService;
 
   /**
    * Retrieves metadata for all uploaded documents
@@ -52,11 +54,14 @@ public class GEMFileController {
   // get list of files and perform data extraction
   @GetMapping("/sync")
   public List<GEMFile> sync(@RequestParam(name = "directory") String directory) throws Exception {
+    List<GEMFile> files;
     if (directory.trim().length() > 0) {
-      return fileService.syncFiles(directory);
+      files = fileService.syncFiles(directory);
     } else {
-      return Lists.newArrayList();
+      files = Lists.newArrayList();
     }
+    groupService.createDefaultGroup(files);
+    return files;
   }
 
   /**
