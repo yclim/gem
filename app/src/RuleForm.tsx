@@ -5,7 +5,8 @@ import React, {
   useState
 } from "react";
 import { Parameter, Rule } from "./api";
-import { InputGroup } from "@blueprintjs/core";
+import { FormGroup, InputGroup } from "@blueprintjs/core";
+import { Intent } from "@blueprintjs/core/lib/esm/common/intent";
 
 interface IProps {
   rule: Rule;
@@ -23,33 +24,46 @@ const RuleForm: FunctionComponent<IProps> = ({
   const [param1, setParam1] = useState<string>("");
   const [param2, setParam2] = useState<string>("");
   const [param3, setParam3] = useState<string>("");
+  const [param1Missing, setParam1Missing] = useState<boolean>(false);
+  const [param2Missing, setParam2Missing] = useState<boolean>(false);
+  const [param3Missing, setParam3Missing] = useState<boolean>(false);
 
-  useEffect(() => {
-    setParam1("");
-    setParam2("");
-    setParam3("");
-  }, [rule]);
+  function handleTextChange(
+    text: string,
+    setParam: (s: string) => void,
+    setParamMissing: (b: boolean) => void
+  ) {
+    if (!text || text.trim() === "") {
+      setParamMissing(true);
+    }
+    setParam(text);
+  }
 
   function renderParamInput(
     p: Parameter,
     r: Rule,
     paramValue: string,
-    setParamValue: (e: string) => void
+    setParamValue: (e: string) => void,
+    paramMissing: boolean,
+    setParamMissing: (e: boolean) => void
   ) {
     return (
       <div key={r.name}>
-        <div className="dialog-input-group">
-          <label className="dialog-label">{p.label}</label>
+        <FormGroup label={p.label} labelFor={p.label}>
           <InputGroup
-            className="dialog-input"
+            id={p.label}
             placeholder={p.placeholder}
             value={paramValue}
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              // TODO: handle multiple params
-              setParamValue(e.target.value)
+              handleTextChange(e.target.value, setParamValue, setParamMissing)
+            }
+            intent={
+              paramMissing && !paramValue && paramValue.trim() === ""
+                ? Intent.DANGER
+                : Intent.NONE
             }
           />
-        </div>
+        </FormGroup>
       </div>
     );
   }
@@ -59,14 +73,35 @@ const RuleForm: FunctionComponent<IProps> = ({
 
     return (
       <div>
-        {renderParamInput(r.params[0], r, param1, setParam1)}
+        {renderParamInput(
+          r.params[0],
+          r,
+          param1,
+          setParam1,
+          param1Missing,
+          setParam1Missing
+        )}
         {len >= 2 ? (
-          renderParamInput(r.params[1], r, param2, setParam2)
+          renderParamInput(
+            r.params[1],
+            r,
+            param2,
+            setParam2,
+            param2Missing,
+            setParam2Missing
+          )
         ) : (
           <span />
         )}
         {len === 3 ? (
-          renderParamInput(r.params[2], r, param3, setParam3)
+          renderParamInput(
+            r.params[2],
+            r,
+            param3,
+            setParam3,
+            param3Missing,
+            setParam3Missing
+          )
         ) : (
           <span />
         )}
@@ -74,21 +109,66 @@ const RuleForm: FunctionComponent<IProps> = ({
     );
   }
 
+  function handleSubmit() {
+    if (isPresent([rule.name])) {
+      if (rule.params.length === 1 && isPresent([param1])) {
+        handleAdd();
+        reset();
+      } else {
+        setParam1Missing(true);
+      }
+
+      if (rule.params.length === 2 && isPresent([param1, param2])) {
+        handleAdd();
+        reset();
+      } else {
+        if (!isPresent([param1])) setParam1Missing(true);
+        if (!isPresent([param2])) setParam2Missing(true);
+      }
+
+      if (rule.params.length === 3 && isPresent([param1, param2, param3])) {
+        handleAdd();
+        reset();
+      } else {
+        if (!isPresent([param1])) setParam1Missing(true);
+        if (!isPresent([param2])) setParam2Missing(true);
+        if (!isPresent([param3])) setParam3Missing(true);
+      }
+    }
+
+    function isPresent(strs: string[]): boolean {
+      return strs.every(str => str || str.trim() !== "");
+    }
+  }
+
+  function reset() {
+    setParam1("");
+    setParam2("");
+    setParam3("");
+    setParam1Missing(false);
+    setParam2Missing(false);
+    setParam3Missing(false);
+  }
+
   return (
     <div>
       <div className="dialog-body">
-        <div className="dialog-input-group">
-          <label className="dialog-label"> Rule Name </label>
+        <FormGroup label="Rule Name" labelFor="rulename-input">
           <InputGroup
-            id="ruleName"
-            className="dialog-input"
+            id="rulename-input"
+            placeholder="rule name"
             value={rule.name}
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
               rule.name = e.target.value;
-              setRule(rule);
+              setRule({ ...rule, name: e.target.value });
             }}
+            intent={
+              !rule.name || rule.name.trim() === ""
+                ? Intent.DANGER
+                : Intent.NONE
+            }
           />
-        </div>
+        </FormGroup>
         {renderParamForm(rule)}
       </div>
 
@@ -97,7 +177,7 @@ const RuleForm: FunctionComponent<IProps> = ({
           <button
             type="submit"
             className="bp3-button bp3-intent-primary"
-            onClick={e => handleAdd()}
+            onClick={e => handleSubmit()}
           >
             Add to {groupName}
           </button>

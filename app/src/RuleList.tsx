@@ -45,11 +45,6 @@ const RuleList: FunctionComponent<IProps> = ({
     });
   }, []);
 
-  useEffect(() => {
-    if (currentRule && groups) {
-    }
-  }, [currentRule]);
-
   function addRuleToGroup() {
     if (currentRule && currentGroup) {
       groupDispatcher(
