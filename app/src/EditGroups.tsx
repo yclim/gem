@@ -7,7 +7,7 @@ import React, {
 import RuleList from "./RuleList";
 import GroupList from "./GroupList";
 import { RouteComponentProps } from "@reach/router";
-import { File, Group } from "./api";
+import {File, Group, Rule} from "./api";
 import groupRuleService from "./api/GroupRuleService";
 import "@blueprintjs/table/lib/css/table.css";
 import FileList from "./FileList";
@@ -97,7 +97,20 @@ function handleNewGroup(groups: Map<string, Group>): Map<string, Group> {
   let counter = 1;
   while (true) {
     const modName = name + "-" + counter;
+
     if (!groups.has(modName)) {
+      // create new group
+      const newGroup: Group = {
+        name: modName,
+        rules: [],
+        matchedCount: 0
+      }
+      // update backend
+      groupRuleService.saveGroup(newGroup).then(response => {
+        if (response.status !== 200) {
+          alert("saveGroup fail with status: " + response.status);
+        }
+      });
       return new Map(groups.set(modName, { name: modName, rules: [] }));
     } else {
       counter++;

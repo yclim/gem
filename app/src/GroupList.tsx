@@ -36,7 +36,17 @@ const GroupList: FunctionComponent<IProps> = ({
         <Button icon="export" text="Export Spec" />
       </div>
       <div className="stack">
-        {Array.from(groups, ([k, v]) => v).map(g => (
+        {Array.from(groups, ([k, v]) => v).sort(
+            (n1,n2) => {
+              if (n1.name > n2.name) {
+                return 1;
+              }
+              if (n1.name < n2.name){
+                return -1;
+              }
+              return 0;
+            }
+        ).map(g => (
           <GroupCard
             key={g.name}
             group={g}
