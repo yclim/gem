@@ -28,7 +28,7 @@ public class ExcelHeaderColumnValue extends Rule {
     Collection<AbstractFeature> abstractFeatureC = gemFile.getData();
     Iterator<AbstractFeature> iterator = abstractFeatureC.iterator();
 
-    // contains both tika and csv feature
+    // contains both tika and Excel feature
     while (iterator.hasNext()) {
       AbstractFeature feature = iterator.next();
       if (feature.getClass().getName().equals(ExcelFeature.class.getName())) {
