@@ -122,13 +122,18 @@ function handleRemoveGroup(
   groups: Map<string, Group>,
   groupName: string
 ): Map<string, Group> {
-  groupRuleService.deleteGroup(groupName).then(response => {
-    if (response.status !== 200) {
-      alert("deleteGroup fail with status: " + response.status);
-    }
-  });
-  groups.delete(groupName);
-  return groups;
+  const group = groups.get(groupName);
+  if (group) {
+    groupRuleService.deleteGroup(groupName).then(response => {
+      if (response.status !== 200) {
+        alert("deleteGroup fail with status: " + response.status);
+      }
+    });
+    groups.delete(groupName);
+    return new Map(groups);
+  } else {
+    return groups
+  }
 }
 
 function handleAddGroupRule(
