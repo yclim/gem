@@ -16,12 +16,12 @@ class GroupRuleService extends Api {
   }
 
   public updateGroupName(oldGroupName: string, newGroupName: string): Promise<AxiosResponse<Rule[]>> {
-    return this.put("group", '', { params: {
+    return this.put("group/name", '', { params: {
         oldGroupName, newGroupName }});
   }
 
   public deleteGroup(groupName: string): Promise<AxiosResponse<Rule[]>> {
-    return this.delete("group?name=" + groupName);
+    return this.delete("group/name?name=" + groupName);
   }
 
   public saveGroup(group: Group): Promise<AxiosResponse<any>> {

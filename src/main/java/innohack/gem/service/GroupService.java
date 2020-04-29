@@ -5,6 +5,7 @@ import innohack.gem.entity.GEMFile;
 import innohack.gem.entity.rule.Group;
 import innohack.gem.entity.rule.rules.FileExtension;
 import innohack.gem.entity.rule.rules.Rule;
+import java.util.Collections;
 import java.util.List;
 import org.assertj.core.util.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,13 @@ public class GroupService {
   @Autowired private MatchService matcherService;
 
   public List<Group> getGroups() {
-    return groupDao.getGroups();
+    List<Group> group = groupDao.getGroups();
+    Collections.sort(group);
+    return group;
+  }
+
+  public Group getGroup(int groupId) {
+    return groupDao.getGroup(groupId);
   }
 
   public Group getGroup(String groupName) {
@@ -26,6 +33,14 @@ public class GroupService {
 
   public boolean updateGroupName(String oldGroupName, String newGroupName) {
     return groupDao.updateGroupName(oldGroupName, newGroupName);
+  }
+
+  public boolean deleteGroup(int groupId) {
+    Group group = new Group();
+    group.setGroupId(groupId);
+    boolean result = groupDao.deleteGroup(groupId);
+    matcherService.onUpdateEvent(group);
+    return result;
   }
 
   public boolean deleteGroup(String groupName) {

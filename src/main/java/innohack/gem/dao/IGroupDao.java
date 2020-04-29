@@ -12,9 +12,13 @@ public interface IGroupDao {
 
   List<Group> getGroups();
 
+  Group getGroup(int groupId);
+
   Group getGroup(String groupName);
 
   Group saveGroup(Group group);
+
+  boolean deleteGroup(int groupId);
 
   boolean deleteGroup(String groupName);
 

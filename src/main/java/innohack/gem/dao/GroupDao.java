@@ -13,12 +13,30 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public class GroupDao implements IGroupDao {
+  public static int maxKey = 0;
   public static ConcurrentHashMap<String, Group> featureStore =
       new ConcurrentHashMap<String, Group>();
+  public static ConcurrentHashMap<Integer, String> featureStoreId =
+      new ConcurrentHashMap<Integer, String>();
+
+  private static int getIncrementId() {
+    maxKey = maxKey + 1;
+    return maxKey;
+  }
 
   @Override
   public List<Group> getGroups() {
     return new ArrayList(featureStore.values());
+  }
+
+  @Override
+  public Group getGroup(int groupId) {
+    for (Group group : featureStore.values()) {
+      if (group.getGroupId() == groupId) {
+        return group;
+      }
+    }
+    return null;
   }
 
   @Override
@@ -33,6 +51,7 @@ public class GroupDao implements IGroupDao {
       featureStore.remove(oldGroupName);
       existingGroup.setName(newGroupName);
       featureStore.put(existingGroup.getName(), existingGroup);
+      featureStoreId.put(existingGroup.getGroupId(), existingGroup.getName());
       return true;
     } else {
       return false;
@@ -41,13 +60,39 @@ public class GroupDao implements IGroupDao {
 
   @Override
   public Group saveGroup(Group group) {
+    Group existingGroup = featureStore.get(group.getName());
+    if (existingGroup != null) {
+      group.setGroupId(existingGroup.getGroupId());
+    } else {
+      group.setGroupId(getIncrementId());
+    }
     featureStore.put(group.getName(), group);
+    featureStoreId.put(group.getGroupId(), group.getName());
     return group;
   }
 
   @Override
+  public boolean deleteGroup(int groupId) {
+    String groupName = featureStoreId.get(groupId);
+    return delete(groupName);
+  }
+
+  @Override
   public boolean deleteGroup(String groupName) {
-    featureStore.remove(groupName);
-    return true;
+    return delete(groupName);
+  }
+
+  private static boolean delete(String groupName) {
+    if (featureStore.containsKey(groupName)) {
+      featureStore.remove(groupName);
+      for (int id : featureStoreId.keySet()) {
+        if (featureStoreId.get(id).equals(groupName)) {
+          featureStoreId.remove(id);
+        }
+      }
+      return true;
+    } else {
+      return false;
+    }
   }
 }
