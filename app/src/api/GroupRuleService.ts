@@ -15,9 +15,16 @@ class GroupRuleService extends Api {
     return this.get<Rule[]>("rule/list");
   }
 
-  public updateGroupName(oldGroupName: string, newGroupName: string): Promise<AxiosResponse<Rule[]>> {
-    return this.put("group/name", '', { params: {
-        oldGroupName, newGroupName }});
+  public updateGroupName(
+    oldGroupName: string,
+    newGroupName: string
+  ): Promise<AxiosResponse<Rule[]>> {
+    return this.put("group/name", "", {
+      params: {
+        oldGroupName,
+        newGroupName
+      }
+    });
   }
 
   public deleteGroup(groupName: string): Promise<AxiosResponse<Rule[]>> {
@@ -27,8 +34,8 @@ class GroupRuleService extends Api {
   public saveGroup(group: Group): Promise<AxiosResponse<any>> {
     // JSON.stringify() doesn't know how to serialize a BigInt
     const jsonStr = JSON.stringify(group, (key, value) => {
-      if (typeof value === 'bigint') {
-        return value.toString() + 'n';
+      if (typeof value === "bigint") {
+        return value.toString() + "n";
       } else {
         return value;
       }

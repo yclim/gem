@@ -132,7 +132,7 @@ function handleRemoveGroup(
     groups.delete(groupName);
     return new Map(groups);
   } else {
-    return groups
+    return groups;
   }
 }
 

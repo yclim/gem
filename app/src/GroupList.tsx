@@ -53,7 +53,7 @@ const GroupList: FunctionComponent<IProps> = ({
               groupDispatcher={groupDispatcher}
               focusGroup={currentGroup}
               setFocusGroup={setCurrentGroup}
-              focusedGroupRuleName={newGroupRuleName}
+              newGroupRuleName={newGroupRuleName}
             />
           ))}
         <Card
