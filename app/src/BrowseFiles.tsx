@@ -69,6 +69,7 @@ const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
         <EditableText
           className="editable-text"
           value={directory}
+          placeholder="/usr/share/gem/files"
           onChange={e => setDirectory(e)}
         />
         <Button
