@@ -17,4 +17,6 @@ public interface IGroupDao {
   Group saveGroup(Group group);
 
   boolean deleteGroup(String groupName);
+
+  boolean updateGroupName(String oldGroupName, String newGroupName);
 }

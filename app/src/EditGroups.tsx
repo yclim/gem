@@ -66,7 +66,6 @@ export abstract class GroupActions {
   static updateGroupName(
     updateGroupNameInput: UpdateGroupNameInput
   ): GroupAction {
-    // TODO need a backend api to update group name
     return { type: UPDATE_GROUP_NAME, updateGroupNameInput };
   }
   static updateRule(updateRuleInput: UpdateRuleInput): GroupAction {
@@ -152,6 +151,12 @@ function handleUpdateGroupName(
 ): Map<string, Group> {
   const group = groups.get(input.oldGroupName);
   if (group) {
+    groupRuleService.updateGroupName(input.oldGroupName, input.newGroupName).then(response => {
+      if (response.status !== 200) {
+        alert("updateGroupName fail with status: " + response.status);
+        console.log("updateGroupName fail with status: " + response.status)
+      }
+    });
     groups.delete(input.oldGroupName);
     return new Map([...groups.set(input.newGroupName, group).entries()].sort());
   } else {
