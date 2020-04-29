@@ -7,12 +7,10 @@ import innohack.gem.entity.GEMFile;
 import innohack.gem.entity.util.FileUtilForTesting;
 import innohack.gem.example.tika.TikaUtil;
 import innohack.gem.example.util.FileUtil;
-import innohack.gem.filegen.CsvFileGenerator;
 import innohack.gem.filegen.PdfFileGenerator;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +26,6 @@ public class TikaContentRegexTest {
 
     String filenamePrefix = "story_";
     String filename = filenamePrefix + 0 + ".pdf";
-
 
     // to delete after every use case
     System.out.println("Deleting " + path + filename);
@@ -62,7 +59,6 @@ public class TikaContentRegexTest {
     String filenamePrefix = "story_";
     String filename = filenamePrefix + 0 + ".pdf";
 
-
     // to delete after every use case
     System.out.println("Deleting " + path + filename);
     File delFile = new File(path + filename);
@@ -83,5 +79,4 @@ public class TikaContentRegexTest {
       assertFalse(contentRegexCheck.check(gFile));
     }
   }
-
 }
