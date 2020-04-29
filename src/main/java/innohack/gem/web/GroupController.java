@@ -2,12 +2,11 @@ package innohack.gem.web;
 
 import innohack.gem.entity.rule.Group;
 import innohack.gem.service.GroupService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/group")
