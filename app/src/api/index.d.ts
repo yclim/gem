@@ -1,7 +1,7 @@
 export interface Group {
   name: string;
   rules: Rule[];
-  matchedCount?: bigint;
+  matchedCount?: number;
 }
 
 export interface Rule {
