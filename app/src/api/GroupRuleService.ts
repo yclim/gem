@@ -11,6 +11,14 @@ class GroupRuleService extends Api {
     return this.get<Group[]>("group/list");
   }
 
+  public getRule(ruleId: string): Promise<AxiosResponse<Rule>> {
+    return this.get<Rule>("rule", {
+      params: {
+        ruleId
+      }
+    });
+  }
+
   public getRules(): Promise<AxiosResponse<Rule[]>> {
     return this.get<Rule[]>("rule/list");
   }

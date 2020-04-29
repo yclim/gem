@@ -15,9 +15,7 @@ import { AxiosResponse } from "axios";
 
 export interface AddGroupRuleInput {
   groupName: string;
-  ruleId: string;
-  ruleName: string;
-  ruleParams: string[];
+  rule: Rule;
 }
 
 export interface UpdateGroupNameInput {
@@ -142,16 +140,7 @@ function handleAddGroupRule(
 ): Map<string, Group> {
   const group = groups.get(input.groupName);
   if (group) {
-    group.rules = [
-      ...group.rules,
-      {
-        ruleId: input.ruleId,
-        name: input.ruleName,
-        params: input.ruleParams.map(p => {
-          return { value: p };
-        })
-      }
-    ];
+    group.rules = [...group.rules, input.rule];
 
     groupRuleService.saveGroup(group).then(response => {
       if (response.status !== 200) {

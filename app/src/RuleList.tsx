@@ -50,9 +50,7 @@ const RuleList: FunctionComponent<IProps> = ({
       groupDispatcher(
         GroupActions.addGroupRule({
           groupName: currentGroup.name,
-          ruleName: currentRule.name,
-          ruleId: currentRule.ruleId,
-          ruleParams: currentRule.params.map(p => p.value)
+          rule: currentRule
         })
       );
       setNewGroupRuleName(currentRule.name);
