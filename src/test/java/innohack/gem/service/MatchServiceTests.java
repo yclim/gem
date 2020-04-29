@@ -136,18 +136,18 @@ public class MatchServiceTests {
     assert (mapFileGroup.get(datFile.getAbsolutePath()).contains(prefix_d_group) == true);
     groupDao.deleteGroup(prefix_d_group.getName());
     matchService.onUpdateEvent(prefix_d_group);
+
+    System.out.println("=====================");
+    printMatchedCount();
+
     assert (mapFileRule.get(datFile.getAbsolutePath()).get(prefix_d_group.getRules().get(0))
         == null);
     assert (mapFileGroup.get(datFile.getAbsolutePath()).contains(prefix_d_group) == false);
 
     System.out.println("=====================");
     System.out.println("removed group: " + prefix_d_group.getName());
-    for (Group group : groupDao.getGroups()) {
-      System.out.println(group.getName() + " matched file count: " + group.getMatchedFile().size());
-      for (GEMFile f : group.getMatchedFile()) {
-        System.out.println(f.getAbsolutePath());
-      }
-    }
+    printMatchedCount();
+
     assert (mapFileRule.get(txtFile.getAbsolutePath()) != null);
     assert (mapFileGroup.get(txtFile.getAbsolutePath()) != null);
     gemFileDao.delete(txtFile.getAbsolutePath());
@@ -157,14 +157,18 @@ public class MatchServiceTests {
 
     System.out.println("=====================");
     System.out.println("removed file: " + txtFile.getAbsolutePath());
+    printMatchedCount();
+
+    System.out.println("Total groups: " + groupDao.getGroups().size());
+    System.out.println("Total files: " + gemFileDao.getFiles().size());
+  }
+
+  private void printMatchedCount() {
     for (Group group : groupDao.getGroups()) {
       System.out.println(group.getName() + " matched file count: " + group.getMatchedFile().size());
       for (GEMFile f : group.getMatchedFile()) {
         System.out.println(f.getAbsolutePath());
       }
     }
-
-    System.out.println("Total groups: " + groupDao.getGroups().size());
-    System.out.println("Total files: " + gemFileDao.getFiles().size());
   }
 }

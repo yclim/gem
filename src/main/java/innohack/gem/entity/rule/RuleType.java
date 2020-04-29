@@ -2,7 +2,8 @@ package innohack.gem.entity.rule;
 
 public enum RuleType {
   FILE,
-  TIKA,
+  TIKA_CONTENT,
+  TIKA_METADATA,
   CSV,
   EXCEL
 }

@@ -21,13 +21,19 @@ public class GroupController {
   }
 
   // get group by groupName
-  @RequestMapping
+  @RequestMapping("/name")
   public Group getGroup(@RequestParam(name = "name") String name) {
     return groupService.getGroup(name);
   }
 
+  // get group by groupId
+  @RequestMapping("/groupId")
+  public Group getGroup(@RequestParam(name = "groupId") int groupId) {
+    return groupService.getGroup(groupId);
+  }
+
   // delete group by groupName
-  @RequestMapping(method = RequestMethod.DELETE)
+  @RequestMapping(path = "/name", method = RequestMethod.DELETE)
   public ResponseEntity<Object> deleteGroup(@RequestParam(name = "name") String name) {
     if (groupService.deleteGroup(name)) {
       return new ResponseEntity<>("", HttpStatus.OK);
@@ -35,9 +41,18 @@ public class GroupController {
       return new ResponseEntity<>("", HttpStatus.EXPECTATION_FAILED);
     }
   }
+  // delete group by groupId
+  @RequestMapping(path = "/groupId", method = RequestMethod.DELETE)
+  public ResponseEntity<Object> deleteGroup(@RequestParam(name = "groupId") int groupId) {
+    if (groupService.deleteGroup(groupId)) {
+      return new ResponseEntity<>("", HttpStatus.OK);
+    } else {
+      return new ResponseEntity<>("", HttpStatus.EXPECTATION_FAILED);
+    }
+  }
 
   // update groupName
-  @RequestMapping(method = RequestMethod.PUT)
+  @RequestMapping(path = "/name", method = RequestMethod.PUT)
   public ResponseEntity<Object> updateGroupName(
       @RequestParam(name = "oldGroupName") String oldGroupName,
       @RequestParam(name = "newGroupName") String newGroupName) {
