@@ -34,18 +34,14 @@ public class TikaContentRegexTest {
 
     PdfFileGenerator.generateFixedTextPdfFiles(1, Paths.get(path.toString(), filename));
 
-    TikaUtil tikaUtil = new TikaUtil();
-    List<Path> results = FileUtil.walkPath(path);
 
     TikaContentRegex contentRegexCheck = new TikaContentRegex(".*(white|black).*");
 
-    for (Path result : results) {
-      System.out.println("each result is " + result.toAbsolutePath());
+    GEMFile gFile = new GEMFile(filename, path);
+    gFile.extract();
+    assertTrue(contentRegexCheck.check(gFile));
 
-      GEMFile gFile = new GEMFile(result.getFileName().toString(), result.getParent().toString());
-      gFile.extract();
-      assertTrue(contentRegexCheck.check(gFile));
-    }
+
   }
 
   @Test
@@ -66,17 +62,11 @@ public class TikaContentRegexTest {
 
     PdfFileGenerator.generateFixedTextPdfFiles(1, Paths.get(path.toString(), filename));
 
-    TikaUtil tikaUtil = new TikaUtil();
-    List<Path> results = FileUtil.walkPath(path);
+   TikaContentRegex contentRegexCheck = new TikaContentRegex(".*(orange|brown).*");
 
-    TikaContentRegex contentRegexCheck = new TikaContentRegex(".*(orange|brown).*");
+    GEMFile gFile = new GEMFile(filename, path);
+    gFile.extract();
+    assertFalse(contentRegexCheck.check(gFile));
 
-    for (Path result : results) {
-      System.out.println("each result is " + result.toAbsolutePath());
-
-      GEMFile gFile = new GEMFile(result.getFileName().toString(), result.getParent().toString());
-      gFile.extract();
-      assertFalse(contentRegexCheck.check(gFile));
-    }
   }
 }

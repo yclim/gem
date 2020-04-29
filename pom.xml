@@ -131,10 +131,12 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
     </dependency>
 
   </dependencies>
@@ -363,8 +365,14 @@
 		        <configuration>
 		          <to>
 		            <image>gem:latest</image>
-		            <!-- image>037562003025.dkr.ecr.ap-southeast-1.amazonaws.com/docker-repo:gem</image-->
 		          </to>
+		          <container>
+		          	<args>
+		          		<arg>RUN_SAMPLES</arg>
+		          		<arg>/usr/share/gem/files</arg>
+		          		<arg>10</arg>
+		          	</args>
+		          </container>
 		        </configuration>
 		        <executions>
 		        	<execution>
@@ -372,7 +380,6 @@
                 <phase>package</phase>
                 <goals>
                   <goal>buildTar</goal>
-                  <!--  goal>build</goal -->
                 </goals>
               </execution>
 		        </executions>
