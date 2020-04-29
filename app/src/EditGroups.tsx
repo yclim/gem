@@ -171,6 +171,7 @@ function handleUpdateGroupName(
       }
     });
     groups.delete(input.oldGroupName);
+    group.name = input.newGroupName;
     return new Map([...groups.set(input.newGroupName, group).entries()].sort());
   } else {
     return groups;
