@@ -24,6 +24,10 @@ public class GroupService {
     return groupDao.getGroup(groupName);
   }
 
+  public boolean updateGroupName(String oldGroupName, String newGroupName) {
+    return groupDao.updateGroupName(oldGroupName, newGroupName);
+  }
+
   public boolean deleteGroup(String groupName) {
     Group group = new Group();
     group.setName(groupName);

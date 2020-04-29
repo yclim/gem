@@ -57,7 +57,8 @@ public class MatchService {
     // for each rule in the group, check against the rule hashmap for previously checked result
     for (Rule r : group.getRules()) {
       if (matchedRuleTable.get(r) == null) {
-        // when no result of previously checked file and rule, do a check now and store into rule hashmap
+        // when no result of previously checked file and rule, do a check now and store into rule
+        // hashmap
         result = r.check(file);
         matchedRuleTable.put(r, result);
       } else {
@@ -80,7 +81,8 @@ public class MatchService {
     }
     if (result) {
       if (!grps.contains(group)) {
-        // when group is not in the list and its file matched against the group. add the group to the list
+        // when group is not in the list and its file matched against the group. add the group to
+        // the list
         grps.add(group);
       }
     } else {
@@ -98,7 +100,8 @@ public class MatchService {
     if (storedFile != null) {
       // on new file added
       for (Group group : groupList) {
-        // perform matching, if file match the group, add the file to the group's list else remove it
+        // perform matching, if file match the group, add the file to the group's list else remove
+        // it
         if (checkMatching(group, storedFile)) {
           if (!group.getMatchedFile().contains(storedFile)) {
             group.getMatchedFile().add(storedFile);
@@ -126,7 +129,8 @@ public class MatchService {
     if (storedGroupRule != null) {
       // on new or update grouprule
       for (GEMFile gemFile : gemFileList) {
-        // perform matching, if file match the group, add the file to the group's list else remove it
+        // perform matching, if file match the group, add the file to the group's list else remove
+        // it
         if (checkMatching(storedGroupRule, gemFile)) {
           if (!storedGroupRule.getMatchedFile().contains(gemFile)) {
             storedGroupRule.getMatchedFile().add(gemFile);
@@ -153,7 +157,8 @@ public class MatchService {
     }
   }
 
-  // This method calculate all the files with no match or more than 1 group match and update filesWithoutMatch and filesWithConflictMatch
+  // This method calculate all the files with no match or more than 1 group match and update
+  // filesWithoutMatch and filesWithConflictMatch
   public void calculateAbnormalMatchCount() {
     filesWithConflictMatch.clear();
     filesWithoutMatch.clear();
