@@ -21,9 +21,15 @@ const RuleForm: FunctionComponent<IProps> = ({
   groupName,
   handleSubmit
 }) => {
-  const [param1, setParam1] = useState<string>("");
-  const [param2, setParam2] = useState<string>("");
-  const [param3, setParam3] = useState<string>("");
+  const [param1, setParam1] = useState<string | null>(
+    rule.params.length > 0 ? rule.params[0].value : ""
+  );
+  const [param2, setParam2] = useState<string | null>(
+    rule.params.length > 1 ? rule.params[1].value : ""
+  );
+  const [param3, setParam3] = useState<string | null>(
+    rule.params.length > 2 ? rule.params[2].value : ""
+  );
   const [param1Missing, setParam1Missing] = useState<boolean>(false);
   const [param2Missing, setParam2Missing] = useState<boolean>(false);
   const [param3Missing, setParam3Missing] = useState<boolean>(false);
@@ -42,23 +48,23 @@ const RuleForm: FunctionComponent<IProps> = ({
   function renderParamInput(
     p: Parameter,
     r: Rule,
-    paramValue: string,
+    paramValue: string | null,
     setParamValue: (e: string) => void,
     paramMissing: boolean,
     setParamMissing: (e: boolean) => void
   ) {
     return (
-      <div key={r.name}>
+      <div key={p.label}>
         <FormGroup label={p.label} labelFor={p.label}>
           <InputGroup
             id={p.label}
             placeholder={p.placeholder}
-            value={paramValue}
+            value={paramValue ? paramValue : ""}
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
               handleTextChange(e.target.value, setParamValue, setParamMissing)
             }
             intent={
-              paramMissing && !paramValue && paramValue.trim() === ""
+              paramMissing && (!paramValue || paramValue === "")
                 ? Intent.DANGER
                 : Intent.NONE
             }
@@ -70,7 +76,6 @@ const RuleForm: FunctionComponent<IProps> = ({
 
   function renderParamForm(r: Rule) {
     const len = r.params.length;
-
     return (
       <div>
         {renderParamInput(
@@ -112,23 +117,38 @@ const RuleForm: FunctionComponent<IProps> = ({
   function handleFormSubmit() {
     if (isPresent([rule.name])) {
       if (rule.params.length === 1 && isPresent([param1])) {
-        handleSubmit();
-        reset();
+        if (param1) {
+          rule.params[0].value = param1;
+          setRule(rule);
+          handleSubmit();
+          reset();
+        }
       } else {
         setParam1Missing(true);
       }
 
       if (rule.params.length === 2 && isPresent([param1, param2])) {
-        handleSubmit();
-        reset();
+        if (param1 && param2) {
+          rule.params[0].value = param1;
+          rule.params[1].value = param2;
+          setRule(rule);
+          handleSubmit();
+          reset();
+        }
       } else {
         if (!isPresent([param1])) setParam1Missing(true);
         if (!isPresent([param2])) setParam2Missing(true);
       }
 
       if (rule.params.length === 3 && isPresent([param1, param2, param3])) {
-        handleSubmit();
-        reset();
+        if (param1 && param2 && param3) {
+          rule.params[0].value = param1;
+          rule.params[1].value = param2;
+          rule.params[2].value = param3;
+          setRule(rule);
+          handleSubmit();
+          reset();
+        }
       } else {
         if (!isPresent([param1])) setParam1Missing(true);
         if (!isPresent([param2])) setParam2Missing(true);
@@ -136,8 +156,8 @@ const RuleForm: FunctionComponent<IProps> = ({
       }
     }
 
-    function isPresent(strs: string[]): boolean {
-      return strs.every(str => str || str.trim() !== "");
+    function isPresent(strs: (string | null)[]): boolean {
+      return strs.every(str => str && str.trim() !== "");
     }
   }
 
