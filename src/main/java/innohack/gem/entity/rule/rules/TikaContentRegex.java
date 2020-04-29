@@ -41,12 +41,11 @@ public class TikaContentRegex extends Rule {
 
     Iterator<AbstractFeature> iterator = abstractFeatureC.iterator();
 
-
     // contains both tika and csv feature
     while (iterator.hasNext()) {
       AbstractFeature abs = iterator.next();
       if (abs.getClass().getName().equals(TikaFeature.class.getName())) {
-        return checkTikaContent((TikaFeature)abs);
+        return checkTikaContent((TikaFeature) abs);
       }
     }
 
@@ -74,10 +73,7 @@ public class TikaContentRegex extends Rule {
         System.out.println("The  match string is " + matchString);
         return true;
       }
-
     }
     return false;
-
-
   }
 }

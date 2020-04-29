@@ -33,6 +33,9 @@ public class ExcelFeature extends AbstractFeature {
         sheetTableData = new HashMap<>();
         for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
           String sheetName = sheetParser(workbook, i, sheetTableData);
+          List<List<String>> dataList = sheetTableData.get(sheetName);
+
+          System.out.println("size of row" + dataList.size());
           System.out.println(
               "SheetNo: "
                   + (i + 1)

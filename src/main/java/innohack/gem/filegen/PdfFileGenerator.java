@@ -41,31 +41,32 @@ public class PdfFileGenerator {
 
   public static void generateFixedTextPdfFiles(int numOfFiles, Path dest) throws IOException {
 
-    String FIXED_CONTENT = "Openings What Makes a Good Opening? Opening Writing Techniques "
-        + "You will first look at some examples of openings to short stories and discuss/compare "
-        + "your ideas about what makes a good short story opening. You will match four openings "
-        + "with the technique that was used. You will be given frameworks for some story openings "
-        + "and will write your own opening. Materials provided on Good Closings These materials "
-        + "are not demonstrated in the training session due to time constraints. Co-constructing "
-        + "a story Providing whole class brainstorming at the start of a writing lesson on an area "
-        + "such as character, setting or plot can help generate ideas and language for students "
-        + "to use. You could prompt this through something as simple as focusing on words "
-        + "starting with the same letter, in this lesson the letter ‘P’ or with a grid of topics "
-        + "to include in a story (handout) It is important to allow for all students to add their "
-        + "ideas to the story so giving each student an area of responsibility to add to the "
-        + "story recipe can help prompt this. For example, one student decides on a character "
-        + "for the story, another student decides on a location, another student decides on some "
-        + "verbs to use in the story. The students in groups then make a story using as many "
-        + "of the ideas as possible. WHITE SHEEP"
-        + "Black SHEEP Students may be able to build a story through telling it together in a whole class"
-        + " group and then write their individual version. Students may build a story in small "
-        + "group orally and then write it together. You may want students to write a draft of "
-        + "the story together as their first draft. You will need to remind students that "
-        + "everyone needs to take part in the creating and writing so that the strong writer "
-        + "doesn’t take over. Chains of Action This is a technique to quickly generate plot ideas. "
-        + "They can be created individually, in small groups or as a whole class. "
-        + "They could be directly recorded as they are created or they could be written "
-        + "on to a worksheet.";
+    String FIXED_CONTENT =
+        "Openings What Makes a Good Opening? Opening Writing Techniques "
+            + "You will first look at some examples of openings to short stories and discuss/compare "
+            + "your ideas about what makes a good short story opening. You will match four openings "
+            + "with the technique that was used. You will be given frameworks for some story openings "
+            + "and will write your own opening. Materials provided on Good Closings These materials "
+            + "are not demonstrated in the training session due to time constraints. Co-constructing "
+            + "a story Providing whole class brainstorming at the start of a writing lesson on an area "
+            + "such as character, setting or plot can help generate ideas and language for students "
+            + "to use. You could prompt this through something as simple as focusing on words "
+            + "starting with the same letter, in this lesson the letter ‘P’ or with a grid of topics "
+            + "to include in a story (handout) It is important to allow for all students to add their "
+            + "ideas to the story so giving each student an area of responsibility to add to the "
+            + "story recipe can help prompt this. For example, one student decides on a character "
+            + "for the story, another student decides on a location, another student decides on some "
+            + "verbs to use in the story. The students in groups then make a story using as many "
+            + "of the ideas as possible. WHITE SHEEP"
+            + "Black SHEEP Students may be able to build a story through telling it together in a whole class"
+            + " group and then write their individual version. Students may build a story in small "
+            + "group orally and then write it together. You may want students to write a draft of "
+            + "the story together as their first draft. You will need to remind students that "
+            + "everyone needs to take part in the creating and writing so that the strong writer "
+            + "doesn’t take over. Chains of Action This is a technique to quickly generate plot ideas. "
+            + "They can be created individually, in small groups or as a whole class. "
+            + "They could be directly recorded as they are created or they could be written "
+            + "on to a worksheet.";
 
     PDDocument document = new PDDocument();
     PDPage page = new PDPage();
@@ -85,7 +86,6 @@ public class PdfFileGenerator {
 
     document.save(dest.toString());
     document.close();
-
   }
 
   public static void generateTextualPdfFiles(Path path, List<String> textLines) throws IOException {
