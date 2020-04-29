@@ -26,13 +26,13 @@ import RuleForm from "./RuleForm";
 interface IProps {
   groups: Map<string, Group>;
   groupDispatcher: Dispatch<GroupAction>;
-  setFocusedGroupRuleName: (g: string | null) => void;
+  setNewGroupRuleName: (g: string | null) => void;
 }
 
 const RuleList: FunctionComponent<IProps> = ({
   groups,
   groupDispatcher,
-  setFocusedGroupRuleName
+  setNewGroupRuleName
 }) => {
   const [rules, setRules] = useState([] as Rule[]);
   const [isOpen, setIsOpen] = useState(false);
@@ -55,7 +55,7 @@ const RuleList: FunctionComponent<IProps> = ({
           ruleParams: currentRule.params.map(p => p.value)
         })
       );
-      setFocusedGroupRuleName(currentRule.name);
+      setNewGroupRuleName(currentRule.name);
       setCurrentRule(null);
     }
   }

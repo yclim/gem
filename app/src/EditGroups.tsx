@@ -7,7 +7,7 @@ import React, {
 import RuleList from "./RuleList";
 import GroupList from "./GroupList";
 import { RouteComponentProps } from "@reach/router";
-import {File, Group, Rule} from "./api";
+import { File, Group, Rule } from "./api";
 import groupRuleService from "./api/GroupRuleService";
 import "@blueprintjs/table/lib/css/table.css";
 import FileList from "./FileList";
@@ -104,7 +104,7 @@ function handleNewGroup(groups: Map<string, Group>): Map<string, Group> {
         name: modName,
         rules: [],
         matchedCount: 0
-      }
+      };
       // update backend
       groupRuleService.saveGroup(newGroup).then(response => {
         if (response.status !== 200) {
@@ -164,12 +164,14 @@ function handleUpdateGroupName(
 ): Map<string, Group> {
   const group = groups.get(input.oldGroupName);
   if (group) {
-    groupRuleService.updateGroupName(input.oldGroupName, input.newGroupName).then(response => {
-      if (response.status !== 200) {
-        alert("updateGroupName fail with status: " + response.status);
-        console.log("updateGroupName fail with status: " + response.status)
-      }
-    });
+    groupRuleService
+      .updateGroupName(input.oldGroupName, input.newGroupName)
+      .then(response => {
+        if (response.status !== 200) {
+          alert("updateGroupName fail with status: " + response.status);
+          console.log("updateGroupName fail with status: " + response.status);
+        }
+      });
     groups.delete(input.oldGroupName);
     return new Map([...groups.set(input.newGroupName, group).entries()].sort());
   } else {
@@ -216,9 +218,7 @@ const EditGroups: FunctionComponent<RouteComponentProps> = () => {
     groupsReducer,
     new Map<string, Group>()
   );
-  const [focusedGroupRuleName, setFocusedGroupRuleName] = useState<
-    string | null
-  >(null);
+  const [newGroupRuleName, setNewGroupRuleName] = useState<string | null>(null);
   const [currentGroup, setCurrentGroup] = useState<Group | null>(null);
   const [files, setFiles] = useState<File[]>([]);
 
@@ -239,14 +239,14 @@ const EditGroups: FunctionComponent<RouteComponentProps> = () => {
       <RuleList
         groups={groups}
         groupDispatcher={dispatcher}
-        setFocusedGroupRuleName={setFocusedGroupRuleName}
+        setNewGroupRuleName={setNewGroupRuleName}
       />
       <GroupList
         groups={groups}
         groupDispatcher={dispatcher}
         currentGroup={currentGroup}
         setCurrentGroup={setCurrentGroup}
-        focusedGroupRuleName={focusedGroupRuleName}
+        newGroupRuleName={newGroupRuleName}
       />
       <FileList files={files} setFiles={setFiles} />
     </div>

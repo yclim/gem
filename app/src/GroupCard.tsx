@@ -18,15 +18,15 @@ import { GroupAction, GroupActions } from "./EditGroups";
 interface IProps {
   group: Group;
   groupDispatcher: Dispatch<GroupAction>;
-  focusGrp: Group | null;
-  setFocusGrp: (g: Group) => void;
+  focusGroup: Group | null;
+  setFocusGroup: (g: Group) => void;
   focusedGroupRuleName: string | null;
 }
 const GroupCard: FunctionComponent<IProps> = ({
   group,
   groupDispatcher,
-  focusGrp,
-  setFocusGrp,
+  focusGroup,
+  setFocusGroup,
   focusedGroupRuleName
 }) => {
   const [grp, setGrp] = useState(group);
@@ -60,7 +60,7 @@ const GroupCard: FunctionComponent<IProps> = ({
   }
 
   function handleClick() {
-    setFocusGrp(group);
+    setFocusGroup(group);
   }
 
   function handleChangeGroupName(e: string) {
@@ -78,17 +78,15 @@ const GroupCard: FunctionComponent<IProps> = ({
   }
 
   function handleDeleteGroup() {
-    groupDispatcher(
-        GroupActions.removeGroup(grp.name)
-    );
+    groupDispatcher(GroupActions.removeGroup(grp.name));
   }
 
   return (
     <Card
       key={group.name}
       interactive={false}
-      elevation={focusGrp === group ? Elevation.FOUR : Elevation.ONE}
-      className={`group-card ${focusGrp === group ? "group-card-focus" : ""}`}
+      elevation={focusGroup === group ? Elevation.FOUR : Elevation.ONE}
+      className={`group-card ${focusGroup === group ? "group-card-focus" : ""}`}
       onClick={handleClick}
     >
       <div className="group-card-topbar">
