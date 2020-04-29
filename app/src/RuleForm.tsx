@@ -12,14 +12,14 @@ interface IProps {
   rule: Rule;
   setRule: (r: Rule) => void;
   groupName: string;
-  handleAdd: () => void;
+  handleSubmit: () => void;
 }
 
 const RuleForm: FunctionComponent<IProps> = ({
   rule,
   setRule,
   groupName,
-  handleAdd
+  handleSubmit
 }) => {
   const [param1, setParam1] = useState<string>("");
   const [param2, setParam2] = useState<string>("");
@@ -109,17 +109,17 @@ const RuleForm: FunctionComponent<IProps> = ({
     );
   }
 
-  function handleSubmit() {
+  function handleFormSubmit() {
     if (isPresent([rule.name])) {
       if (rule.params.length === 1 && isPresent([param1])) {
-        handleAdd();
+        handleSubmit();
         reset();
       } else {
         setParam1Missing(true);
       }
 
       if (rule.params.length === 2 && isPresent([param1, param2])) {
-        handleAdd();
+        handleSubmit();
         reset();
       } else {
         if (!isPresent([param1])) setParam1Missing(true);
@@ -127,7 +127,7 @@ const RuleForm: FunctionComponent<IProps> = ({
       }
 
       if (rule.params.length === 3 && isPresent([param1, param2, param3])) {
-        handleAdd();
+        handleSubmit();
         reset();
       } else {
         if (!isPresent([param1])) setParam1Missing(true);
@@ -177,7 +177,7 @@ const RuleForm: FunctionComponent<IProps> = ({
           <button
             type="submit"
             className="bp3-button bp3-intent-primary"
-            onClick={e => handleSubmit()}
+            onClick={e => handleFormSubmit()}
           >
             Add to {groupName}
           </button>

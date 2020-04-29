@@ -169,7 +169,7 @@ const RuleList: FunctionComponent<IProps> = ({
             rule={currentRule}
             setRule={setCurrentRule}
             groupName={currentGroup.name}
-            handleAdd={handleAdd}
+            handleSubmit={handleAdd}
           />
         ) : (
           ""
