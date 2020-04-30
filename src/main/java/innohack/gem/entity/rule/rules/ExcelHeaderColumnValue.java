@@ -13,6 +13,14 @@ public class ExcelHeaderColumnValue extends Rule {
 
   static final String LABEL = "Excel Header Column Value";
   static final RuleType RULE_TYPE = RuleType.EXCEL;
+  static final List<Parameter> PARAMETERS =
+      Lists.newArrayList(new Parameter("headers", "aa,bb,cc", ParamType.STRING_LIST));
+
+  public ExcelHeaderColumnValue() {
+    this.setLabel(LABEL);
+    this.setRuleType(RULE_TYPE);
+    this.setParams(PARAMETERS);
+  }
 
   public ExcelHeaderColumnValue(String sheetName, String headers) {
     Parameter param1 = new Parameter("sheetName", "string", ParamType.STRING, sheetName);
