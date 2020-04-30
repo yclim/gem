@@ -98,8 +98,8 @@ const GroupCard: FunctionComponent<IProps> = ({
     console.log(selectedRule);
   }
 
-  function handleDeleteGroupRule(group: Group, r: Rule) {
-    groupDispatcher(GroupActions.removeGroupRule({groupName: group.name, rule: r}));
+  function handleDeleteGroupRule(curGrp: Group, r: Rule) {
+    groupDispatcher(GroupActions.removeGroupRule({groupName: curGrp.name, rule: r}));
   }
 
   return (
