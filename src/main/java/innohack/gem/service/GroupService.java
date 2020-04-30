@@ -1,18 +1,16 @@
 package innohack.gem.service;
 
-import java.util.Collections;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.google.common.collect.Lists;
-
 import innohack.gem.dao.IGroupDao;
 import innohack.gem.entity.GEMFile;
 import innohack.gem.entity.rule.Group;
 import innohack.gem.entity.rule.rules.FileExtension;
 import innohack.gem.entity.rule.rules.Rule;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class GroupService {
@@ -41,6 +39,8 @@ public class GroupService {
   public boolean deleteGroup(int groupId) {
     Group group = new Group();
     group.setGroupId(groupId);
+    List<Rule> rules = new ArrayList<>();
+    group.setRules(rules);
     boolean result = groupDao.deleteGroup(groupId);
     matcherService.onUpdateEvent(group);
     return result;
@@ -49,6 +49,8 @@ public class GroupService {
   public boolean deleteGroup(String groupName) {
     Group group = new Group();
     group.setName(groupName);
+    List<Rule> rules = new ArrayList<>();
+    group.setRules(rules);
     boolean result = groupDao.deleteGroup(groupName);
     matcherService.onUpdateEvent(group);
     return result;
