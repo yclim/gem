@@ -47,10 +47,12 @@ public class GroupService {
   }
 
   public boolean deleteGroup(String groupName) {
-    //    Group group = new Group();
-    //    group.setName(groupName);
+    Group group = new Group();
+    group.setName(groupName);
+    List<Rule> rules = new ArrayList<>();
+    group.setRules(rules);
     boolean result = groupDao.deleteGroup(groupName);
-    //    matcherService.onUpdateEvent(group);
+    matcherService.onUpdateEvent(group);
     return result;
   }
 
