@@ -1,18 +1,33 @@
 package innohack.gem.web;
 
-import innohack.gem.entity.rule.Group;
-import innohack.gem.service.GroupService;
+import java.io.IOException;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import innohack.gem.entity.rule.Group;
+import innohack.gem.service.GroupService;
 
 @RestController
 @RequestMapping("/api/group")
 public class GroupController {
 
   @Autowired private GroupService groupService;
+  
+  @PostMapping("/import")
+  public List<Group> importGroups(@RequestParam("file") MultipartFile file) throws IOException {
+    return groupService.importGroups(file.getBytes());
+  }
 
   // get all group
   @GetMapping("/list")

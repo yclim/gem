@@ -1,11 +1,16 @@
 package innohack.gem.service;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 
 import innohack.gem.dao.IGroupDao;
@@ -16,10 +21,12 @@ import innohack.gem.entity.rule.rules.Rule;
 
 @Service
 public class GroupService {
+  
+  private static final Logger LOGGER = LoggerFactory.getLogger(GroupService.class);
 
   @Autowired private IGroupDao groupDao;
   @Autowired private MatchService matcherService;
-
+  
   public List<Group> getGroups() {
     List<Group> group = groupDao.getGroups();
     Collections.sort(group);
@@ -78,5 +85,11 @@ public class GroupService {
         matcherService.onUpdateEvent(default_extension_group);
       }
     }
+  }
+
+  public List<Group> importGroups(byte[] data) throws IOException {
+    LOGGER.info("Importing groups...");
+    ObjectMapper mapper = new ObjectMapper();
+    return mapper.readValue(data, new TypeReference<List<Group>>(){});
   }
 }
