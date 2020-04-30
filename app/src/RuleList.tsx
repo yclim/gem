@@ -13,9 +13,7 @@ import {
   ButtonGroup,
   Dialog,
   Divider,
-  Icon,
   InputGroup,
-  Intent,
   Menu,
   MenuDivider,
   MenuItem,
@@ -23,25 +21,23 @@ import {
   Position
 } from "@blueprintjs/core";
 import { GroupAction, GroupActions, rulenameExist } from "./EditGroups";
+import RuleForm from "./RuleForm";
 
 interface IProps {
   groups: Map<string, Group>;
   groupDispatcher: Dispatch<GroupAction>;
-  setFocusedGroupRuleName: (g: string | null) => void;
+  setNewGroupRuleName: (g: string | null) => void;
 }
+
 const RuleList: FunctionComponent<IProps> = ({
   groups,
   groupDispatcher,
-  setFocusedGroupRuleName
+  setNewGroupRuleName
 }) => {
   const [rules, setRules] = useState([] as Rule[]);
   const [isOpen, setIsOpen] = useState(false);
   const [currentRule, setCurrentRule] = useState<Rule | null>(null);
   const [currentGroup, setCurrentGroup] = useState<Group | null>(null);
-  const [ruleName, setRuleName] = useState<string>("");
-  const [param1, setParam1] = useState<string>("");
-  const [param2, setParam2] = useState<string>("");
-  const [param3, setParam3] = useState<string>("");
 
   useEffect(() => {
     groupRuleService.getRules().then(r => {
@@ -49,24 +45,15 @@ const RuleList: FunctionComponent<IProps> = ({
     });
   }, []);
 
-  useEffect(() => {
-    if (currentRule && groups) {
-      setRuleName(generateLabel(currentRule));
-      setParam1("");
-    }
-  }, [currentRule]);
-
   function addRuleToGroup() {
-    if (ruleName && param1 && currentRule && currentGroup) {
+    if (currentRule && currentGroup) {
       groupDispatcher(
         GroupActions.addGroupRule({
           groupName: currentGroup.name,
-          ruleName,
-          ruleId: currentRule.ruleId,
-          ruleParams: [param1]
+          rule: currentRule
         })
       );
-      setFocusedGroupRuleName(ruleName);
+      setNewGroupRuleName(currentRule.name);
       setCurrentRule(null);
     }
   }
@@ -76,6 +63,7 @@ const RuleList: FunctionComponent<IProps> = ({
     if (typeof grp !== "undefined") {
       const rule = rules.find(r => r.ruleId === rid);
       if (typeof rule !== "undefined") {
+        rule.name = generateLabel(rule);
         setCurrentRule(rule);
         setIsOpen(true);
         setCurrentGroup(grp);
@@ -148,101 +136,6 @@ const RuleList: FunctionComponent<IProps> = ({
     );
   }
 
-  function renderParamInput(
-    p: Parameter,
-    r: Rule,
-    paramValue: string,
-    setParamValue: (e: string) => void
-  ) {
-    return (
-      <div key={r.name}>
-        <div className="dialog-input-group">
-          <label className="dialog-label">{p.label}</label>
-          <InputGroup
-            className="dialog-input"
-            placeholder={p.placeholder}
-            value={paramValue}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              // TODO: handle multiple params
-              setParamValue(e.target.value)
-            }
-            rightElement={
-              <Icon
-                className="dialog-input-icon"
-                icon="tick"
-                intent={Intent.SUCCESS}
-              />
-            }
-          />
-        </div>
-      </div>
-    );
-  }
-
-  function renderParamForm(r: Rule) {
-    const len = r.params.length;
-
-    return (
-      <div>
-        {renderParamInput(r.params[0], r, param1, setParam1)}
-        {len >= 2 ? (
-          renderParamInput(r.params[1], r, param2, setParam2)
-        ) : (
-          <span />
-        )}
-        {len === 3 ? (
-          renderParamInput(r.params[2], r, param3, setParam3)
-        ) : (
-          <span />
-        )}
-      </div>
-    );
-  }
-
-  function renderDialogBody(r: Rule) {
-    if (r !== null) {
-      return (
-        <div>
-          <div className="dialog-body">
-            <div className="dialog-input-group">
-              <label className="dialog-label"> Rule Name </label>
-              <InputGroup
-                id="ruleName"
-                className="dialog-input"
-                value={ruleName}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  setRuleName(e.target.value)
-                }
-                rightElement={
-                  <Icon
-                    className="dialog-input-icon"
-                    icon="tick"
-                    intent={Intent.SUCCESS}
-                  />
-                }
-              />
-            </div>
-            {renderParamForm(r)}
-          </div>
-
-          <div className="bp3-dialog-footer">
-            <div className="bp3-dialog-footer-actions">
-              <button
-                type="submit"
-                className="bp3-button bp3-intent-primary"
-                onClick={e => handleAdd()}
-              >
-                Add to {currentGroup ? currentGroup.name : ""}
-              </button>
-            </div>
-          </div>
-        </div>
-      );
-    } else {
-      return <div>nothing</div>;
-    }
-  }
-
   return (
     <div className="box">
       <ButtonGroup
@@ -271,7 +164,16 @@ const RuleList: FunctionComponent<IProps> = ({
         title={`${currentRule ? currentRule.label : "-"}`}
         transitionDuration={100}
       >
-        {currentRule ? renderDialogBody(currentRule) : ""}
+        {currentRule && currentGroup ? (
+          <RuleForm
+            rule={currentRule}
+            setRule={setCurrentRule}
+            groupName={currentGroup.name}
+            handleSubmit={handleAdd}
+          />
+        ) : (
+          ""
+        )}
       </Dialog>
     </div>
   );

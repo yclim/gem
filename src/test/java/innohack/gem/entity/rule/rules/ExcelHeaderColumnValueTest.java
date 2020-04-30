@@ -29,7 +29,7 @@ public class ExcelHeaderColumnValueTest {
   @Test
   public void testCheckUnmatchedExcelSheetName() throws Exception {
     ExcelHeaderColumnValue excelHeader =
-            new ExcelHeaderColumnValue("Cars Dealer Error", "CAR_ID,CAR_DEALER,PRICE");
+        new ExcelHeaderColumnValue("Cars Dealer Error", "CAR_ID,CAR_DEALER,PRICE");
     GEMFile excelFile = new GEMFile("cars_0.xls", "src/test/resources");
     excelFile.extract();
     assertFalse(excelHeader.check(excelFile));

@@ -109,7 +109,7 @@
 }
 
 .dialog-body {
-  margin: 10px;
+  margin: 20px;
 }
 
 .dialog-input-group {
@@ -156,7 +156,7 @@
 
 @keyframes highlight {
   from {
-    background-color: $green5;
+    background-color: $blue5;
   }
   to {
     background-color: $white;

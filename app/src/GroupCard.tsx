@@ -3,6 +3,7 @@ import {
   Alignment,
   Button,
   Card,
+  Dialog,
   EditableText,
   Elevation,
   Icon,
@@ -14,45 +15,48 @@ import {
 } from "@blueprintjs/core";
 import { Group, Rule } from "./api";
 import { GroupAction, GroupActions } from "./EditGroups";
+import RuleForm from "./RuleForm";
 
 interface IProps {
   group: Group;
   groupDispatcher: Dispatch<GroupAction>;
-  focusGrp: Group | null;
-  setFocusGrp: (g: Group) => void;
-  focusedGroupRuleName: string | null;
+  focusGroup: Group | null;
+  setFocusGroup: (g: Group) => void;
+  newGroupRuleName: string | null;
 }
 const GroupCard: FunctionComponent<IProps> = ({
   group,
   groupDispatcher,
-  focusGrp,
-  setFocusGrp,
-  focusedGroupRuleName
+  focusGroup,
+  setFocusGroup,
+  newGroupRuleName
 }) => {
   const [grp, setGrp] = useState(group);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [selectedRule, setSelectedRule] = useState<Rule | null>(null);
 
-  function renderMenu() {
+  function renderMenu(r: Rule) {
     return (
       <Menu>
-        <MenuItem text="Edit" icon="edit" />
+        <MenuItem text="Edit" icon="edit" onClick={() => handleDialogOpen(r)} />
         <MenuItem text="Delete" icon="trash" />
       </Menu>
     );
   }
 
-  function renderGroupRule(ri: Rule) {
+  function renderGroupRule(r: Rule) {
     return (
       <Popover
-        key={`popover-${ri.name}`}
+        key={`popover-${r.name}`}
         position={Position.RIGHT_TOP}
-        content={renderMenu()}
+        content={renderMenu(r)}
       >
         <Button
           alignText={Alignment.LEFT}
           rightIcon="more"
-          text={ri.name}
+          text={r.name}
           className={`group-card-rule ${
-            focusedGroupRuleName === ri.name ? "highlight-effect" : ""
+            newGroupRuleName === r.name ? "highlight-effect" : ""
           }`}
         />
       </Popover>
@@ -60,7 +64,7 @@ const GroupCard: FunctionComponent<IProps> = ({
   }
 
   function handleClick() {
-    setFocusGrp(group);
+    setFocusGroup(group);
   }
 
   function handleChangeGroupName(e: string) {
@@ -78,17 +82,28 @@ const GroupCard: FunctionComponent<IProps> = ({
   }
 
   function handleDeleteGroup() {
-    groupDispatcher(
-        GroupActions.removeGroup(grp.name)
-    );
+    groupDispatcher(GroupActions.removeGroup(grp.name));
+  }
+
+  function handleDialogOpen(r: Rule) {
+    setSelectedRule(r);
+    setIsOpen(true);
+  }
+
+  function handleDialogClose() {
+    setIsOpen(false);
+  }
+
+  function handleDialogSubmit() {
+    console.log(selectedRule);
   }
 
   return (
     <Card
       key={group.name}
       interactive={false}
-      elevation={focusGrp === group ? Elevation.FOUR : Elevation.ONE}
-      className={`group-card ${focusGrp === group ? "group-card-focus" : ""}`}
+      elevation={focusGroup === group ? Elevation.FOUR : Elevation.ONE}
+      className={`group-card ${focusGroup === group ? "group-card-focus" : ""}`}
       onClick={handleClick}
     >
       <div className="group-card-topbar">
@@ -111,6 +126,25 @@ const GroupCard: FunctionComponent<IProps> = ({
           return renderGroupRule(ri);
         })}
       </div>
+
+      <Dialog
+        isOpen={isOpen}
+        icon="annotation"
+        onClose={handleDialogClose}
+        title={`${selectedRule ? selectedRule.label : "-"}`}
+        transitionDuration={100}
+      >
+        {selectedRule && focusGroup ? (
+          <RuleForm
+            rule={selectedRule}
+            setRule={setSelectedRule}
+            groupName={focusGroup.name}
+            handleSubmit={handleDialogSubmit}
+          />
+        ) : (
+          ""
+        )}
+      </Dialog>
     </Card>
   );
 };

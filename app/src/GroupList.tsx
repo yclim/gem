@@ -9,7 +9,7 @@ interface IProps {
   groupDispatcher: Dispatch<GroupAction>;
   currentGroup: Group | null;
   setCurrentGroup: (group: Group) => void;
-  focusedGroupRuleName: string | null;
+  newGroupRuleName: string | null;
 }
 
 const GroupList: FunctionComponent<IProps> = ({
@@ -17,7 +17,7 @@ const GroupList: FunctionComponent<IProps> = ({
   groupDispatcher,
   currentGroup,
   setCurrentGroup,
-  focusedGroupRuleName
+  newGroupRuleName
 }) => {
   function createGroup() {
     groupDispatcher(GroupActions.newGroupAction());
@@ -36,26 +36,26 @@ const GroupList: FunctionComponent<IProps> = ({
         <Button icon="export" text="Export Spec" />
       </div>
       <div className="stack">
-        {Array.from(groups, ([k, v]) => v).sort(
-            (n1,n2) => {
-              if (n1.name > n2.name) {
-                return 1;
-              }
-              if (n1.name < n2.name){
-                return -1;
-              }
-              return 0;
+        {Array.from(groups, ([k, v]) => v)
+          .sort((n1, n2) => {
+            if (n1.name > n2.name) {
+              return 1;
             }
-        ).map(g => (
-          <GroupCard
-            key={g.name}
-            group={g}
-            groupDispatcher={groupDispatcher}
-            focusGrp={currentGroup}
-            setFocusGrp={setCurrentGroup}
-            focusedGroupRuleName={focusedGroupRuleName}
-          />
-        ))}
+            if (n1.name < n2.name) {
+              return -1;
+            }
+            return 0;
+          })
+          .map(g => (
+            <GroupCard
+              key={g.name}
+              group={g}
+              groupDispatcher={groupDispatcher}
+              focusGroup={currentGroup}
+              setFocusGroup={setCurrentGroup}
+              newGroupRuleName={newGroupRuleName}
+            />
+          ))}
         <Card
           interactive={false}
           elevation={Elevation.ZERO}
