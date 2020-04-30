@@ -1,11 +1,15 @@
 package innohack.gem.service;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 
 import innohack.gem.dao.IGroupDao;
@@ -16,6 +20,8 @@ import innohack.gem.entity.rule.rules.Rule;
 
 @Service
 public class GroupService {
+  
+  private static final Logger LOGGER = LoggerFactory.getLogger(GroupService.class);
 
   @Autowired private IGroupDao groupDao;
   @Autowired private MatchService matcherService;
@@ -77,6 +83,18 @@ public class GroupService {
         groupDao.saveGroup(default_extension_group);
         matcherService.onUpdateEvent(default_extension_group);
       }
+    }
+  }
+
+  public byte[] exportGroups() throws IOException {
+    LOGGER.info("Exporting the groups as json...");
+    try {
+      List<Group> groups = groupDao.getGroups();
+      ObjectMapper mapper = new ObjectMapper();
+      return mapper.writeValueAsBytes(groups);
+    } catch(IOException ex) {
+      LOGGER.error("Error in exporting groups", ex);
+      throw ex;
     }
   }
 }
