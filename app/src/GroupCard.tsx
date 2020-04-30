@@ -39,7 +39,7 @@ const GroupCard: FunctionComponent<IProps> = ({
     return (
       <Menu>
         <MenuItem text="Edit" icon="edit" onClick={() => handleDialogOpen(r)} />
-        <MenuItem text="Delete" icon="trash" />
+        <MenuItem text="Delete" icon="trash" onClick={() => handleDeleteGroupRule(grp, r)} />
       </Menu>
     );
   }
@@ -96,6 +96,10 @@ const GroupCard: FunctionComponent<IProps> = ({
 
   function handleDialogSubmit() {
     console.log(selectedRule);
+  }
+
+  function handleDeleteGroupRule(curGrp: Group, r: Rule) {
+    groupDispatcher(GroupActions.removeGroupRule({groupName: curGrp.name, rule: r}));
   }
 
   return (
