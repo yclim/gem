@@ -17,6 +17,10 @@ export interface AddGroupRuleInput {
   groupName: string;
   rule: Rule;
 }
+export interface RemoveGroupRuleInput {
+  groupName: string;
+  rule: Rule;
+}
 
 export interface UpdateGroupNameInput {
   oldGroupName: string;
@@ -34,6 +38,7 @@ const INIT_GROUPS = "INIT_GROUPS";
 const NEW_GROUP = "NEW_GROUP";
 const REMOVE_GROUP = "REMOVE_GROUP";
 const ADD_GROUP_RULE = "ADD_GROUP_RULE";
+const REMOVE_GROUP_RULE = "REMOVE_GROUP_RULE";
 const UPDATE_GROUP_NAME = "UPDATE_GROUP_NAME";
 const UPDATE_RULE = "UPDATE_RULE";
 
@@ -61,6 +66,9 @@ export abstract class GroupActions {
   static addGroupRule(addGroupRuleInput: AddGroupRuleInput): GroupAction {
     return { type: ADD_GROUP_RULE, addGroupRuleInput };
   }
+  static removeGroupRule(removeGroupRuleInput: RemoveGroupRuleInput): GroupAction {
+    return { type: REMOVE_GROUP_RULE, removeGroupRuleInput };
+  }
   static updateGroupName(
     updateGroupNameInput: UpdateGroupNameInput
   ): GroupAction {
@@ -81,6 +89,8 @@ export function groupsReducer(state: Map<string, Group>, action: GroupAction) {
       return handleRemoveGroup(state, action.groupName);
     case ADD_GROUP_RULE:
       return handleAddGroupRule(state, action.addGroupRuleInput);
+    case REMOVE_GROUP_RULE:
+      return handleRemoveGroupRule(state, action.removeGroupRuleInput);
     case UPDATE_GROUP_NAME:
       return handleUpdateGroupName(state, action.updateGroupNameInput);
     case UPDATE_RULE:
@@ -145,6 +155,25 @@ function handleAddGroupRule(
     groupRuleService.saveGroup(group).then(response => {
       if (response.status !== 200) {
         alert("saveGroup fail with status: " + response.status);
+      }
+    });
+    groups.set(input.groupName, group);
+  }
+  return new Map(groups);
+}
+
+function handleRemoveGroupRule(groups: Map<string, Group>,
+  input: RemoveGroupRuleInput
+): Map<string, Group> {
+  const group = groups.get(input.groupName);
+  if (group) {
+    const ruleName = input.rule.name
+    group.rules = group.rules.filter(r => {
+      return r.name !== ruleName
+    });
+    groupRuleService.saveGroup(group).then(response => {
+      if (response.status !== 200) {
+        alert("Unable to remove rule: saveGroup fail with status: " + response.status);
       }
     });
     groups.set(input.groupName, group);
