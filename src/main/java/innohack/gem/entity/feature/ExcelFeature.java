@@ -1,19 +1,18 @@
 package innohack.gem.entity.feature;
 
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
-
 import java.io.File;
 import java.util.*;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 
 /** Object to hold wrap extracted excel data */
 public class ExcelFeature extends AbstractFeature {
 
   private Map<String, List<List<String>>> sheetTableData;
 
-    public void setSheetTableData(Map<String, List<List<String>>> sheetTableData) {
-        this.sheetTableData = sheetTableData;
-    }
+  public void setSheetTableData(Map<String, List<List<String>>> sheetTableData) {
+    this.sheetTableData = sheetTableData;
+  }
 
   public Map<String, List<List<String>>> getSheetTableData() {
     return sheetTableData;

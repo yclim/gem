@@ -7,13 +7,12 @@ import innohack.gem.entity.feature.ExcelFeature;
 import innohack.gem.entity.feature.TikaFeature;
 import innohack.gem.entity.feature.common.FeatureExtractorUtil;
 import innohack.gem.example.tika.TikaMimeEnum;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.tika.config.TikaConfig;
-import org.apache.tika.mime.MediaType;
-
 import java.io.File;
 import java.util.List;
 import java.util.Objects;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.tika.config.TikaConfig;
+import org.apache.tika.mime.MediaType;
 
 /** Container that keeps all data extracted from a file */
 public class GEMFile implements Comparable<GEMFile> {
@@ -24,8 +23,7 @@ public class GEMFile implements Comparable<GEMFile> {
   private List<AbstractFeature> data;
   private String mimeType;
 
-  public GEMFile() {
-  }
+  public GEMFile() {}
 
   public GEMFile(String fileName, String directory) {
     this.directory = directory;
@@ -165,8 +163,8 @@ public class GEMFile implements Comparable<GEMFile> {
     GEMFile gemFile = (GEMFile) o;
     return fileName.equals(gemFile.fileName)
         && directory.equals(gemFile.directory)
-            && size.equals(gemFile.size)
-            && extension.equals(gemFile.extension);
+        && size.equals(gemFile.size)
+        && extension.equals(gemFile.extension);
   }
 
   @Override

@@ -3,10 +3,9 @@ package innohack.gem.web;
 import innohack.gem.entity.GEMFile;
 import innohack.gem.service.GEMFileService;
 import innohack.gem.service.GroupService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/file")
@@ -53,8 +52,8 @@ public class GEMFileController {
   // get list of files and perform data extraction
   @GetMapping("/sync")
   public List<GEMFile> sync(
-          @RequestParam(name = "directory", defaultValue = "/usr/share/gem/files") String directory)
-          throws Exception {
+      @RequestParam(name = "directory", defaultValue = "/usr/share/gem/files") String directory)
+      throws Exception {
     List<GEMFile> files = fileService.syncFiles(directory);
     groupService.createDefaultGroup(files);
     return files;

@@ -1,13 +1,12 @@
 package innohack.gem.entity.feature;
 
+import java.io.File;
+import java.io.FileInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
 import org.apache.tika.sax.BodyContentHandler;
-
-import java.io.File;
-import java.io.FileInputStream;
 
 /** Object to hold wrap extracted tika data */
 public class TikaFeature extends AbstractFeature {
@@ -35,7 +34,7 @@ public class TikaFeature extends AbstractFeature {
     return content;
   }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
+  public void setContent(String content) {
+    this.content = content;
+  }
 }

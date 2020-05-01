@@ -1,15 +1,14 @@
 package innohack.gem.entity.rule.rules;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import innohack.gem.entity.GEMFile;
 import innohack.gem.entity.util.FileUtilForTesting;
 import innohack.gem.filegen.PdfFileGenerator;
-import org.junit.jupiter.api.Test;
-
 import java.io.File;
 import java.nio.file.Paths;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
 
 public class TikaContentRegexTest {
 
