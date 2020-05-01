@@ -12,8 +12,6 @@ notifications:
       - neojunjie87@gmail.com
       - shaojieyew@gmail.com
       - yowchenglim+dev@gmail.com
-    on_success: never
-    on_failure: always
 jobs:
   include:
     - stage: compile
