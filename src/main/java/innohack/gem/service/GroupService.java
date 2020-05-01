@@ -1,6 +1,7 @@
 package innohack.gem.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -48,6 +49,8 @@ public class GroupService {
   public boolean deleteGroup(int groupId) {
     Group group = new Group();
     group.setGroupId(groupId);
+    List<Rule> rules = new ArrayList<>();
+    group.setRules(rules);
     boolean result = groupDao.deleteGroup(groupId);
     matcherService.onUpdateEvent(group);
     return result;
@@ -56,6 +59,8 @@ public class GroupService {
   public boolean deleteGroup(String groupName) {
     Group group = new Group();
     group.setName(groupName);
+    List<Rule> rules = new ArrayList<>();
+    group.setRules(rules);
     boolean result = groupDao.deleteGroup(groupName);
     matcherService.onUpdateEvent(group);
     return result;
