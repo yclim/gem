@@ -7,31 +7,41 @@ import innohack.gem.entity.feature.ExcelFeature;
 import innohack.gem.entity.feature.TikaFeature;
 import innohack.gem.entity.feature.common.FeatureExtractorUtil;
 import innohack.gem.example.tika.TikaMimeEnum;
-import java.io.File;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.Objects;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.mime.MediaType;
 
+import java.io.File;
+import java.util.List;
+import java.util.Objects;
+
 /** Container that keeps all data extracted from a file */
 public class GEMFile implements Comparable<GEMFile> {
   private String fileName;
+  private String directory;
   private Long size;
   private String extension;
-  private String directory;
   private List<AbstractFeature> data;
-  private MediaType _mediaType;
-  private File _file;
+  private String mimeType;
+
+  public GEMFile() {
+  }
 
   public GEMFile(String fileName, String directory) {
     this.directory = directory;
     this.fileName = fileName;
+    File file = new File(directory, fileName);
+    this.extension = FilenameUtils.getExtension(fileName);
+    this.size = file.length();
+  }
 
-    this._file = new File(getAbsolutePath());
-    this.extension = FilenameUtils.getExtension(_file.getName());
-    this.size = _file.length();
+  /* Start of getter setter */
+  public String getMimeType() {
+    return mimeType;
+  }
+
+  public void setMimeType(String mimeType) {
+    this.mimeType = mimeType;
   }
 
   public String getFileName() {
@@ -50,10 +60,6 @@ public class GEMFile implements Comparable<GEMFile> {
     this.directory = directory;
   }
 
-  public String getAbsolutePath() {
-    return Paths.get(this.getDirectory(), this.getFileName()).toString();
-  }
-
   public Long getSize() {
     return size;
   }
@@ -70,6 +76,20 @@ public class GEMFile implements Comparable<GEMFile> {
     this.extension = extension;
   }
 
+  public List<AbstractFeature> getData() {
+    return data;
+  }
+
+  public void setData(List<AbstractFeature> data) {
+    this.data = data;
+  }
+
+  /* End of getter setter */
+
+  public String getAbsolutePath() {
+    return new File(this.getDirectory(), this.getFileName()).getAbsolutePath();
+  }
+
   public void addAllData(List<AbstractFeature> data) {
     if (this.data == null) {
       this.data = Lists.newArrayList();
@@ -84,30 +104,16 @@ public class GEMFile implements Comparable<GEMFile> {
     this.data.add(data);
   }
 
-  public List<AbstractFeature> getData() {
-    return data;
-  }
-
-  public void setData(List<AbstractFeature> data) {
-    this.data = data;
-  }
-
-  public String getMimeType() {
-    if (_mediaType == null) {
-      return "";
-    } else {
-      return _mediaType.toString();
-    }
-  }
   // Perform extraction
   public GEMFile extract() throws Exception {
-    this._mediaType = FeatureExtractorUtil.extractMime(new TikaConfig(), this._file.toPath());
-
-    String subtype = _mediaType.getSubtype();
+    File file = new File(directory, fileName);
+    MediaType mediaType = FeatureExtractorUtil.extractMime(new TikaConfig(), file.toPath());
+    this.mimeType = mediaType.toString();
+    String subtype = mediaType.getSubtype();
     if (subtype.equals(TikaMimeEnum.MSEXCELXLSX.getMimeType())
         || subtype.equals(TikaMimeEnum.MSEXCELXLS.getMimeType())) {
-      extractExcel(_mediaType);
-    } else if (_mediaType.getSubtype().equals(TikaMimeEnum.CSV.getMimeType())) {
+      extractExcel(mediaType);
+    } else if (mediaType.getSubtype().equals(TikaMimeEnum.CSV.getMimeType())) {
       extractCSV();
     }
     //  we always want to use Tika no matter what file type
@@ -118,24 +124,26 @@ public class GEMFile implements Comparable<GEMFile> {
 
   // Perform extraction on csv
   public GEMFile extractCSV() throws Exception {
+    File file = new File(directory, fileName);
     CsvFeature extractedData1 = new CsvFeature();
-    extractedData1.extract(this._file);
+    extractedData1.extract(file);
     addData(extractedData1);
     return this;
   }
 
   // Perform extraction on Excel
   public GEMFile extractExcel(MediaType mediaType) throws Exception {
+    File file = new File(directory, fileName);
     ExcelFeature extractedData1 = new ExcelFeature();
-    extractedData1.extract(this._file);
+    extractedData1.extract(file);
     addData(extractedData1);
     return this;
   }
 
   public GEMFile extractTika() throws Exception {
-
+    File file = new File(directory, fileName);
     TikaFeature tikaFeature = new TikaFeature();
-    tikaFeature.extract(this._file);
+    tikaFeature.extract(file);
     addData(tikaFeature);
 
     return this;
@@ -157,12 +165,12 @@ public class GEMFile implements Comparable<GEMFile> {
     GEMFile gemFile = (GEMFile) o;
     return fileName.equals(gemFile.fileName)
         && directory.equals(gemFile.directory)
-        && _file.length() == gemFile._file.length()
-        && _file.lastModified() == gemFile._file.lastModified();
+            && size.equals(gemFile.size)
+            && extension.equals(gemFile.extension);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(fileName, directory, _file.lastModified(), _file.length());
+    return Objects.hash(fileName, directory, size, extension, data);
   }
 }

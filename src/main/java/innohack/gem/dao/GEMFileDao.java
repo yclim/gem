@@ -2,19 +2,17 @@ package innohack.gem.dao;
 
 import com.google.common.collect.Lists;
 import innohack.gem.entity.GEMFile;
+
 import java.io.File;
 import java.nio.file.Paths;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import org.springframework.stereotype.Repository;
 
-@Repository
 public class GEMFileDao implements IGEMFileDao {
   private static ConcurrentHashMap<String, GEMFile> featureStore = new ConcurrentHashMap<>();
   private static String directoryStore = "";
-  public static Set<String> fileTypeStore = new HashSet<String>();
+  public static List<String> fileTypeStore = new ArrayList<String>();
 
   // Get current directory path where files uploaded
   /**
@@ -33,7 +31,7 @@ public class GEMFileDao implements IGEMFileDao {
    * @return list of file extension
    */
   @Override
-  public Set<String> getFileTypes() {
+  public List<String> getFileTypes() {
     return fileTypeStore;
   }
 
