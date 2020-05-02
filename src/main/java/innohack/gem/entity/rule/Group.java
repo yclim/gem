@@ -9,7 +9,8 @@ public class Group implements Comparable<Group> {
   private int groupId;
   private String name;
   private List<Rule> rules;
-  private int matchedCount;
+  private List<GEMFile> matchedFile = new ArrayList<GEMFile>();
+
 
   public int getGroupId() {
     return groupId;
@@ -39,15 +40,9 @@ public class Group implements Comparable<Group> {
     return matchedFile.size();
   }
 
-  public void setMatchedCount(int matchedCount) {
-    this.matchedCount = matchedCount;
-  }
-
   public List<GEMFile> getMatchedFile() {
     return matchedFile;
   }
-
-  public List<GEMFile> matchedFile = new ArrayList<GEMFile>();
 
   @Override
   public int compareTo(Group group) {

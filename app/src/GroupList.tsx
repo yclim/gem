@@ -1,5 +1,5 @@
 import React, { Dispatch, FunctionComponent } from "react";
-import { Button, Card, Elevation, Intent, Tag } from "@blueprintjs/core";
+import { Button, AnchorButton, Card, Elevation, Intent, Tag } from "@blueprintjs/core";
 import { Group } from "./api";
 import GroupCard from "./GroupCard";
 import { GroupAction, GroupActions } from "./EditGroups";
@@ -33,7 +33,7 @@ const GroupList: FunctionComponent<IProps> = ({
           onClick={() => createGroup()}
           className="add-right-margin"
         />
-        <Button icon="export" text="Export Spec" />
+        <AnchorButton icon="export" text="Export Spec" href="/api/group/export" />
       </div>
       <div className="stack">
         {Array.from(groups, ([k, v]) => v)
