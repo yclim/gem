@@ -84,7 +84,7 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
     }
   }, [columns]);
 
-  function renderColumnCounter(left: number, right: number, suffix: string) {
+  function renderColumnCountTag(left: number, right: number, suffix: string) {
     let intent: Intent = Intent.NONE;
 
     if (columns.length === csvColumns.length) {
@@ -123,7 +123,7 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
       return (
         <FormGroup
           label="Regex Expression"
-          labelInfo={renderColumnCounter(
+          labelInfo={renderColumnCountTag(
             countCaptureGroup(regexExpression),
             columns.length,
             "capture groups"
@@ -143,7 +143,7 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
       return (
         <FormGroup
           label="CSV Headers"
-          labelInfo={renderColumnCounter(
+          labelInfo={renderColumnCountTag(
             csvColumns.length,
             columns.length,
             "headers"
@@ -165,7 +165,7 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
           </FormGroup>
           <FormGroup
             label="Excel Headers"
-            labelInfo={renderColumnCounter(
+            labelInfo={renderColumnCountTag(
               excelColumns.length,
               columns.length,
               "headers"
@@ -366,13 +366,13 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
               />
             </Table>
           </div>
-          {renderExtractTable()}
+          {renderExtractDataTable()}
         </div>
       </div>
     );
   }
 
-  function renderExtractTable() {
+  function renderExtractDataTable() {
     return (
       <div className="extractDataTable">
         <Table
