@@ -1,5 +1,6 @@
 package innohack.gem.web;
 
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
@@ -7,16 +8,18 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import innohack.gem.entity.rule.Group;
 import innohack.gem.service.GroupService;
@@ -26,20 +29,25 @@ import innohack.gem.service.GroupService;
 public class GroupController {
 
   @Autowired private GroupService groupService;
+  
+  @PostMapping("/import")
+  public List<Group> importProject(@RequestParam("file") MultipartFile file) throws IOException {
+    return groupService.importProject(file.getBytes());
+  }
+  
+  @GetMapping("/export")
+  public void exportProject(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    byte[] project = groupService.exportProject();
+    response.setContentType("application/json");
+    response.addHeader("Content-Disposition", "attachment; filename=export.json");
+    IOUtils.copy(new ByteArrayInputStream(project), response.getOutputStream());
+    response.getOutputStream().flush();
+  }
 
   // get all group
   @GetMapping("/list")
   public List<Group> getGroups() {
     return groupService.getGroups();
-  }
-  
-  @GetMapping("/export")
-  public void exportGroups(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    byte[] exportedGroups = groupService.exportGroups();
-    response.setContentType("application/json");
-    response.addHeader("Content-Disposition", "attachment; filename=export.json");
-    IOUtils.copy(new ByteArrayInputStream(exportedGroups), response.getOutputStream());
-    response.getOutputStream().flush();
   }
 
   // get group by groupName

@@ -53,6 +53,10 @@ class GroupRuleService extends Api {
       headers: { "Content-Type": "application/json" }
     });
   }
+
+  public importGroupsFile(data: FormData): Promise<AxiosResponse<any>> {
+    return this.post<any>("group/import", data);
+  }
 }
 
 export default new GroupRuleService();

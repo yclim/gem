@@ -15,6 +15,7 @@ import com.google.common.collect.Lists;
 
 import innohack.gem.dao.IGroupDao;
 import innohack.gem.entity.GEMFile;
+import innohack.gem.entity.Project;
 import innohack.gem.entity.rule.Group;
 import innohack.gem.entity.rule.GroupExportMixin;
 import innohack.gem.entity.rule.rules.FileExtension;
@@ -27,7 +28,7 @@ public class GroupService {
 
   @Autowired private IGroupDao groupDao;
   @Autowired private MatchService matcherService;
-
+  
   public List<Group> getGroups() {
     List<Group> group = groupDao.getGroups();
     Collections.sort(group);
@@ -92,16 +93,26 @@ public class GroupService {
     }
   }
 
-  public byte[] exportGroups() throws IOException {
-    LOGGER.info("Exporting the groups as json...");
+  public List<Group> importProject(byte[] data) throws IOException {
+    LOGGER.info("Importing project...");
+    ObjectMapper mapper = new ObjectMapper();
+    return mapper.readValue(data, Project.class).getGroups();
+  }
+
+  public byte[] exportProject() throws IOException {
+    LOGGER.info("Exporting the project as json...");
     try {
       List<Group> groups = groupDao.getGroups();
+      Project project = new Project();
+      project.setGroups(groups);
+      project.setSpecVersion(Project.SPEC_VERSION);
       ObjectMapper mapper = new ObjectMapper();
       return mapper.addMixIn(Group.class, GroupExportMixin.class).
-          writerWithDefaultPrettyPrinter().writeValueAsBytes(groups);
+          writerWithDefaultPrettyPrinter().writeValueAsBytes(project);
     } catch(IOException ex) {
-      LOGGER.error("Error in exporting groups", ex);
+      LOGGER.error("Error in exporting project", ex);
       throw ex;
     }
   }
+  
 }

@@ -1,0 +1,41 @@
+package innohack.gem.entity;
+
+import java.util.List;
+
+import innohack.gem.entity.rule.Group;
+
+public class Project {
+  
+  public static final String SPEC_VERSION = "1.0.0";
+
+  private String specVersion;
+  
+  private List<Group> groups;
+  
+  private String projectName;
+
+  public String getSpecVersion() {
+    return specVersion;
+  }
+
+  public void setSpecVersion(String specVersion) {
+    this.specVersion = specVersion;
+  }
+
+  public List<Group> getGroups() {
+    return groups;
+  }
+
+  public void setGroups(List<Group> groups) {
+    this.groups = groups;
+  }
+
+  public String getProjectName() {
+    return projectName;
+  }
+
+  public void setProjectName(String projectName) {
+    this.projectName = projectName;
+  }
+  
+}
