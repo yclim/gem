@@ -2,7 +2,7 @@ package innohack.gem.service;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import innohack.gem.dao.GroupDao;
+import innohack.gem.dao.IGroupDao;
 import innohack.gem.entity.rule.Group;
 import innohack.gem.entity.rule.rules.FileExtension;
 import innohack.gem.entity.rule.rules.FilenamePrefix;
@@ -14,16 +14,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-public class GroupTest {
+public class GroupServiceTest {
 
-  @Autowired GroupDao groupDao;
+    @Autowired
+    IGroupDao groupDao;
   @Autowired GroupService groupService;
 
   Group ext_csv_group;
   Group ext_dat_group;
   Group prefix_d_group;
 
-  public GroupTest() {
+    public GroupServiceTest() {
     this.ext_csv_group = new Group();
     ext_csv_group.setName("extension_csv_grouprule");
     Rule rule1 = new FileExtension("csv");
@@ -53,7 +54,7 @@ public class GroupTest {
     String oldname = ext_csv_group.getName();
     Group g1 = groupService.getGroup(id);
     Group g2 = groupService.getGroup(oldname);
-    assertTrue(g1 == g2);
+      assertTrue(g1.getGroupId() == g2.getGroupId());
     String newname = "ABC";
     groupService.updateGroupName(oldname, newname);
     groupService.saveGroup(ext_csv_group);

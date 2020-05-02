@@ -3,6 +3,7 @@ package innohack.gem.dao;
 import com.google.common.collect.Lists;
 import innohack.gem.database.RocksDatabase;
 import innohack.gem.entity.GEMFile;
+import innohack.gem.util.AppProperties;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.List;
@@ -13,14 +14,17 @@ public class GEMFileRockDao implements IGEMFileDao {
 
   static final String DB_NAME = "GEMFile";
   // private static ConcurrentHashMap<String, GEMFile> featureStore = new ConcurrentHashMap<>();
-  private static String directoryStore = "";
-  RocksDatabase gemFileDb =
-      new RocksDatabase<String, GEMFile>(DB_NAME, String.class, GEMFile.class);
-  RocksDatabase gemFileFileTypesDb =
-      new RocksDatabase<String, Boolean>(DB_NAME + "_FILE_TYPE", String.class, Boolean.class);
+  private static String directoryStore = AppProperties.get(AppProperties.PROP_SYNC_DIRECTORY);
+  RocksDatabase gemFileDb;
+  RocksDatabase gemFileFileTypesDb;
   // public static Set<String> fileTypeStore = new HashSet<String>();
 
   // Get current directory path where files uploaded
+  public GEMFileRockDao() {
+    gemFileDb = RocksDatabase.getInstance(DB_NAME, String.class, GEMFile.class);
+    gemFileFileTypesDb =
+            RocksDatabase.getInstance(DB_NAME + "_FileType", String.class, Boolean.class);
+  }
 
   /**
    * Find document in feature store by file name and directory
@@ -106,8 +110,12 @@ public class GEMFileRockDao implements IGEMFileDao {
    */
   @Override
   public List<GEMFile> getFiles() {
-    List<GEMFile> l = gemFileDb.getValues();
-    return l;
+    List<String> l = gemFileDb.getKeys();
+    List<GEMFile> list = Lists.newArrayList();
+    for (String path : l) {
+      list.add(new GEMFile(path));
+    }
+    return list;
   }
 
   // Get list of local files from directory
@@ -125,14 +133,22 @@ public class GEMFileRockDao implements IGEMFileDao {
         }
       }
       directoryStore = directory;
+      AppProperties.put(AppProperties.PROP_SYNC_DIRECTORY, directory);
     }
     return resultList;
   }
 
+  private static List<String> types = null;
   // save file to feature store
   @Override
   public void saveFile(GEMFile file) {
-    gemFileFileTypesDb.put(file.getExtension(), 1);
+    if (types == null) {
+      types = gemFileFileTypesDb.getKeys();
+    }
+    if (!types.contains(file.getExtension())) {
+      types.add(file.getExtension());
+      gemFileFileTypesDb.put(file.getExtension(), 1);
+    }
     gemFileDb.put(file.getAbsolutePath(), file);
   }
 }

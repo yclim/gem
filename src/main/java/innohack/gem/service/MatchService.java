@@ -1,39 +1,38 @@
 package innohack.gem.service;
 
-import com.google.common.collect.Lists;
 import innohack.gem.dao.IGEMFileDao;
 import innohack.gem.dao.IGroupDao;
 import innohack.gem.entity.GEMFile;
+import innohack.gem.entity.match.MatchFileGroup;
+import innohack.gem.entity.match.MatchFileRule;
 import innohack.gem.entity.rule.Group;
 import innohack.gem.entity.rule.rules.Rule;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+
+import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MatchService {
-  private static ConcurrentHashMap<String, Collection<Group>> matchedFileGroupTable =
-      new ConcurrentHashMap<String, Collection<Group>>();
-  private static ConcurrentHashMap<String, HashMap<Rule, Boolean>> matchedFileRuleTable =
-      new ConcurrentHashMap<String, HashMap<Rule, Boolean>>();
+  static final String DB_NAME = "Match";
 
+  /*
+  private RocksDatabase matchFileGroupTableDb;
+  private RocksDatabase matchFileRuleTableDb;
+
+  public MatchService(){
+    matchFileGroupTableDb = RocksDatabase.getInstance(DB_NAME+"_FileGroup", String.class, GEMFile.class);
+    matchFileRuleTableDb = RocksDatabase.getInstance(DB_NAME+"_FileRule", String.class, Boolean.class);
+  }
+  */
+
+  public HashMap<String, MatchFileGroup> matchFileGroupTable = new HashMap();
+  public HashMap<String, MatchFileRule> matchFileRuleTable = new HashMap();
   private List<GEMFile> filesWithConflictMatch = new ArrayList<GEMFile>();
   private List<GEMFile> filesWithoutMatch = new ArrayList<GEMFile>();
 
   @Autowired IGroupDao groupDao;
   @Autowired IGEMFileDao gemFileDao;
-
-  public static ConcurrentHashMap<String, Collection<Group>> getMatchedFileGroupTable() {
-    return matchedFileGroupTable;
-  }
-
-  public static ConcurrentHashMap<String, HashMap<Rule, Boolean>> getMatchedFileRuleTable() {
-    return matchedFileRuleTable;
-  }
 
   public synchronized void onUpdateEvent(Object o) {
     if (o instanceof GEMFile) {
@@ -47,78 +46,99 @@ public class MatchService {
   private boolean checkMatching(Group group, GEMFile file) {
     boolean result = true;
     String fileKey = file.getAbsolutePath();
-    HashMap<Rule, Boolean> matchedRuleTable;
     // get rule hashmap of the file. rule hash map contains the result of rule checks on the file
-    if (matchedFileRuleTable.get(fileKey) == null) {
-      matchedRuleTable = new HashMap<Rule, Boolean>();
-    } else {
-      matchedRuleTable = matchedFileRuleTable.get(fileKey);
+    Object o = matchFileRuleTable.get(fileKey);
+    MatchFileRule matchFileRule = new MatchFileRule();
+    HashMap<Integer, Boolean> ruleMatch = null;
+    if (o != null) {
+      matchFileRule = (MatchFileRule) o;
+      matchFileRule.setFilePath(fileKey);
+      ruleMatch = matchFileRule.getMatchRuleHashcode();
+    }
+    if (ruleMatch == null) {
+      ruleMatch = new HashMap<Integer, Boolean>();
     }
     // for each rule in the group, check against the rule hashmap for previously checked result
     for (Rule r : group.getRules()) {
-      if (matchedRuleTable.get(r) == null) {
+      if (ruleMatch.get(r.hashCode()) == null) {
         // when no result of previously checked file and rule, do a check now and store into rule
         // hashmap
         result = r.check(file);
-        matchedRuleTable.put(r, result);
+        ruleMatch.put(r.hashCode(), result);
       } else {
         // when there is a result of rule checked previously inside rule hashmap,
-        result = matchedRuleTable.get(r);
+        result = ruleMatch.get(r.hashCode());
       }
       // break when one of the rule check against the file is false.
       if (result == false) {
         break;
       }
     }
+    matchFileRule.setMatchRuleHashcode(ruleMatch);
     // save the rule hashmap
-    matchedFileRuleTable.put(fileKey, matchedRuleTable);
+    matchFileRuleTable.put(fileKey, matchFileRule);
 
     // FileGroupHashMap that contains all the file and its matched group
     // get the list of groups that match the file and update it
-    Collection<Group> grps = matchedFileGroupTable.get(fileKey);
-    if (grps == null) {
-      grps = Lists.newArrayList();
+
+    o = matchFileGroupTable.get(fileKey);
+    MatchFileGroup matchFileGroup = new MatchFileGroup();
+    Set<Integer> matchGroupIds = null;
+    if (o != null) {
+      matchFileGroup = (MatchFileGroup) o;
+      matchFileGroup.setFilePath(fileKey);
+      matchGroupIds = matchFileGroup.getMatchedGroupIds();
+    }
+
+    if (matchGroupIds == null) {
+      matchGroupIds = new HashSet();
     }
     if (result) {
-      if (!grps.contains(group)) {
-        // when group is not in the list and its file matched against the group. add the group to
-        // the list
-        grps.add(group);
-      }
+      // when group is not in the list and its file matched against the group. add the group to
+      // the list
+      matchGroupIds.add(group.getGroupId());
     } else {
       // when file does not match the group, remove the file from the list.
-      grps.remove(group);
+      matchGroupIds.remove(group.getGroupId());
     }
     // save the matched group
-    matchedFileGroupTable.put(fileKey, grps);
+    matchFileGroup.setMatchedGroupIds(matchGroupIds);
+    matchFileGroupTable.put(fileKey, matchFileGroup);
     return result;
   }
 
   private void onUpdateFile(GEMFile updatedFile) {
     List<Group> groupList = groupDao.getGroups();
-    GEMFile storedFile = gemFileDao.getFileByAbsolutePath(updatedFile.getAbsolutePath());
+    String fileKey = updatedFile.getAbsolutePath();
+    GEMFile storedFile = gemFileDao.getFileByAbsolutePath(fileKey);
     if (storedFile != null) {
       // on new file added
       for (Group group : groupList) {
         // perform matching, if file match the group, add the file to the group's list else remove
         // it
         if (checkMatching(group, storedFile)) {
-          if (!group.getMatchedFile().contains(storedFile)) {
-            group.getMatchedFile().add(storedFile);
+          if (!group.getMatchedFile().contains(fileKey)) {
+            group.getMatchedFile().add(fileKey);
+            groupDao.saveGroup(group);
           }
         } else {
-          group.getMatchedFile().remove(storedFile);
+          if (group.getMatchedFile().contains(fileKey)) {
+            group.getMatchedFile().remove(fileKey);
+            groupDao.saveGroup(group);
+          }
         }
       }
     } else {
       // on file removed
       // remove all the files stored in hash and groups'list
-      String fileKey = updatedFile.getAbsolutePath();
       for (Group group : groupList) {
-        group.getMatchedFile().remove(updatedFile);
+        if (group.getMatchedFile().contains(fileKey)) {
+          group.getMatchedFile().remove(fileKey);
+          groupDao.saveGroup(group);
+        }
       }
-      matchedFileRuleTable.remove(fileKey);
-      matchedFileGroupTable.remove(fileKey);
+      matchFileRuleTable.remove(fileKey);
+      matchFileGroupTable.remove(fileKey);
     }
   }
 
@@ -128,16 +148,25 @@ public class MatchService {
 
     if (storedGroupRule != null) {
       // on new or update grouprule
+      boolean groupUpdated = false;
       for (GEMFile gemFile : gemFileList) {
+        String fileKey = gemFile.getAbsolutePath();
         // perform matching, if file match the group, add the file to the group's list else remove
         // it
         if (checkMatching(storedGroupRule, gemFile)) {
-          if (!storedGroupRule.getMatchedFile().contains(gemFile)) {
-            storedGroupRule.getMatchedFile().add(gemFile);
+          if (!storedGroupRule.getMatchedFile().contains(fileKey)) {
+            storedGroupRule.getMatchedFile().add(fileKey);
+            groupUpdated = true;
           }
         } else {
-          storedGroupRule.getMatchedFile().remove(gemFile);
+          if (storedGroupRule.getMatchedFile().contains(fileKey)) {
+            storedGroupRule.getMatchedFile().remove(fileKey);
+            groupUpdated = true;
+          }
         }
+      }
+      if (groupUpdated) {
+        groupDao.saveGroup(storedGroupRule);
       }
     } else {
       // on grouprule removed
@@ -147,13 +176,20 @@ public class MatchService {
 
   // remove all the grouprule from the hashmap
   private void removeAllAssociatedRuleFromCache(Group group) {
-    for (HashMap<Rule, Boolean> map : matchedFileRuleTable.values()) {
+    HashMap<String, MatchFileRule> matchFileRuleHashMap = matchFileRuleTable;
+    for (String fileKey : matchFileRuleHashMap.keySet()) {
+      MatchFileRule matchFileRule = matchFileRuleHashMap.get(fileKey);
       for (Rule r : group.getRules()) {
-        map.remove(r);
+        matchFileRule.getMatchRuleHashcode().remove(r.hashCode());
       }
+      matchFileRuleTable.put(fileKey, matchFileRule);
     }
-    for (Collection<Group> groupList : matchedFileGroupTable.values()) {
-      groupList.remove(group);
+
+    HashMap<String, MatchFileGroup> matchFileGroupHashMap = matchFileGroupTable;
+    for (String fileKey : matchFileGroupHashMap.keySet()) {
+      MatchFileGroup matchFileGroup = matchFileGroupHashMap.get(fileKey);
+      matchFileGroup.getMatchedGroupIds().remove(group.getGroupId());
+      matchFileGroupTable.put(fileKey, matchFileGroup);
     }
   }
 
@@ -164,11 +200,11 @@ public class MatchService {
     filesWithoutMatch.clear();
     for (GEMFile file : gemFileDao.getFiles()) {
       String fileKey = file.getAbsolutePath();
-      if (matchedFileGroupTable.get(fileKey).size() > 1) {
+      MatchFileGroup matchFileGroup = matchFileGroupTable.get(fileKey);
+      if (matchFileGroup != null && matchFileGroup.getMatchedGroupIds().size() > 1) {
         filesWithConflictMatch.add(file);
       }
-      if (matchedFileGroupTable.get(fileKey) == null
-          || matchedFileGroupTable.get(fileKey).size() == 0) {
+      if (matchFileGroup == null || (matchFileGroup.getMatchedGroupIds().size() == 0)) {
         filesWithoutMatch.add(file);
       }
     }

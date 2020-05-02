@@ -8,7 +8,7 @@ class FileService extends Api {
   }
 
   public sync(directory: string): Promise<AxiosResponse<File[]>> {
-    return this.get<File[]>("file/sync", { params: { directory } });
+    return this.get<File[]>("file/sync", { params: { directory }, timeout: 300000 });
   }
 
   public getFiles(): Promise<AxiosResponse<File[]>> {

@@ -2,8 +2,8 @@ package innohack.gem.web;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import innohack.gem.dao.GEMFileDao;
-import innohack.gem.dao.GroupDao;
+import innohack.gem.dao.IGEMFileDao;
+import innohack.gem.dao.IGroupDao;
 import innohack.gem.entity.GEMFile;
 import innohack.gem.entity.rule.Group;
 import innohack.gem.entity.rule.rules.FileExtension;
@@ -16,8 +16,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class GEMFileControllerTest {
 
-  @Autowired GEMFileDao gemFileDao;
-  @Autowired GroupDao groupDao;
+    @Autowired
+    IGEMFileDao gemFileDao;
+    @Autowired
+    IGroupDao groupDao;
   @Autowired GEMFileController gemFileController;
 
   @Test

@@ -4,14 +4,12 @@ import innohack.gem.entity.rule.Group;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import org.springframework.stereotype.Repository;
 
 /**
  * A basic group dao using everything in-memory
  *
  * @author TC
  */
-@Repository
 public class GroupDao implements IGroupDao {
   public static int maxKey = 0;
   public static ConcurrentHashMap<String, Group> featureStore =

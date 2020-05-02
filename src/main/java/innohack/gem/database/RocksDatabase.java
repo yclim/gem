@@ -13,6 +13,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.rocksdb.*;
 
 public class RocksDatabase<K, V> {
@@ -23,6 +26,7 @@ public class RocksDatabase<K, V> {
     RocksDB.loadLibrary();
   }
 
+  ReadWriteLock dbLock;
   RocksDB db;
   private String dbName;
   private Class keyType;
@@ -33,22 +37,20 @@ public class RocksDatabase<K, V> {
     createFolderPath(DB_PATH);
     this.keyType = keyType;
     this.valueType = valueType;
+    this.dbLock = new ReentrantReadWriteLock();
   }
 
-  private static Object deserialize(Class type, byte[] bytes) throws IOException {
-    if (bytes == null || bytes.length == 0) {
-      return null;
+  private static ConcurrentHashMap<String, RocksDatabase> instancesMap = new ConcurrentHashMap<>();
+
+  public static RocksDatabase getInstance(String dbName, Class keyType, Class valueType) {
+    RocksDatabase db = instancesMap.get(dbName);
+    if (db != null) {
+      return db;
+    } else {
+      db = new RocksDatabase(dbName, keyType, valueType);
+      instancesMap.put(dbName, db);
+      return db;
     }
-    ObjectMapper mapper = new ObjectMapper();
-    mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-    mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.PROTECTED_AND_PUBLIC);
-    final ObjectReader r = mapper.readerFor(type);
-    // enable one feature, disable another
-    Object value =
-        r.with(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS)
-            .without(DeserializationFeature.WRAP_EXCEPTIONS)
-            .readValue(bytes);
-    return value;
   }
 
   private void createFolderPath(String dbPath) {
@@ -58,43 +60,55 @@ public class RocksDatabase<K, V> {
   public boolean put(K key, V value) {
     // the Options class contains a set of configurable DB options
     // that determines the behaviour of the database.
+    boolean result = false;
+    dbLock.writeLock().lock();
+    File dbFile = new File(DB_PATH, dbName);
     try (final Options options = new Options().setCreateIfMissing(true)) {
-
       // a factory method that returns a RocksDB instance
-      try (final RocksDB db = RocksDB.open(options, new File(DB_PATH, dbName).getAbsolutePath())) {
+      try (final RocksDB db = RocksDB.open(options, dbFile.getAbsolutePath())) {
         byte[] key_byte = serialize(key);
         byte[] value_byte = serialize(value);
-        System.out.println("Put " + key);
+        System.out.println(dbName + ": " + "put " + key + ", " + value);
         db.put(key_byte, value_byte);
         db.close();
-        return true;
+        result = true;
       }
 
     } catch (Exception e) {
       // do some error handling
       e.printStackTrace();
+    } finally {
+      dbLock.writeLock().unlock();
     }
-    return false;
+    return result;
   }
 
   public boolean delete(K key) {
+    boolean result = false;
+    dbLock.writeLock().lock();
+    File dbFile = new File(DB_PATH, dbName);
     try (final Options options = new Options().setCreateIfMissing(true)) {
-      try (final RocksDB db = RocksDB.open(options, new File(DB_PATH, dbName).getAbsolutePath())) {
+      try (final RocksDB db = RocksDB.open(options, dbFile.getAbsolutePath())) {
         byte[] key_byte = serialize(key);
-        System.out.println("Delete " + key);
+        System.out.println(dbName + ": " + "delete " + key);
         db.delete(key_byte);
         db.close();
-        return true;
+        result = true;
       }
     } catch (Exception e) {
       e.printStackTrace();
+    } finally {
+      dbLock.writeLock().unlock();
     }
-    return false;
+    return result;
   }
 
   public boolean deleteAll() {
+    boolean result = false;
+    dbLock.writeLock().lock();
+    File dbFile = new File(DB_PATH, dbName);
     try (final Options options = new Options().setCreateIfMissing(true)) {
-      try (final RocksDB db = RocksDB.open(options, new File(DB_PATH, dbName).getAbsolutePath())) {
+      try (final RocksDB db = RocksDB.open(options, dbFile.getAbsolutePath())) {
         RocksIterator itr = db.newIterator(new ReadOptions());
         itr.seekToFirst();
         byte[] start = itr.key();
@@ -104,49 +118,50 @@ public class RocksDatabase<K, V> {
         db.delete(end);
         itr.close();
         db.close();
-        return true;
+        System.out.println(dbName + ": " + "deleteAll");
+        result = true;
       }
     } catch (Exception e) {
       e.printStackTrace();
+    } finally {
+      dbLock.writeLock().unlock();
     }
-    try {
-      new File(DB_PATH, dbName).delete();
-      return true;
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return false;
+    return result;
   }
 
   public V get(K key) {
+    V result = null;
     // the Options class contains a set of configurable DB options
     // that determines the behaviour of the database.
+    dbLock.readLock().lock();
     try (final Options options = new Options().setCreateIfMissing(true)) {
 
+      File dbFile = new File(DB_PATH, dbName);
       // a factory method that returns a RocksDB instance
-      try (final RocksDB db = RocksDB.open(options, new File(DB_PATH, dbName).getAbsolutePath())) {
+      try (final RocksDB db = RocksDB.openReadOnly(options, dbFile.getAbsolutePath())) {
         byte[] key_byte = serialize(key);
         byte[] value = db.get(key_byte);
         db.close();
-        return (V) deserialize(valueType, value);
+        System.out.println(dbName + ": " + "get " + key);
+        result = (V) deserialize(valueType, value);
       }
-
     } catch (Exception e) {
       // do some error handling
       e.printStackTrace();
+    } finally {
+      dbLock.readLock().unlock();
     }
-    return null;
+    return result;
   }
 
   public List<Object> getKeysOrValue(Class<?> type) {
     List<Object> list = new ArrayList();
-
+    dbLock.readLock().lock();
     try (final Options options = new Options().setCreateIfMissing(true)) {
       // a factory method that returns a RocksDB instance
-      try (final RocksDB db = RocksDB.open(options, new File(DB_PATH, dbName).getAbsolutePath())) {
-        try {
-          final RocksIterator iterator = db.newIterator(new ReadOptions());
-
+      File dbFile = new File(DB_PATH, dbName);
+      try (final RocksDB db = RocksDB.openReadOnly(options, dbFile.getAbsolutePath())) {
+        try (final RocksIterator iterator = db.newIterator(new ReadOptions())) {
           for (iterator.seekToFirst(); iterator.isValid(); iterator.next()) {
             if (type == keyType) {
               final K key = (K) deserialize(keyType, iterator.key());
@@ -158,34 +173,36 @@ public class RocksDatabase<K, V> {
           }
           iterator.close();
           db.close();
-        } catch (Exception e) {
-          e.printStackTrace();
         }
       }
     } catch (Exception e) {
-      // do some error handling
-      e.printStackTrace();
+      System.out.println(e.getMessage());
+    } finally {
+      dbLock.readLock().unlock();
     }
     return list;
   }
 
   public List<K> getKeys() {
+    System.out.println(dbName + ": " + "getKeys ");
     return (List<K>) getKeysOrValue(keyType);
   }
 
   public List<V> getValues() {
+    System.out.println(dbName + ": " + "getValues ");
     return (List<V>) getKeysOrValue(valueType);
   }
 
   public HashMap<K, V> getKeyValues() {
+    System.out.println(dbName + ": " + "getKeyValues ");
     HashMap<K, V> hashMap = new HashMap();
 
+    dbLock.readLock().lock();
     try (final Options options = new Options().setCreateIfMissing(true)) {
       // a factory method that returns a RocksDB instance
-      try (final RocksDB db = RocksDB.open(options, new File(DB_PATH, dbName).getAbsolutePath())) {
-        try {
-          final RocksIterator iterator = db.newIterator(new ReadOptions());
-
+      File dbFile = new File(DB_PATH, dbName);
+      try (final RocksDB db = RocksDB.openReadOnly(options, dbFile.getAbsolutePath())) {
+        try (final RocksIterator iterator = db.newIterator(new ReadOptions())) {
           for (iterator.seekToFirst(); iterator.isValid(); iterator.next()) {
             final K key = (K) deserialize(keyType, iterator.key());
             final V value = (V) deserialize(valueType, iterator.value());
@@ -193,13 +210,12 @@ public class RocksDatabase<K, V> {
           }
           iterator.close();
           db.close();
-        } catch (Exception e) {
-          e.printStackTrace();
         }
       }
     } catch (Exception e) {
-      // do some error handling
-      e.printStackTrace();
+      System.out.println(e.getMessage());
+    } finally {
+      dbLock.readLock().unlock();
     }
     return hashMap;
   }
@@ -211,67 +227,66 @@ public class RocksDatabase<K, V> {
 
     List<K> list = new ArrayList();
 
+    dbLock.readLock().lock();
     try (final Options options = new Options().setCreateIfMissing(true)) {
 
+      File dbFile = new File(DB_PATH, dbName);
       // a factory method that returns a RocksDB instance
-      try (final RocksDB db = RocksDB.open(options, new File(DB_PATH, dbName).getAbsolutePath())) {
+      try (final RocksDB db = RocksDB.openReadOnly(options, dbFile.getAbsolutePath())) {
+        final byte[] prefixByte = serialize(prefixStr);
+        /*
+          An iterator that specifies a prefix (via ReadOptions) will use these bloom bits
+          to avoid looking into data files that do not contain keys with the specified key-prefix.
+        */
 
-        try {
-          final byte[] prefixByte = serialize(prefixStr);
-          // prefixStr = (K)deserialize(keyType,prefixByte);
-          // String prefixString = new String(prefix);
+        final RocksIterator iterator = db.newIterator(new ReadOptions().setPrefixSameAsStart(true));
 
-          /*
-            An iterator that specifies a prefix (via ReadOptions) will use these bloom bits
-            to avoid looking into data files that do not contain keys with the specified key-prefix.
-          */
+        for (iterator.seek(prefixByte); iterator.isValid(); iterator.next()) {
 
-          final RocksIterator iterator =
-              db.newIterator(new ReadOptions().setPrefixSameAsStart(true));
+          final K key = (K) deserialize(keyType, iterator.key());
 
-          for (iterator.seek(prefixByte); iterator.isValid(); iterator.next()) {
-
-            final K key = (K) deserialize(keyType, iterator.key());
-
-            if (keyType == String.class) {
-              if (((String) key).startsWith((String) prefixStr)) {
-                list.add(key);
-              } else {
-                /* To check
-                Since next() can go across the boundary to a different prefix,
-                you will need to check the end condition:
-                break out of loop if prefix not matched
-                */
-                break;
-              }
+          if (keyType == String.class) {
+            if (((String) key).startsWith((String) prefixStr)) {
+              list.add(key);
             } else {
-              if (key.equals(prefixStr)) {
-                list.add(key);
-                break;
-              } else {
-                break;
-              }
+              /* To check
+              Since next() can go across the boundary to a different prefix,
+              you will need to check the end condition:
+              break out of loop if prefix not matched
+              */
+              break;
+            }
+          } else {
+            if (key.equals(prefixStr)) {
+              list.add(key);
+              break;
+            } else {
+              break;
             }
           }
-          iterator.close();
-          db.close();
-        } catch (Exception e) {
-          e.printStackTrace();
         }
+        iterator.close();
+        db.close();
       }
     } catch (Exception e) {
       // do some error handling
-      e.printStackTrace();
+      System.out.println(e.getMessage());
+    } finally {
+      dbLock.readLock().unlock();
     }
     return list;
   }
 
   public Iterator<K, V> iterator() {
+    dbLock.readLock().lock();
     try (Options options = new Options().setCreateIfMissing(true)) {
-      db = RocksDB.open(options, new File(DB_PATH, dbName).getAbsolutePath());
+      File dbFile = new File(DB_PATH, dbName);
+      db = RocksDB.openReadOnly(options, new File(DB_PATH, dbName).getAbsolutePath());
       return new Iterator<K, V>(db.newIterator(new ReadOptions()));
     } catch (Exception e) {
-      e.printStackTrace();
+      System.out.println(e.getMessage());
+    } finally {
+      dbLock.readLock().unlock();
     }
     return null;
   }
@@ -286,6 +301,22 @@ public class RocksDatabase<K, V> {
     mapper.writeValue(os, obj);
 
     return os.toByteArray();
+  }
+
+  private static Object deserialize(Class type, byte[] bytes) throws IOException {
+    if (bytes == null || bytes.length == 0) {
+      return null;
+    }
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+    mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.PROTECTED_AND_PUBLIC);
+    final ObjectReader r = mapper.readerFor(type);
+    // enable one feature, disable another
+    Object value =
+            r.with(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS)
+                    .without(DeserializationFeature.WRAP_EXCEPTIONS)
+                    .readValue(bytes);
+    return value;
   }
 
   public class Iterator<K, V> {
@@ -328,7 +359,7 @@ public class RocksDatabase<K, V> {
           return deserialize(_class, content);
         }
       } catch (IOException e) {
-        e.printStackTrace();
+        System.out.println(e.getMessage());
       }
       return null;
     }
