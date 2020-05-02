@@ -98,7 +98,7 @@
 }
 
 .add-right-margin {
-  margin-right: #{$gap}px;
+  margin-right: 10px;
 }
 
 // migrate from rulelist
@@ -146,7 +146,13 @@
 }
 
 .filelist-box {
-  height: 85vh;
+  height: 80vh;
+}
+
+.extractDataTable {
+  height: 80vh;
+  width: 65vh;
+  oveflow-x: scroll;
 }
 
 .detail-box {

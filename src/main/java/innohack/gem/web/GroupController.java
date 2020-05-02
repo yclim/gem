@@ -1,8 +1,14 @@
 package innohack.gem.web;
 
+
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +39,15 @@ public class GroupController {
   @GetMapping("/list")
   public List<Group> getGroups() {
     return groupService.getGroups();
+  }
+  
+  @GetMapping("/export")
+  public void exportGroups(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    byte[] exportedGroups = groupService.exportGroups();
+    response.setContentType("application/json");
+    response.addHeader("Content-Disposition", "attachment; filename=export.json");
+    IOUtils.copy(new ByteArrayInputStream(exportedGroups), response.getOutputStream());
+    response.getOutputStream().flush();
   }
 
   // get group by groupName

@@ -17,6 +17,7 @@ import com.google.common.collect.Lists;
 import innohack.gem.dao.IGroupDao;
 import innohack.gem.entity.GEMFile;
 import innohack.gem.entity.rule.Group;
+import innohack.gem.entity.rule.GroupExportMixin;
 import innohack.gem.entity.rule.rules.FileExtension;
 import innohack.gem.entity.rule.rules.Rule;
 
@@ -97,4 +98,18 @@ public class GroupService {
     ObjectMapper mapper = new ObjectMapper();
     return mapper.readValue(data, new TypeReference<List<Group>>(){});
   }
+
+  public byte[] exportGroups() throws IOException {
+    LOGGER.info("Exporting the groups as json...");
+    try {
+      List<Group> groups = groupDao.getGroups();
+      ObjectMapper mapper = new ObjectMapper();
+      return mapper.addMixIn(Group.class, GroupExportMixin.class).
+          writerWithDefaultPrettyPrinter().writeValueAsBytes(groups);
+    } catch(IOException ex) {
+      LOGGER.error("Error in exporting groups", ex);
+      throw ex;
+    }
+  }
+  
 }

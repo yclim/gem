@@ -1,5 +1,5 @@
 import React, { Dispatch, FunctionComponent } from "react";
-import { Button, Card, Elevation, FileInput, Intent, Tag } from "@blueprintjs/core";
+import { Button, AnchorButton, Card, Elevation, FileInput, Intent, Tag } from "@blueprintjs/core";
 import { Group } from "./api";
 import groupRuleService from "./api/GroupRuleService";
 import GroupCard from "./GroupCard";
@@ -47,7 +47,7 @@ const GroupList: FunctionComponent<IProps> = ({
           onClick={() => createGroup()}
           className="add-right-margin"
         />
-        <Button icon="export" text="Export Spec" />
+        <AnchorButton icon="export" text="Export Spec" href="/api/group/export" />
       </div>
       <div>
         <FileInput text="Choose spec file..." buttonText="Import" onInputChange={(evt) => handleFileSelected(evt)} />
