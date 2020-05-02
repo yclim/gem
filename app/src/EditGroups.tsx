@@ -51,7 +51,11 @@ export type GroupAction =
       type: typeof UPDATE_GROUP_NAME;
       updateGroupNameInput: UpdateGroupNameInput;
     }
-  | { type: typeof UPDATE_RULE; updateRuleInput: UpdateRuleInput };
+  | { type: typeof UPDATE_RULE; updateRuleInput: UpdateRuleInput }
+  | {
+      type: typeof REMOVE_GROUP_RULE;
+      removeGroupRuleInput: RemoveGroupRuleInput;
+    };
 
 export abstract class GroupActions {
   static initGroup(groups: Group[]): GroupAction {
@@ -66,7 +70,9 @@ export abstract class GroupActions {
   static addGroupRule(addGroupRuleInput: AddGroupRuleInput): GroupAction {
     return { type: ADD_GROUP_RULE, addGroupRuleInput };
   }
-  static removeGroupRule(removeGroupRuleInput: RemoveGroupRuleInput): GroupAction {
+  static removeGroupRule(
+    removeGroupRuleInput: RemoveGroupRuleInput
+  ): GroupAction {
     return { type: REMOVE_GROUP_RULE, removeGroupRuleInput };
   }
   static updateGroupName(
@@ -162,18 +168,22 @@ function handleAddGroupRule(
   return new Map(groups);
 }
 
-function handleRemoveGroupRule(groups: Map<string, Group>,
+function handleRemoveGroupRule(
+  groups: Map<string, Group>,
   input: RemoveGroupRuleInput
 ): Map<string, Group> {
   const group = groups.get(input.groupName);
   if (group) {
-    const ruleName = input.rule.name
+    const ruleName = input.rule.name;
     group.rules = group.rules.filter(r => {
-      return r.name !== ruleName
+      return r.name !== ruleName;
     });
     groupRuleService.saveGroup(group).then(response => {
       if (response.status !== 200) {
-        alert("Unable to remove rule: saveGroup fail with status: " + response.status);
+        alert(
+          "Unable to remove rule: saveGroup fail with status: " +
+            response.status
+        );
       }
     });
     groups.set(input.groupName, group);
