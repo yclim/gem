@@ -22,9 +22,7 @@ public class TikaMetaValue extends Rule {
       Lists.newArrayList(new Parameter("headers", "aa,bb,cc", ParamType.STRING_LIST));
 
   public TikaMetaValue() {
-    this.setLabel(LABEL);
-    this.setRuleType(RULE_TYPE);
-    this.setParams(PARAMETERS);
+      this(null, null);
   }
 
   public TikaMetaValue(String key, String value) {
@@ -51,7 +49,6 @@ public class TikaMetaValue extends Rule {
     }
 
     return false;
-    // LOGGER.debug("File Extension {} rule: {}", ext, gemFile.getExtension());
   }
 
   private boolean checkTikaMeta(TikaFeature abs) {
@@ -66,10 +63,6 @@ public class TikaMetaValue extends Rule {
       }else if (param.getLabel().equals("value")) {
         valueMatch = param.getValue();
       }
-
-      // in case you would like to ignore case sensitivity,
-      // you could use this statement:
-      // Pattern pattern = Pattern.compile("\\s+", Pattern.CASE_INSENSITIVE);
     }
 
     if (metadataMap.containsKey(keyMatch)) {
