@@ -184,14 +184,5 @@ public class MatchServiceTests {
         System.out.println(path);
       }
     }
-      System.out.println("------------------------------------------");
-      for (GEMFile file : gemFileDao.getFiles()) {
-          System.out.println(file.getAbsolutePath());
-          MatchFileGroup matchFileGroup = matchService.matchFileGroupTable.get(file);
-          for (int i : matchFileGroup.getMatchedGroupIds()) {
-              System.out.println(groupDao.getGroup(i).getName());
-          }
-          System.out.println("------------------------------------------");
-      }
   }
 }
