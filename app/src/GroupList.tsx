@@ -1,6 +1,7 @@
 import React, { Dispatch, FunctionComponent } from "react";
-import { Button, Card, Elevation, Intent, Tag } from "@blueprintjs/core";
+import { Button, AnchorButton, Card, Elevation, FileInput, Intent, Tag } from "@blueprintjs/core";
 import { Group } from "./api";
+import groupRuleService from "./api/GroupRuleService";
 import GroupCard from "./GroupCard";
 import { GroupAction, GroupActions } from "./EditGroups";
 
@@ -23,6 +24,19 @@ const GroupList: FunctionComponent<IProps> = ({
     groupDispatcher(GroupActions.newGroupAction());
   }
 
+  function handleFileSelected(evt) {
+    const selectedFile = evt.target.files[0];
+    const data = new FormData();
+    data.append('file', selectedFile);
+    groupRuleService.importGroupsFile(data).then(results => {
+      if(results.status===200) {
+        groupDispatcher(GroupActions.initGroup(results.data));
+      } else {
+        alert('Import failed');
+      }
+    });
+  }
+
   return (
     <div className="stack">
       <div>
@@ -33,7 +47,10 @@ const GroupList: FunctionComponent<IProps> = ({
           onClick={() => createGroup()}
           className="add-right-margin"
         />
-        <Button icon="export" text="Export Spec" />
+        <AnchorButton icon="export" text="Export Spec" href="/api/group/export" />
+      </div>
+      <div>
+        <FileInput text="Choose spec file..." buttonText="Import" onInputChange={(evt) => handleFileSelected(evt)} />
       </div>
       <div className="stack">
         {Array.from(groups, ([k, v]) => v)

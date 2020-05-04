@@ -16,6 +16,8 @@ import {
 import "./App.scss";
 import EditGroups from "./EditGroups";
 import BrowseFiles from "./BrowseFiles";
+import ExtractData from "./ExtractData";
+import ExportSpec from "./ExportSpec";
 
 const App = () => {
   return (
@@ -28,24 +30,31 @@ const App = () => {
             <Link to="/">
               <Button
                 className={Classes.MINIMAL}
-                icon="wrench"
-                text="Configure Groups"
-              />
-            </Link>
-            <Link to="/files">
-              <Button
-                className={Classes.MINIMAL}
                 icon="document"
                 text="Browse Files"
               />
             </Link>
-            <Button className={Classes.MINIMAL} icon="cut" text="Extract" />
+            <Link to="/groups">
+              <Button
+                className={Classes.MINIMAL}
+                icon="wrench"
+                text="Configure Groups"
+              />
+            </Link>
+            <Link to="/extract">
+              <Button className={Classes.MINIMAL} icon="cut" text="Extract" />
+            </Link>
+            <Link to="/export">
+              <Button className={Classes.MINIMAL} icon="export" text="Export" />
+            </Link>
           </NavbarGroup>
         </Navbar>
       </div>
       <Router>
-        <EditGroups path="/" />
-        <BrowseFiles path="/files" />
+        <EditGroups path="/groups" />
+        <BrowseFiles path="/" />
+        <ExtractData path="/extract" />
+        <ExportSpec path="/export" />
       </Router>
     </div>
   );
