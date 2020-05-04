@@ -15,10 +15,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class GEMFileServiceTest {
 
-  @Autowired
-  IGEMFileDao gemFileDao;
-  @Autowired
-  IGroupDao groupDao;
+  @Autowired IGEMFileDao gemFileDao;
+  @Autowired IGroupDao groupDao;
   @Autowired GEMFileService gemFileService;
 
   Group csv_group;

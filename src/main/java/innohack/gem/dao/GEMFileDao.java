@@ -5,7 +5,9 @@ import innohack.gem.entity.GEMFile;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GEMFileDao implements IGEMFileDao {
@@ -42,6 +44,13 @@ public class GEMFileDao implements IGEMFileDao {
   @Override
   public void delete(String absolutePath) {
     featureStore.remove(absolutePath);
+  }
+
+  @Override
+  public void deleteFiles(Collection<String> absolutePaths) {
+    for (String path : absolutePaths) {
+      delete(path);
+    }
   }
 
   // This method get file data from feature store
@@ -119,7 +128,19 @@ public class GEMFileDao implements IGEMFileDao {
   // save file to feature store
   @Override
   public void saveFile(GEMFile file) {
-    fileTypeStore.add(file.getExtension());
+    if (!fileTypeStore.contains(file.getExtension())) {
+      fileTypeStore.add(file.getExtension());
+    }
     featureStore.put(file.getAbsolutePath(), file);
+  }
+
+  @Override
+  public void saveFiles(Map<String, GEMFile> map) {
+    for (String key : map.keySet()) {
+      if (!fileTypeStore.contains(map.get(key).getExtension())) {
+        fileTypeStore.add(map.get(key).getExtension());
+      }
+      featureStore.put(key, map.get(key));
+    }
   }
 }

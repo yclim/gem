@@ -20,10 +20,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class MatchServiceTests {
 
-    @Autowired
-    IGEMFileDao gemFileDao;
-    @Autowired
-    IGroupDao groupDao;
+  @Autowired IGEMFileDao gemFileDao;
+  @Autowired IGroupDao groupDao;
   @Autowired MatchService matchService;
   @Autowired GEMFileController gemFileController;
 
@@ -60,8 +58,12 @@ public class MatchServiceTests {
 
   @Test
   public void testMatchedListInGroup() throws Exception {
-      matchService.matchFileRuleTable.clear();
-      matchService.matchFileGroupTable.clear();
+    if (MatchService.getMatchFileRuleTable() != null) {
+      MatchService.getMatchFileRuleTable().clear();
+    }
+    if (MatchService.getMatchFileGroupTable() != null) {
+      MatchService.getMatchFileGroupTable().clear();
+    }
     for (GEMFile file : gemFileDao.getFiles()) {
       gemFileDao.delete(file.getAbsolutePath());
       matchService.onUpdateEvent(file);
@@ -132,8 +134,10 @@ public class MatchServiceTests {
     assert (matchService.getFilesWithConflictMatch().contains(datFile));
     assert (matchService.getFilesWithConflictMatch().size() == 1);
 
-    MatchFileRule matchFileRule = matchService.matchFileRuleTable.get(datFile.getAbsolutePath());
-    MatchFileGroup matchFileGroup = matchService.matchFileGroupTable.get(datFile.getAbsolutePath());
+    MatchFileRule matchFileRule =
+        MatchService.getMatchFileRuleTable().get(datFile.getAbsolutePath());
+    MatchFileGroup matchFileGroup =
+        MatchService.getMatchFileGroupTable().get(datFile.getAbsolutePath());
     assert (matchFileRule.getMatchRuleHashcode().get(prefix_d_group.getRules().get(0).hashCode())
         == true);
     assert (matchFileGroup.getMatchedGroupIds().contains(prefix_d_group.getGroupId()) == true);
@@ -143,8 +147,8 @@ public class MatchServiceTests {
     System.out.println("=====================");
     printMatchedCount();
 
-    matchFileRule = matchService.matchFileRuleTable.get(datFile.getAbsolutePath());
-    matchFileGroup = matchService.matchFileGroupTable.get(datFile.getAbsolutePath());
+    matchFileRule = MatchService.getMatchFileRuleTable().get(datFile.getAbsolutePath());
+    matchFileGroup = MatchService.getMatchFileGroupTable().get(datFile.getAbsolutePath());
     assert (matchFileRule.getMatchRuleHashcode().get(prefix_d_group.getRules().get(0).hashCode())
         == null);
     assert (matchFileGroup.getMatchedGroupIds().contains(prefix_d_group.getGroupId()) == false);
@@ -153,14 +157,14 @@ public class MatchServiceTests {
     System.out.println("removed group: " + prefix_d_group.getName());
     printMatchedCount();
 
-    matchFileRule = matchService.matchFileRuleTable.get(txtFile.getAbsolutePath());
-    matchFileGroup = matchService.matchFileGroupTable.get(txtFile.getAbsolutePath());
+    matchFileRule = MatchService.getMatchFileRuleTable().get(txtFile.getAbsolutePath());
+    matchFileGroup = MatchService.getMatchFileGroupTable().get(txtFile.getAbsolutePath());
     assert (matchFileRule != null);
     assert (matchFileGroup != null);
     gemFileDao.delete(txtFile.getAbsolutePath());
     matchService.onUpdateEvent(txtFile);
-    matchFileRule = matchService.matchFileRuleTable.get(txtFile.getAbsolutePath());
-    matchFileGroup = matchService.matchFileGroupTable.get(txtFile.getAbsolutePath());
+    matchFileRule = MatchService.getMatchFileRuleTable().get(txtFile.getAbsolutePath());
+    matchFileGroup = MatchService.getMatchFileGroupTable().get(txtFile.getAbsolutePath());
     assert (matchFileRule == null);
     assert (matchFileGroup == null);
 
@@ -171,8 +175,8 @@ public class MatchServiceTests {
     System.out.println("Total groups: " + groupDao.getGroups().size());
     System.out.println("Total files: " + gemFileDao.getFiles().size());
 
-    matchService.matchFileRuleTable.clear();
-    matchService.matchFileGroupTable.clear();
+    MatchService.getMatchFileRuleTable().clear();
+    MatchService.getMatchFileGroupTable().clear();
     gemFileDao.deleteAll();
     groupDao.deleteAll();
   }

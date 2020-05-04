@@ -1,7 +1,9 @@
 package innohack.gem.dao;
 
 import innohack.gem.entity.GEMFile;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Allow for injecting different DAO implementations... e.g. in-memory, database, es, etc
@@ -63,6 +65,8 @@ public interface IGEMFileDao {
   // save file to feature store
   void saveFile(GEMFile files);
 
+  void saveFiles(Map<String, GEMFile> map);
+
   /**
    * Retrieves all file extensions uploaded
    *
@@ -75,4 +79,6 @@ public interface IGEMFileDao {
 
   /** delete file by absolutePath */
   void delete(String absolutePath);
+
+  void deleteFiles(Collection<String> absolutePaths);
 }

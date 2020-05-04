@@ -2,8 +2,7 @@ package innohack.gem.dao;
 
 import innohack.gem.database.RocksDatabase;
 import innohack.gem.entity.rule.Group;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -63,6 +62,31 @@ public class GroupRockDao implements IGroupDao {
     return false;
   }
 
+  @Override
+  public boolean deleteGroupsByName(List<String> groupNames) {
+    Map<String, Group> map = groupDb.getKeyValues();
+    List<Integer> ids = new ArrayList<Integer>();
+    for (String groupName : map.keySet()) {
+      ids.add(map.get(groupName).getGroupId());
+    }
+    if (groupDb.delete(groupNames)) {
+      groupIdDb.delete(ids);
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public boolean deleteGroupsById(List<Integer> groupIds) {
+    Map<String, Group> map = groupDb.getKeyValues();
+    Collection names = groupIdDb.getKeyValues(groupIds).values();
+    if (groupDb.delete(names)) {
+      groupIdDb.delete(groupIds);
+      return true;
+    }
+    return false;
+  }
+
   private int getNextIncrementId() {
     List<Integer> ids = groupIdDb.getKeys();
     if (ids.size() == 0) {
@@ -83,6 +107,17 @@ public class GroupRockDao implements IGroupDao {
     groupDb.put(group.getName(), group);
     groupIdDb.put(group.getGroupId(), group.getName());
     return group;
+  }
+
+  @Override
+  public void saveGroups(Map<String, Group> map) {
+    HashMap<Integer, String> groupIds = new HashMap<Integer, String>();
+    for (String key : map.keySet()) {
+      Group grp = map.get(key);
+      groupIds.put(grp.getGroupId(), key);
+    }
+    groupDb.putHashMap(map);
+    groupIdDb.putHashMap(groupIds);
   }
 
   @Override

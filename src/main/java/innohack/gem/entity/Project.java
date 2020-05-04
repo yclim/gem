@@ -5,13 +5,13 @@ import java.util.List;
 
 public class Project {
 
-    public static final String SPEC_VERSION = "1.0.0";
+  public static final String SPEC_VERSION = "1.0.0";
 
   private String specVersion;
 
-    private List<Group> groups;
+  private List<Group> groups;
 
-    private String projectName;
+  private String projectName;
 
   public String getSpecVersion() {
     return specVersion;

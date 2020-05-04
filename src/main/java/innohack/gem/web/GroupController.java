@@ -31,9 +31,9 @@ public class GroupController {
     return groupService.importProject(file.getBytes());
   }
 
-    @GetMapping("/export")
-    public void exportProject(HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
+  @GetMapping("/export")
+  public void exportProject(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
     byte[] project = groupService.exportProject();
     response.setContentType("application/json");
     response.addHeader("Content-Disposition", "attachment; filename=export.json");

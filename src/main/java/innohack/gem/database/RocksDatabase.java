@@ -11,8 +11,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -87,6 +88,35 @@ public class RocksDatabase<K, V> {
     return result;
   }
 
+  public boolean putHashMap(Map<K, V> map) {
+    boolean result = false;
+    dbLock.writeLock().lock();
+    File dbFile = new File(DB_PATH, dbName);
+    // the Options class contains a set of configurable DB options
+    // that determines the behaviour of the database.
+    try (final Options options = new Options().setCreateIfMissing(true)) {
+      // a factory method that returns a RocksDB instance
+      try (final RocksDB db = RocksDB.open(options, dbFile.getAbsolutePath())) {
+        for (K key : map.keySet()) {
+          V value = map.get(key);
+          byte[] key_byte = serialize(key);
+          byte[] value_byte = serialize(value);
+          System.out.println(dbName + ": " + "put " + key + ", " + value);
+          db.put(key_byte, value_byte);
+        }
+        db.close();
+        result = true;
+      }
+
+    } catch (Exception e) {
+      // do some error handling
+      e.printStackTrace();
+    } finally {
+      dbLock.writeLock().unlock();
+    }
+    return result;
+  }
+
   public boolean delete(K key) {
     boolean result = false;
     dbLock.writeLock().lock();
@@ -123,6 +153,28 @@ public class RocksDatabase<K, V> {
         itr.close();
         db.close();
         System.out.println(dbName + ": " + "deleteAll");
+        result = true;
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    } finally {
+      dbLock.writeLock().unlock();
+    }
+    return result;
+  }
+
+  public boolean delete(Collection<K> keys) {
+    boolean result = false;
+    dbLock.writeLock().lock();
+    File dbFile = new File(DB_PATH, dbName);
+    try (final Options options = new Options().setCreateIfMissing(true)) {
+      try (final RocksDB db = RocksDB.open(options, dbFile.getAbsolutePath())) {
+        for (K key : keys) {
+          byte[] key_byte = serialize(key);
+          db.delete(key_byte);
+        }
+        db.close();
+        System.out.println(dbName + ": " + "delete list " + keys);
         result = true;
       }
     } catch (Exception e) {
@@ -197,9 +249,13 @@ public class RocksDatabase<K, V> {
     return (List<V>) getKeysOrValue(valueType);
   }
 
-  public HashMap<K, V> getKeyValues() {
+  public ConcurrentHashMap<K, V> getKeyValues() {
+    return getKeyValues(null);
+  }
+
+  public ConcurrentHashMap<K, V> getKeyValues(Collection<K> keys) {
     System.out.println(dbName + ": " + "getKeyValues ");
-    HashMap<K, V> hashMap = new HashMap();
+    ConcurrentHashMap<K, V> hashMap = new ConcurrentHashMap();
 
     dbLock.readLock().lock();
     try (final Options options = new Options().setCreateIfMissing(true)) {
@@ -209,8 +265,10 @@ public class RocksDatabase<K, V> {
         try (final RocksIterator iterator = db.newIterator(new ReadOptions())) {
           for (iterator.seekToFirst(); iterator.isValid(); iterator.next()) {
             final K key = (K) deserialize(keyType, iterator.key());
-            final V value = (V) deserialize(valueType, iterator.value());
-            hashMap.put(key, value);
+            if (keys == null || keys.contains(key)) {
+              final V value = (V) deserialize(valueType, iterator.value());
+              hashMap.put(key, value);
+            }
           }
           iterator.close();
           db.close();
@@ -317,9 +375,9 @@ public class RocksDatabase<K, V> {
     final ObjectReader r = mapper.readerFor(type);
     // enable one feature, disable another
     Object value =
-            r.with(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS)
-                    .without(DeserializationFeature.WRAP_EXCEPTIONS)
-                    .readValue(bytes);
+        r.with(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS)
+            .without(DeserializationFeature.WRAP_EXCEPTIONS)
+            .readValue(bytes);
     return value;
   }
 

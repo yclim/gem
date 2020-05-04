@@ -3,7 +3,9 @@ package innohack.gem.service;
 import innohack.gem.dao.IGEMFileDao;
 import innohack.gem.entity.GEMFile;
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,7 @@ public class GEMFileService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(GEMFileService.class);
   @Autowired private IGEMFileDao gemFileDao;
-  @Autowired private MatchService matcherService;
+  @Autowired private MatchService matcheService;
 
   public String getCurrentDirectory() {
     return gemFileDao.getCurrentDirectory();
@@ -40,13 +42,13 @@ public class GEMFileService {
    */
   public List<GEMFile> syncFiles(String folderPath) throws Exception {
     LOGGER.info("Syncing from folder {}: {}", folderPath, new File(folderPath).exists());
-
     List<GEMFile> oldfilelist = gemFileDao.getFiles();
     List<GEMFile> newFilelist = gemFileDao.getLocalFiles(folderPath);
+    Map<String, GEMFile> fileToDelete = new HashMap();
+    Map<String, GEMFile> fileToSave = new HashMap();
     for (GEMFile oldFile : oldfilelist) {
       if (!newFilelist.contains(oldFile)) {
-        gemFileDao.delete(oldFile.getAbsolutePath());
-        matcherService.onUpdateEvent(oldFile);
+        fileToDelete.put(oldFile.getAbsolutePath(), oldFile);
       } else {
         newFilelist.remove(oldFile);
       }
@@ -57,8 +59,16 @@ public class GEMFileService {
       } catch (Exception ex) {
         LOGGER.debug("{}: {}", GEMFileService.class, ex.getStackTrace());
       }
-      gemFileDao.saveFile(file);
-      matcherService.onUpdateEvent(file);
+      fileToSave.put(file.getAbsolutePath(), file);
+    }
+
+    gemFileDao.saveFiles(fileToSave);
+    for (GEMFile file : fileToSave.values()) {
+      matcheService.onUpdateEvent(file);
+    }
+    gemFileDao.deleteFiles(fileToDelete.keySet());
+    for (GEMFile file : fileToSave.values()) {
+      matcheService.onUpdateEvent(file);
     }
     return getFileList();
   }

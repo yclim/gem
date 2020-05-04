@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import innohack.gem.database.RocksDatabase;
 import innohack.gem.entity.GEMFile;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -102,7 +102,7 @@ class GEMFileRockDaoTest {
     db.put(f1.getAbsolutePath(), f1);
     db.put(f2.getAbsolutePath(), f2);
     db.put(f3.getAbsolutePath(), f3);
-    HashMap<String, GEMFile> keyValyeMap = db.getKeyValues();
+    Map<String, GEMFile> keyValyeMap = db.getKeyValues();
     assertTrue(keyValyeMap.get(f1.getAbsolutePath()).equals(f1));
     assertTrue(keyValyeMap.get(f2.getAbsolutePath()).equals(f2));
     assertTrue(keyValyeMap.get(f3.getAbsolutePath()).equals(f3));

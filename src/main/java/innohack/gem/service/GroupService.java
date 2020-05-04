@@ -24,9 +24,9 @@ public class GroupService {
   private static final Logger LOGGER = LoggerFactory.getLogger(GroupService.class);
 
   @Autowired private IGroupDao groupDao;
-  @Autowired private MatchService matcherService;
+  @Autowired private MatchService matchService;
 
-    public List<Group> getGroups() {
+  public List<Group> getGroups() {
     List<Group> group = groupDao.getGroups();
     Collections.sort(group);
     return group;
@@ -50,7 +50,7 @@ public class GroupService {
     List<Rule> rules = new ArrayList<>();
     group.setRules(rules);
     boolean result = groupDao.deleteGroup(groupId);
-    matcherService.onUpdateEvent(group);
+    matchService.onUpdateEvent(group);
     return result;
   }
 
@@ -60,13 +60,13 @@ public class GroupService {
     List<Rule> rules = new ArrayList<>();
     group.setRules(rules);
     boolean result = groupDao.deleteGroup(groupName);
-    matcherService.onUpdateEvent(group);
+    matchService.onUpdateEvent(group);
     return result;
   }
 
   public Group saveGroup(Group group) {
     group = groupDao.saveGroup(group);
-    matcherService.onUpdateEvent(group);
+    matchService.onUpdateEvent(group);
     return group;
   }
 
@@ -85,7 +85,7 @@ public class GroupService {
         rule.setName(defaultRuleName);
         default_extension_group.setRules(Lists.newArrayList(rule));
         groupDao.saveGroup(default_extension_group);
-        matcherService.onUpdateEvent(default_extension_group);
+        matchService.onUpdateEvent(default_extension_group);
       }
     }
   }
@@ -104,10 +104,10 @@ public class GroupService {
       project.setGroups(groups);
       project.setSpecVersion(Project.SPEC_VERSION);
       ObjectMapper mapper = new ObjectMapper();
-        return mapper
-                .addMixIn(Group.class, GroupExportMixin.class)
-                .writerWithDefaultPrettyPrinter()
-                .writeValueAsBytes(project);
+      return mapper
+          .addMixIn(Group.class, GroupExportMixin.class)
+          .writerWithDefaultPrettyPrinter()
+          .writeValueAsBytes(project);
     } catch (IOException ex) {
       LOGGER.error("Error in exporting project", ex);
       throw ex;

@@ -2,6 +2,7 @@ package innohack.gem.service;
 
 import innohack.gem.dao.IGEMFileDao;
 import innohack.gem.dao.IGroupDao;
+import innohack.gem.dao.IMatchFileDao;
 import innohack.gem.entity.GEMFile;
 import innohack.gem.entity.match.MatchFileGroup;
 import innohack.gem.entity.match.MatchFileRule;
@@ -13,32 +14,60 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MatchService {
-  static final String DB_NAME = "Match";
+  @Autowired IGroupDao groupDao;
+  @Autowired IGEMFileDao gemFileDao;
+  @Autowired IMatchFileDao matchFileDao;
 
-  /*
-  private RocksDatabase matchFileGroupTableDb;
-  private RocksDatabase matchFileRuleTableDb;
-
-  public MatchService(){
-    matchFileGroupTableDb = RocksDatabase.getInstance(DB_NAME+"_FileGroup", String.class, GEMFile.class);
-    matchFileRuleTableDb = RocksDatabase.getInstance(DB_NAME+"_FileRule", String.class, Boolean.class);
-  }
-  */
-
-  public HashMap<String, MatchFileGroup> matchFileGroupTable = new HashMap();
-  public HashMap<String, MatchFileRule> matchFileRuleTable = new HashMap();
+  private static Map<String, MatchFileGroup> matchFileGroupTable;
+  private static Map<String, MatchFileRule> matchFileRuleTable;
   private List<GEMFile> filesWithConflictMatch = new ArrayList<GEMFile>();
   private List<GEMFile> filesWithoutMatch = new ArrayList<GEMFile>();
 
-  @Autowired IGroupDao groupDao;
-  @Autowired IGEMFileDao gemFileDao;
+  public MatchService() {}
+
+  public static Map<String, MatchFileGroup> getMatchFileGroupTable() {
+    return matchFileGroupTable;
+  }
+
+  public static Map<String, MatchFileRule> getMatchFileRuleTable() {
+    return matchFileRuleTable;
+  }
 
   public synchronized void onUpdateEvent(Object o) {
+    if (matchFileGroupTable == null) {
+      matchFileGroupTable = matchFileDao.getMatchGroup();
+    }
+    if (matchFileRuleTable == null) {
+      matchFileRuleTable = matchFileDao.getMatchRule();
+    }
     if (o instanceof GEMFile) {
       onUpdateFile((GEMFile) o);
     }
     if (o instanceof Group) {
       onUpdateGroupRule((Group) o);
+    }
+    backupMatchFile();
+  }
+
+  private static Thread backupProcessThread;
+  private static final long BACKUP_WAIT_TIME = 1000 * 60 * 2;
+
+  private void backupMatchFile() {
+    Runnable backupProcess =
+        () -> {
+          try {
+            Thread.sleep(BACKUP_WAIT_TIME);
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+          matchFileDao.saveMatchGroup(matchFileGroupTable);
+          matchFileDao.saveMatchRule(matchFileRuleTable);
+          backupProcessThread = null;
+        };
+    if (backupProcessThread == null) {
+      System.out.println("MatchFile backup called");
+      backupProcessThread = new Thread(backupProcess);
+      backupProcessThread.start();
     }
   }
 
@@ -58,20 +87,25 @@ public class MatchService {
       ruleMatch = new HashMap<Integer, Boolean>();
     }
     // for each rule in the group, check against the rule hashmap for previously checked result
-    for (Rule r : group.getRules()) {
-      if (ruleMatch.get(r.hashCode()) == null) {
-        // when no result of previously checked file and rule, do a check now and store into rule
-        // hashmap
-        result = r.check(file);
-        ruleMatch.put(r.hashCode(), result);
-      } else {
-        // when there is a result of rule checked previously inside rule hashmap,
-        result = ruleMatch.get(r.hashCode());
+    List<Rule> rules = group.getRules();
+    if (rules != null && rules.size() > 0) {
+      for (Rule r : rules) {
+        if (ruleMatch.get(r.hashCode()) == null) {
+          // when no result of previously checked file and rule, do a check now and store into rule
+          // hashmap
+          result = r.check(file);
+          ruleMatch.put(r.hashCode(), result);
+        } else {
+          // when there is a result of rule checked previously inside rule hashmap,
+          result = ruleMatch.get(r.hashCode());
+        }
+        // break when one of the rule check against the file is false.
+        if (result == false) {
+          break;
+        }
       }
-      // break when one of the rule check against the file is false.
-      if (result == false) {
-        break;
-      }
+    } else {
+      result = false;
     }
     matchFileRule.setMatchRuleHashcode(ruleMatch);
     // save the rule hashmap
@@ -175,18 +209,16 @@ public class MatchService {
 
   // remove all the grouprule from the hashmap
   private void removeAllAssociatedRuleFromCache(Group group) {
-    HashMap<String, MatchFileRule> matchFileRuleHashMap = matchFileRuleTable;
-    for (String fileKey : matchFileRuleHashMap.keySet()) {
-      MatchFileRule matchFileRule = matchFileRuleHashMap.get(fileKey);
+    for (String fileKey : matchFileRuleTable.keySet()) {
+      MatchFileRule matchFileRule = matchFileRuleTable.get(fileKey);
       for (Rule r : group.getRules()) {
         matchFileRule.getMatchRuleHashcode().remove(r.hashCode());
       }
       matchFileRuleTable.put(fileKey, matchFileRule);
     }
 
-    HashMap<String, MatchFileGroup> matchFileGroupHashMap = matchFileGroupTable;
-    for (String fileKey : matchFileGroupHashMap.keySet()) {
-      MatchFileGroup matchFileGroup = matchFileGroupHashMap.get(fileKey);
+    for (String fileKey : matchFileGroupTable.keySet()) {
+      MatchFileGroup matchFileGroup = matchFileGroupTable.get(fileKey);
       matchFileGroup.getMatchedGroupIds().remove(group.getGroupId());
       matchFileGroupTable.put(fileKey, matchFileGroup);
     }

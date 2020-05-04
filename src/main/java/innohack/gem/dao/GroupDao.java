@@ -3,6 +3,7 @@ package innohack.gem.dao;
 import innohack.gem.entity.rule.Group;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -63,6 +64,22 @@ public class GroupDao implements IGroupDao {
   }
 
   @Override
+  public boolean deleteGroupsByName(List<String> groupNames) {
+    for (String name : groupNames) {
+      delete(name);
+    }
+    return true;
+  }
+
+  @Override
+  public boolean deleteGroupsById(List<Integer> groupIds) {
+    for (Integer id : groupIds) {
+      deleteGroup(id);
+    }
+    return true;
+  }
+
+  @Override
   public Group saveGroup(Group group) {
     Group existingGroup = featureStore.get(group.getName());
     if (existingGroup != null) {
@@ -73,6 +90,14 @@ public class GroupDao implements IGroupDao {
     featureStore.put(group.getName(), group);
     featureStoreId.put(group.getGroupId(), group.getName());
     return group;
+  }
+
+  @Override
+  public void saveGroups(Map<String, Group> map) {
+    for (String key : map.keySet()) {
+      featureStore.put(key, map.get(key));
+      featureStoreId.put(map.get(key).getGroupId(), map.get(key).getName());
+    }
   }
 
   @Override

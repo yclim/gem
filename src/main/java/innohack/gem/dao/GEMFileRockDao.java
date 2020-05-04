@@ -6,7 +6,10 @@ import innohack.gem.entity.GEMFile;
 import innohack.gem.util.AppProperties;
 import java.io.File;
 import java.nio.file.Paths;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -23,7 +26,7 @@ public class GEMFileRockDao implements IGEMFileDao {
   public GEMFileRockDao() {
     gemFileDb = RocksDatabase.getInstance(DB_NAME, String.class, GEMFile.class);
     gemFileFileTypesDb =
-            RocksDatabase.getInstance(DB_NAME + "_FileType", String.class, Boolean.class);
+        RocksDatabase.getInstance(DB_NAME + "_FileType", String.class, Boolean.class);
   }
 
   /**
@@ -55,6 +58,11 @@ public class GEMFileRockDao implements IGEMFileDao {
   @Override
   public void delete(String absolutePath) {
     gemFileDb.delete(absolutePath);
+  }
+
+  @Override
+  public void deleteFiles(Collection<String> absolutePaths) {
+    gemFileDb.delete(absolutePaths);
   }
 
   // This method get file data from feature store
@@ -150,5 +158,21 @@ public class GEMFileRockDao implements IGEMFileDao {
       gemFileFileTypesDb.put(file.getExtension(), 1);
     }
     gemFileDb.put(file.getAbsolutePath(), file);
+  }
+
+  @Override
+  public void saveFiles(Map<String, GEMFile> filesMap) {
+    Map<String, Integer> fileTypesMap = new HashMap();
+    if (types == null) {
+      types = gemFileFileTypesDb.getKeys();
+    }
+    for (GEMFile file : filesMap.values()) {
+      if (!types.contains(file.getExtension())) {
+        types.add(file.getExtension());
+        fileTypesMap.put(file.getExtension(), 1);
+      }
+    }
+    gemFileDb.putHashMap(filesMap);
+    gemFileFileTypesDb.putHashMap(fileTypesMap);
   }
 }

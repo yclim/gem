@@ -48,7 +48,7 @@ public class Group implements Comparable<Group> {
   }
 
   public void setMatchedFile(List<String> matchedFile) {
-      this.matchedFile = matchedFile;
+    this.matchedFile = matchedFile;
   }
 
   @Override
