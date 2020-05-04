@@ -56,11 +56,11 @@ public class GroupDao implements IGroupDao {
     }
   }
 
-    @Override
-    public boolean deleteAll() {
-        featureStore.clear();
-        return true;
-    }
+  @Override
+  public boolean deleteAll() {
+    featureStore.clear();
+    return true;
+  }
 
   @Override
   public Group saveGroup(Group group) {

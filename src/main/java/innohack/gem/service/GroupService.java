@@ -9,12 +9,10 @@ import innohack.gem.entity.rule.Group;
 import innohack.gem.entity.rule.GroupExportMixin;
 import innohack.gem.entity.rule.rules.FileExtension;
 import innohack.gem.entity.rule.rules.Rule;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

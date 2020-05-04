@@ -20,10 +20,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class MatchServiceTests {
 
-  @Autowired
-  IGEMFileDao gemFileDao;
-  @Autowired
-  IGroupDao groupDao;
+    @Autowired
+    IGEMFileDao gemFileDao;
+    @Autowired
+    IGroupDao groupDao;
   @Autowired MatchService matchService;
   @Autowired GEMFileController gemFileController;
 
@@ -60,6 +60,8 @@ public class MatchServiceTests {
 
   @Test
   public void testMatchedListInGroup() throws Exception {
+      matchService.matchFileRuleTable.clear();
+      matchService.matchFileGroupTable.clear();
     for (GEMFile file : gemFileDao.getFiles()) {
       gemFileDao.delete(file.getAbsolutePath());
       matchService.onUpdateEvent(file);
@@ -182,5 +184,14 @@ public class MatchServiceTests {
         System.out.println(path);
       }
     }
+      System.out.println("------------------------------------------");
+      for (GEMFile file : gemFileDao.getFiles()) {
+          System.out.println(file.getAbsolutePath());
+          MatchFileGroup matchFileGroup = matchService.matchFileGroupTable.get(file);
+          for (int i : matchFileGroup.getMatchedGroupIds()) {
+              System.out.println(groupDao.getGroup(i).getName());
+          }
+          System.out.println("------------------------------------------");
+      }
   }
 }

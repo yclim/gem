@@ -16,10 +16,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class GEMFileControllerTest {
 
-  @Autowired
-  IGEMFileDao gemFileDao;
-  @Autowired
-  IGroupDao groupDao;
+    @Autowired
+    IGEMFileDao gemFileDao;
+    @Autowired
+    IGroupDao groupDao;
   @Autowired GEMFileController gemFileController;
 
   @Test

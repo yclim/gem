@@ -2,7 +2,6 @@ package innohack.gem.entity.rule;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import innohack.gem.entity.GEMFile;
-
 import java.util.List;
 
 public abstract class GroupExportMixin {

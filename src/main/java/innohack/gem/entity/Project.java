@@ -1,7 +1,6 @@
 package innohack.gem.entity;
 
 import innohack.gem.entity.rule.Group;
-
 import java.util.List;
 
 public class Project {
