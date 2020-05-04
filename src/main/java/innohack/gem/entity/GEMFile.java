@@ -25,18 +25,18 @@ public class GEMFile implements Comparable<GEMFile> {
 
   public GEMFile() {}
 
-    public GEMFile(String filePath) {
-        File file = new File(filePath);
-        this.directory = file.getParentFile().getAbsolutePath();
-        this.fileName = file.getName();
-        this.extension = FilenameUtils.getExtension(fileName);
-        this.size = file.length();
-    }
+  public GEMFile(String filePath) {
+    File file = new File(filePath);
+    this.directory = file.getParentFile().getAbsolutePath();
+    this.fileName = file.getName();
+    this.extension = FilenameUtils.getExtension(fileName);
+    this.size = file.length();
+  }
 
   public GEMFile(String fileName, String directory) {
     File file = new File(directory, fileName);
-      this.directory = file.getParentFile().getAbsolutePath();
-      this.fileName = file.getName();
+    this.directory = file.getParentFile().getAbsolutePath();
+    this.fileName = file.getName();
     this.extension = FilenameUtils.getExtension(fileName);
     this.size = file.length();
   }

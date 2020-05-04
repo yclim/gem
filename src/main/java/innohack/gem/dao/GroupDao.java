@@ -56,6 +56,12 @@ public class GroupDao implements IGroupDao {
     }
   }
 
+    @Override
+    public boolean deleteAll() {
+        featureStore.clear();
+        return true;
+    }
+
   @Override
   public Group saveGroup(Group group) {
     Group existingGroup = featureStore.get(group.getName());

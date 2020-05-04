@@ -1,6 +1,5 @@
 package innohack.gem.entity.rule;
 
-import innohack.gem.entity.GEMFile;
 import innohack.gem.entity.rule.rules.Rule;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +48,7 @@ public class Group implements Comparable<Group> {
   }
 
   public void setMatchedFile(List<String> matchedFile) {
-        this.matchedFile = matchedFile;
+      this.matchedFile = matchedFile;
   }
 
   @Override

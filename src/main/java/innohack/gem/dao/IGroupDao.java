@@ -23,4 +23,6 @@ public interface IGroupDao {
   boolean deleteGroup(String groupName);
 
   boolean updateGroupName(String oldGroupName, String newGroupName);
+
+    boolean deleteAll();
 }

@@ -1,5 +1,15 @@
 package innohack.gem.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
+import innohack.gem.dao.IGroupDao;
+import innohack.gem.entity.GEMFile;
+import innohack.gem.entity.Project;
+import innohack.gem.entity.rule.Group;
+import innohack.gem.entity.rule.GroupExportMixin;
+import innohack.gem.entity.rule.rules.FileExtension;
+import innohack.gem.entity.rule.rules.Rule;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,26 +20,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
-
-import innohack.gem.dao.IGroupDao;
-import innohack.gem.entity.GEMFile;
-import innohack.gem.entity.Project;
-import innohack.gem.entity.rule.Group;
-import innohack.gem.entity.rule.GroupExportMixin;
-import innohack.gem.entity.rule.rules.FileExtension;
-import innohack.gem.entity.rule.rules.Rule;
-
 @Service
 public class GroupService {
-  
+
   private static final Logger LOGGER = LoggerFactory.getLogger(GroupService.class);
 
   @Autowired private IGroupDao groupDao;
   @Autowired private MatchService matcherService;
-  
-  public List<Group> getGroups() {
+
+    public List<Group> getGroups() {
     List<Group> group = groupDao.getGroups();
     Collections.sort(group);
     return group;
@@ -107,12 +106,13 @@ public class GroupService {
       project.setGroups(groups);
       project.setSpecVersion(Project.SPEC_VERSION);
       ObjectMapper mapper = new ObjectMapper();
-      return mapper.addMixIn(Group.class, GroupExportMixin.class).
-          writerWithDefaultPrettyPrinter().writeValueAsBytes(project);
-    } catch(IOException ex) {
+        return mapper
+                .addMixIn(Group.class, GroupExportMixin.class)
+                .writerWithDefaultPrettyPrinter()
+                .writeValueAsBytes(project);
+    } catch (IOException ex) {
       LOGGER.error("Error in exporting project", ex);
       throw ex;
     }
   }
-  
 }

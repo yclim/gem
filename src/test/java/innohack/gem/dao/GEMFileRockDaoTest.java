@@ -27,6 +27,7 @@ class GEMFileRockDaoTest {
     GEMFile file = db.get(f.getAbsolutePath());
     assertTrue(file.equals(f));
     assertTrue(file.getData() == null);
+    db.deleteAll();
   }
 
   @Test
@@ -37,6 +38,7 @@ class GEMFileRockDaoTest {
     GEMFile file = db.get(f.getAbsolutePath());
     assertTrue(file.equals(f));
     assertTrue(file.getData() != null);
+    db.deleteAll();
   }
 
   @Test
@@ -45,6 +47,7 @@ class GEMFileRockDaoTest {
     db.put(f.getAbsolutePath(), f);
     assertTrue(db.delete(f.getAbsolutePath()));
     assertTrue(db.get(f.getAbsolutePath()) == null);
+    db.deleteAll();
   }
 
   @Test
@@ -74,6 +77,7 @@ class GEMFileRockDaoTest {
     List<String> keys = db.scanPrefixKey(f1.getAbsolutePath().substring(0, 5));
     assertTrue(keys.contains(f1.getAbsolutePath()));
     assertTrue(keys.contains(f2.getAbsolutePath()));
+    db.deleteAll();
   }
 
   @Test
@@ -86,6 +90,7 @@ class GEMFileRockDaoTest {
     List<String> keys = db.getKeys();
     assertTrue(keys.contains(f1.getAbsolutePath()));
     assertTrue(keys.contains(f2.getAbsolutePath()));
+    db.deleteAll();
   }
 
   @Test
@@ -101,6 +106,7 @@ class GEMFileRockDaoTest {
     assertTrue(keyValyeMap.get(f1.getAbsolutePath()).equals(f1));
     assertTrue(keyValyeMap.get(f2.getAbsolutePath()).equals(f2));
     assertTrue(keyValyeMap.get(f3.getAbsolutePath()).equals(f3));
+    db.deleteAll();
   }
 
   @Test

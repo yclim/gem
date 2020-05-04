@@ -16,15 +16,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class GroupServiceTest {
 
-    @Autowired
-    IGroupDao groupDao;
+  @Autowired
+  IGroupDao groupDao;
   @Autowired GroupService groupService;
 
   Group ext_csv_group;
   Group ext_dat_group;
   Group prefix_d_group;
 
-    public GroupServiceTest() {
+  public GroupServiceTest() {
     this.ext_csv_group = new Group();
     ext_csv_group.setName("extension_csv_grouprule");
     Rule rule1 = new FileExtension("csv");
@@ -54,10 +54,13 @@ public class GroupServiceTest {
     String oldname = ext_csv_group.getName();
     Group g1 = groupService.getGroup(id);
     Group g2 = groupService.getGroup(oldname);
-      assertTrue(g1.getGroupId() == g2.getGroupId());
+    assertTrue(g1.getGroupId() == g2.getGroupId());
     String newname = "ABC";
     groupService.updateGroupName(oldname, newname);
     groupService.saveGroup(ext_csv_group);
     assertTrue(groupService.getGroup(id).getName().equals(newname));
+    groupService.deleteGroup(ext_csv_group.getName());
+
+    groupDao.deleteAll();
   }
 }

@@ -26,7 +26,8 @@ public class RocksDatabase<K, V> {
     RocksDB.loadLibrary();
   }
 
-  ReadWriteLock dbLock;
+    //each instance will have a pair of readwrite lock to manage concurrent access
+    ReadWriteLock dbLock;
   RocksDB db;
   private String dbName;
   private Class keyType;
@@ -40,7 +41,10 @@ public class RocksDatabase<K, V> {
     this.dbLock = new ReentrantReadWriteLock();
   }
 
-  private static ConcurrentHashMap<String, RocksDatabase> instancesMap = new ConcurrentHashMap<>();
+    /*
+    Use to ensure singleton instance for each database file
+     */
+    private static ConcurrentHashMap<String, RocksDatabase> instancesMap = new ConcurrentHashMap<>();
 
   public static RocksDatabase getInstance(String dbName, Class keyType, Class valueType) {
     RocksDatabase db = instancesMap.get(dbName);
@@ -58,11 +62,11 @@ public class RocksDatabase<K, V> {
   }
 
   public boolean put(K key, V value) {
-    // the Options class contains a set of configurable DB options
-    // that determines the behaviour of the database.
     boolean result = false;
     dbLock.writeLock().lock();
     File dbFile = new File(DB_PATH, dbName);
+      // the Options class contains a set of configurable DB options
+      // that determines the behaviour of the database.
     try (final Options options = new Options().setCreateIfMissing(true)) {
       // a factory method that returns a RocksDB instance
       try (final RocksDB db = RocksDB.open(options, dbFile.getAbsolutePath())) {
@@ -319,57 +323,57 @@ public class RocksDatabase<K, V> {
     return value;
   }
 
-  public class Iterator<K, V> {
-    public final RocksIterator iterator;
-    KeyValue keyValue;
+    // This class wraps around rocksIterator to perform object serialization and deserialization
+    public class Iterator<K, V> {
+        public final RocksIterator iterator;
 
-    protected Iterator(RocksIterator iterator) {
-      iterator.seekToFirst();
-      this.iterator = iterator;
-    }
-
-    public KeyValue keyValue() {
-      return new KeyValue<K, V>((K) getKeyOrValue(keyType), (V) getKeyOrValue(valueType));
-    }
-
-    public K key() {
-      return (K) getKeyOrValue(keyType);
-    }
-
-    public V value() {
-      return (V) getKeyOrValue(valueType);
-    }
-
-    public void close() {
-      iterator.close();
-      if (db != null) {
-        db.close();
-      }
-    }
-
-    private Object getKeyOrValue(Class<?> _class) {
-      try {
-        byte[] content;
-        if (_class == keyType) {
-          content = iterator.key();
-        } else {
-          content = iterator.value();
+        protected Iterator(RocksIterator iterator) {
+            iterator.seekToFirst();
+            this.iterator = iterator;
         }
-        if (content != null) {
-          return deserialize(_class, content);
+
+        public KeyValue keyValue() {
+            return new KeyValue<K, V>((K) getKeyOrValue(keyType), (V) getKeyOrValue(valueType));
         }
-      } catch (IOException e) {
-        System.out.println(e.getMessage());
-      }
-      return null;
-    }
 
-    public void next() {
-      iterator.next();
-    }
+        public K key() {
+            return (K) getKeyOrValue(keyType);
+        }
 
-    public boolean isValid() {
-      return iterator.isValid();
+        public V value() {
+            return (V) getKeyOrValue(valueType);
+        }
+
+        public void close() {
+            iterator.close();
+            if (db != null) {
+                db.close();
+            }
+        }
+
+        private Object getKeyOrValue(Class<?> _class) {
+            try {
+                byte[] content;
+                if (_class == keyType) {
+                    content = iterator.key();
+                } else {
+                    content = iterator.value();
+                }
+                if (content != null) {
+                    return deserialize(_class, content);
+                }
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
+            return null;
+        }
+
+        public void next() {
+            iterator.next();
+        }
+
+        public boolean isValid() {
+            return iterator.isValid();
+        }
     }
-  }
 }

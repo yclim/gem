@@ -7,7 +7,6 @@ import innohack.gem.entity.match.MatchFileGroup;
 import innohack.gem.entity.match.MatchFileRule;
 import innohack.gem.entity.rule.Group;
 import innohack.gem.entity.rule.rules.Rule;
-
 import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -15,10 +15,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class GEMFileServiceTest {
 
-    @Autowired
-    IGEMFileDao gemFileDao;
-    @Autowired
-    IGroupDao groupDao;
+  @Autowired
+  IGEMFileDao gemFileDao;
+  @Autowired
+  IGroupDao groupDao;
   @Autowired GEMFileService gemFileService;
 
   Group csv_group;
@@ -64,5 +64,7 @@ public class GEMFileServiceTest {
     // sync file again and test file count again
     List<GEMFile> list = gemFileService.syncFiles("target/samples/");
     assert (list.size() == getFiles(dir).size());
+    gemFileDao.deleteAll();
+    groupDao.deleteAll();
   }
 }
