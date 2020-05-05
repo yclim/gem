@@ -23,7 +23,7 @@ public class FilenameRegex extends Rule {
   }
 
   public FilenameRegex(String value) {
-    Parameter param = new Parameter("Regex", ".*\\s+(a|b)*", ParamType.REGEX, value);
+    Parameter param = new Parameter("Regex", ".*\\s+[0-9]{3}.*", ParamType.REGEX, value);
 
     this.setLabel(LABEL);
     this.setRuleType(RULE_TYPE);
