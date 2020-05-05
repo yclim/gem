@@ -73,10 +73,11 @@ public class GroupService {
   public static final String DEFAULT_FILEEXT_RULENAME_PREFIX = "File Extension";
 
   public void createDefaultGroup(List<GEMFile> files) {
+    int counter = 1;
     for (GEMFile file : files) {
       String extension = file.getExtension().toUpperCase();
       String defaultGroupName = extension;
-      String defaultRuleName = extension + " " + GroupService.DEFAULT_FILEEXT_RULENAME_PREFIX;
+      String defaultRuleName = "FE-" + counter++;
       Group default_extension_group = groupDao.getGroup(defaultGroupName);
       if (default_extension_group == null) {
         default_extension_group = new Group();
