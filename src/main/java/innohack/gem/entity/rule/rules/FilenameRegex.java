@@ -22,9 +22,7 @@ public class FilenameRegex extends Rule {
       Lists.newArrayList(new Parameter("regex", "string", ParamType.REGEX));
 
   public FilenameRegex() {
-    this.setLabel(LABEL);
-    this.setRuleType(RULE_TYPE);
-    this.setParams(PARAMETERS);
+    this(null);
   }
 
   public FilenameRegex(String value) {
