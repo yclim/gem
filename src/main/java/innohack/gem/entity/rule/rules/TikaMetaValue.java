@@ -14,10 +14,8 @@ import java.util.Map;
 
 public class TikaMetaValue extends Rule {
 
-  static final String LABEL = "Tika Meta Regex";
+  static final String LABEL = "Tika Meta Value";
   static final RuleType RULE_TYPE = RuleType.TIKA_METADATA;
-  static final List<Parameter> PARAMETERS =
-      Lists.newArrayList(new Parameter("headers", "aa,bb,cc", ParamType.STRING_LIST));
 
   public TikaMetaValue() {
     this(null, null);

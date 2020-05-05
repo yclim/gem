@@ -18,13 +18,9 @@ public class TikaContentRegex extends Rule {
 
   static final String LABEL = "Tika Content Regex";
   static final RuleType RULE_TYPE = RuleType.TIKA_CONTENT;
-  static final List<Parameter> PARAMETERS =
-      Lists.newArrayList(new Parameter("headers", "aa,bb,cc", ParamType.STRING_LIST));
 
   public TikaContentRegex() {
-    this.setLabel(LABEL);
-    this.setRuleType(RULE_TYPE);
-    this.setParams(PARAMETERS);
+    this(null);
   }
 
   public TikaContentRegex(String value) {
