@@ -5,13 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import innohack.gem.entity.GEMFile;
 import innohack.gem.entity.util.FileUtilForTesting;
-import innohack.gem.example.tika.TikaUtil;
-import innohack.gem.example.util.FileUtil;
 import innohack.gem.filegen.PdfFileGenerator;
 import java.io.File;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 
 public class TikaContentRegexTest {
@@ -34,14 +30,11 @@ public class TikaContentRegexTest {
 
     PdfFileGenerator.generateFixedTextPdfFiles(1, Paths.get(path.toString(), filename));
 
-
     TikaContentRegex contentRegexCheck = new TikaContentRegex(".*(white|black).*");
 
     GEMFile gFile = new GEMFile(filename, path);
     gFile.extract();
     assertTrue(contentRegexCheck.check(gFile));
-
-
   }
 
   @Test
@@ -62,11 +55,10 @@ public class TikaContentRegexTest {
 
     PdfFileGenerator.generateFixedTextPdfFiles(1, Paths.get(path.toString(), filename));
 
-   TikaContentRegex contentRegexCheck = new TikaContentRegex(".*(orange|brown).*");
+    TikaContentRegex contentRegexCheck = new TikaContentRegex(".*(orange|brown).*");
 
     GEMFile gFile = new GEMFile(filename, path);
     gFile.extract();
     assertFalse(contentRegexCheck.check(gFile));
-
   }
 }

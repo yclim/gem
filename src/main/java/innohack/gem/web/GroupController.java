@@ -1,13 +1,12 @@
 package innohack.gem.web;
 
-
+import innohack.gem.entity.rule.Group;
+import innohack.gem.service.GroupService;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,22 +20,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import innohack.gem.entity.rule.Group;
-import innohack.gem.service.GroupService;
-
 @RestController
 @RequestMapping("/api/group")
 public class GroupController {
 
   @Autowired private GroupService groupService;
-  
+
   @PostMapping("/import")
   public List<Group> importProject(@RequestParam("file") MultipartFile file) throws IOException {
     return groupService.importProject(file.getBytes());
   }
-  
+
   @GetMapping("/export")
-  public void exportProject(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void exportProject(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
     byte[] project = groupService.exportProject();
     response.setContentType("application/json");
     response.addHeader("Content-Disposition", "attachment; filename=export.json");

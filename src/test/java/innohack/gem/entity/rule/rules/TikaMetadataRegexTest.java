@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import innohack.gem.entity.GEMFile;
 import innohack.gem.entity.util.FileUtilForTesting;
 import innohack.gem.filegen.PdfFileGenerator;
-import innohack.gem.entity.rule.rules.TikaMetaValue;
 import java.io.File;
 import java.nio.file.Paths;
 import org.junit.jupiter.api.Test;
@@ -36,8 +35,6 @@ public class TikaMetadataRegexTest {
     GEMFile gFile = new GEMFile(filename, path);
     gFile.extract();
     assertTrue(metadaCheck.check(gFile));
-
-
   }
 
   @Test
@@ -63,6 +60,5 @@ public class TikaMetadataRegexTest {
     GEMFile gFile = new GEMFile(filename, path);
     gFile.extract();
     assertFalse(metadaCheck.check(gFile));
-
   }
 }

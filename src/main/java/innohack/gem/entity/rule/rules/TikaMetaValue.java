@@ -7,12 +7,10 @@ import innohack.gem.entity.feature.TikaFeature;
 import innohack.gem.entity.rule.ParamType;
 import innohack.gem.entity.rule.Parameter;
 import innohack.gem.entity.rule.RuleType;
-
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 
 public class TikaMetaValue extends Rule {
 
@@ -22,7 +20,7 @@ public class TikaMetaValue extends Rule {
       Lists.newArrayList(new Parameter("headers", "aa,bb,cc", ParamType.STRING_LIST));
 
   public TikaMetaValue() {
-      this(null, null);
+    this(null, null);
   }
 
   public TikaMetaValue(String key, String value) {
@@ -58,9 +56,9 @@ public class TikaMetaValue extends Rule {
     String valueMatch = "";
 
     for (Parameter param : getParams()) {
-      if(param.getLabel().equals("key")) {
+      if (param.getLabel().equals("key")) {
         keyMatch = param.getValue();
-      }else if (param.getLabel().equals("value")) {
+      } else if (param.getLabel().equals("value")) {
         valueMatch = param.getValue();
       }
     }
