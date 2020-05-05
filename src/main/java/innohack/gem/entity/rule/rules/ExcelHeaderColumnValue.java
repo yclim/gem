@@ -17,9 +17,7 @@ public class ExcelHeaderColumnValue extends Rule {
       Lists.newArrayList(new Parameter("headers", "aa,bb,cc", ParamType.STRING_LIST));
 
   public ExcelHeaderColumnValue() {
-    this.setLabel(LABEL);
-    this.setRuleType(RULE_TYPE);
-    this.setParams(PARAMETERS);
+    this(null, null);
   }
 
   public ExcelHeaderColumnValue(String sheetName, String headers) {
