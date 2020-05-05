@@ -9,7 +9,6 @@ import innohack.gem.entity.rule.Parameter;
 import innohack.gem.entity.rule.RuleType;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 public class TikaMetaValue extends Rule {
@@ -22,8 +21,8 @@ public class TikaMetaValue extends Rule {
   }
 
   public TikaMetaValue(String key, String value) {
-    Parameter param1 = new Parameter("key", "string", ParamType.STRING, key);
-    Parameter param2 = new Parameter("value", "string", ParamType.STRING, value);
+    Parameter param1 = new Parameter("Key", "Content-Type", ParamType.STRING, key);
+    Parameter param2 = new Parameter("Value", "application/pdf", ParamType.STRING, value);
 
     this.setLabel(LABEL);
     this.setRuleType(RULE_TYPE);

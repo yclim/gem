@@ -17,7 +17,7 @@ public class FilenamePrefix extends Rule {
   static final String LABEL = "Filename Prefix";
   static final RuleType RULE_TYPE = RuleType.FILE;
   static final List<Parameter> PARAMETERS =
-      Lists.newArrayList(new Parameter("prefix", "string", ParamType.STRING));
+      Lists.newArrayList(new Parameter("Prefix", "string", ParamType.STRING));
 
   public FilenamePrefix() {
     this.setLabel(LABEL);
