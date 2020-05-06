@@ -64,7 +64,8 @@ const RuleList: FunctionComponent<IProps> = ({
       const rule = rules.find(r => r.ruleId === rid);
       if (typeof rule !== "undefined") {
         rule.name = generateLabel(rule);
-        setCurrentRule(rule);
+        // clone the currentRule so that it will not modify parameters value in rules
+        setCurrentRule(JSON.parse(JSON.stringify(rule)));
         setIsOpen(true);
         setCurrentGroup(grp);
       }
