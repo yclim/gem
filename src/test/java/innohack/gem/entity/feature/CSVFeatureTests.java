@@ -3,7 +3,6 @@ package innohack.gem.entity.feature;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import innohack.gem.entity.GEMFile;
-import java.io.File;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
