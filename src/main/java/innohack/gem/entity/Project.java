@@ -1,17 +1,16 @@
 package innohack.gem.entity;
 
+import innohack.gem.entity.rule.Group;
 import java.util.List;
 
-import innohack.gem.entity.rule.Group;
-
 public class Project {
-  
+
   public static final String SPEC_VERSION = "1.0.0";
 
   private String specVersion;
-  
+
   private List<Group> groups;
-  
+
   private String projectName;
 
   public String getSpecVersion() {
@@ -37,5 +36,4 @@ public class Project {
   public void setProjectName(String projectName) {
     this.projectName = projectName;
   }
-  
 }

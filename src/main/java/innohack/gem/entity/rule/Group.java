@@ -11,7 +11,6 @@ public class Group implements Comparable<Group> {
   private List<Rule> rules;
   private List<GEMFile> matchedFile = new ArrayList<GEMFile>();
 
-
   public int getGroupId() {
     return groupId;
   }

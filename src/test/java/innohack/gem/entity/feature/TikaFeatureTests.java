@@ -5,15 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import innohack.gem.entity.GEMFile;
 import innohack.gem.entity.util.FileUtilForTesting;
-import innohack.gem.example.tika.TikaUtil;
-import innohack.gem.example.util.FileUtil;
-import innohack.gem.filegen.CsvFileGenerator;
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,39 +19,23 @@ class TikaFeatureTests {
   @Test
   void TestTikaMetadataParser() throws Exception {
     System.out.println("Testing testTikaMetadataParser");
-    String path = "target/samples/metadata/";
-    File file = new File(path);
-    file.mkdirs();
+    String path = "src/test/resources";
 
     String filenamePrefix = "customer_";
     String filename = filenamePrefix + 0 + ".csv";
 
-    // to delete after every use case
-    System.out.println("Deleting " + path + filename);
-    File delFile = new File(path + filename);
-    FileUtilForTesting.deleteTestFile(delFile);
+    GEMFile gFile = new GEMFile(filename, path);
+    gFile.extract();
+    Collection<AbstractFeature> abstractFeatureC = gFile.getData();
 
-    CsvFileGenerator.generateFixedCustomerCsvFiles(1, Paths.get(path), 100000, filename);
+    Iterator<AbstractFeature> iterator = abstractFeatureC.iterator();
 
-    TikaUtil tikaUtil = new TikaUtil();
-    List<Path> results = FileUtil.walkPath(path);
-
-    for (Path result : results) {
-      System.out.println("each result is " + result.toAbsolutePath());
-
-      GEMFile gFile = new GEMFile(result.getFileName().toString(), result.getParent().toString());
-      gFile.extract();
-      Collection<AbstractFeature> abstractFeatureC = gFile.getData();
-
-      Iterator<AbstractFeature> iterator = abstractFeatureC.iterator();
-
-      // contains both tika and csv feature
-      assertTrue(abstractFeatureC.size() == 2);
-      while (iterator.hasNext()) {
-        AbstractFeature abs = iterator.next();
-        if (abs.getClass().getName().equals(TikaFeature)) {
-          TestMetadata((innohack.gem.entity.feature.TikaFeature) abs);
-        }
+    // contains both tika and csv feature
+    assertTrue(abstractFeatureC.size() == 2);
+    while (iterator.hasNext()) {
+      AbstractFeature abs = iterator.next();
+      if (abs.getClass().getName().equals(TikaFeature)) {
+        TestMetadata((innohack.gem.entity.feature.TikaFeature) abs);
       }
     }
   }
