@@ -21,7 +21,7 @@ public class GEMFileControllerTest {
 
   @Test
   public void testSync() throws Exception {
-    gemFileController.sync("src/test/resources");
+    gemFileController.sync("src/test/resources/innohack/gem/web/GemFileController");
     int counter = 1;
     for (GEMFile file : gemFileDao.getFiles()) {
       String extension = file.getExtension().toUpperCase();
