@@ -8,6 +8,28 @@ export default class Api {
       baseURL: "api"
       //  other settings here
     });
+
+    this.api.interceptors.request.use(
+      (requestConfig: AxiosRequestConfig) => {
+        return { ...requestConfig };
+      },
+      error => {
+        alert(error);
+        return Promise.reject(error);
+      }
+    );
+
+    this.api.interceptors.response.use(
+      (response: AxiosResponse) => {
+        return {
+          ...response
+        };
+      },
+      error => {
+        alert(error);
+        return Promise.reject(error);
+      }
+    );
   }
 
   public request<T, R = AxiosResponse<T>>(
