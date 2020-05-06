@@ -14,7 +14,6 @@ public class FilenameRegexTest {
     FilenameRegex dataRegex = new FilenameRegex(".*data.*");
     FilenameRegex addressRegex = new FilenameRegex("address");
 
-
     GEMFile chatsFile = new GEMFile("chats.csv", "src/test/resources");
     GEMFile dataFile = new GEMFile("data.data", "src/test/resources");
 

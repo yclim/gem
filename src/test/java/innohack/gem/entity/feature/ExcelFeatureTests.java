@@ -3,13 +3,6 @@ package innohack.gem.entity.feature;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import innohack.gem.entity.GEMFile;
-import innohack.gem.entity.util.FileUtilForTesting;
-import innohack.gem.example.tika.TikaUtil;
-import innohack.gem.example.util.FileUtil;
-import innohack.gem.filegen.ExcelFileGenerator;
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -66,47 +59,32 @@ class ExcelFeatureTests {
   void TestOneSheetExcelXlsContentParser() throws Exception {
 
     System.out.println("Testing testExcelXlsContentParser");
-    String path = "target/samples/excelSheetOne/";
+    String path = "src/test/resources";
 
-    String filenamePrefix = "cars_";
+    String filenamePrefix = "manual_cars_";
     String filename = filenamePrefix + 0 + ".xls";
 
-    // to delete after every use case
-    System.out.println("Deleting " + path + filename);
+    // ExcelFileGenerator.generateFixedCarsExcelFiles(
+    //    XLS, false, 100, 1, Paths.get(path), filenamePrefix);
 
-    File delFile = new File(path + filename);
-    FileUtilForTesting.deleteTestFile(delFile);
+    GEMFile gFile = new GEMFile(filename, path);
+    gFile.extract();
+    Collection<AbstractFeature> abstractFeatureC = gFile.getData();
 
-    File file = new File(path);
-    file.mkdirs();
+    Iterator<AbstractFeature> iterator = abstractFeatureC.iterator();
 
-    ExcelFileGenerator.generateFixedCarsExcelFiles(
-        XLS, false, 100, 1, Paths.get(path), filenamePrefix);
-
-    TikaUtil tikaUtil = new TikaUtil();
-    List<Path> results = FileUtil.walkPath(path);
-
-    for (Path result : results) {
-      System.out.println("each result is " + result.toAbsolutePath());
-
-      GEMFile gFile = new GEMFile(result.getFileName().toString(), result.getParent().toString());
-      gFile.extract();
-      Collection<AbstractFeature> abstractFeatureC = gFile.getData();
-
-      Iterator<AbstractFeature> iterator = abstractFeatureC.iterator();
-
-      // contains both tika and excel feature
-      assertTrue(abstractFeatureC.size() == 2); // to delete after every use case
-      while (iterator.hasNext()) {
-        AbstractFeature abs = iterator.next();
-        if (abs.getClass().getName().equals(ExcelFeature)) {
-          ExcelFeature excelFeature = (ExcelFeature) abs;
-          Map<String, List<List<String>>> dataTable = excelFeature.getSheetTableData();
-          assertTrue(dataTable.size() == 1);
-          TestExcelContent(dataTable);
-        }
+    // contains both tika and excel feature
+    assertTrue(abstractFeatureC.size() == 2); // to delete after every use case
+    while (iterator.hasNext()) {
+      AbstractFeature abs = iterator.next();
+      if (abs.getClass().getName().equals(ExcelFeature)) {
+        ExcelFeature excelFeature = (ExcelFeature) abs;
+        Map<String, List<List<String>>> dataTable = excelFeature.getSheetTableData();
+        assertTrue(dataTable.size() == 1);
+        TestExcelContent(dataTable);
       }
     }
+
     System.out.println("Deleting " + path + filename);
   }
 
@@ -114,47 +92,32 @@ class ExcelFeatureTests {
   void TestTwoSheetExcelXlsContentParser() throws Exception {
 
     System.out.println("Testing testExcelXlsTwoContentParser");
-    String path = "target/samples/excelSheetTwo/";
+    String path = "src/test/resources";
 
-    String filenamePrefix = "cars_";
+    String filenamePrefix = "manual2_cars_";
     String filename = filenamePrefix + 0 + ".xls";
 
-    // to delete after every use case
-    System.out.println("Deleting " + path + filename);
+    // ExcelFileGenerator.generateFixedCarsExcelFiles(
+    //    XLS, true, 100, 1, Paths.get(path), filenamePrefix);
 
-    File delFile = new File(path + filename);
-    FileUtilForTesting.deleteTestFile(delFile);
+    GEMFile gFile = new GEMFile(filename, path);
+    gFile.extract();
+    Collection<AbstractFeature> abstractFeatureC = gFile.getData();
 
-    File file = new File(path);
-    file.mkdirs();
+    Iterator<AbstractFeature> iterator = abstractFeatureC.iterator();
 
-    ExcelFileGenerator.generateFixedCarsExcelFiles(
-        XLS, true, 100, 1, Paths.get(path), filenamePrefix);
-
-    TikaUtil tikaUtil = new TikaUtil();
-    List<Path> results = FileUtil.walkPath(path);
-
-    for (Path result : results) {
-      System.out.println("each result is " + result.toAbsolutePath());
-
-      GEMFile gFile = new GEMFile(result.getFileName().toString(), result.getParent().toString());
-      gFile.extract();
-      Collection<AbstractFeature> abstractFeatureC = gFile.getData();
-
-      Iterator<AbstractFeature> iterator = abstractFeatureC.iterator();
-
-      // contains both tika and excel feature
-      assertTrue(abstractFeatureC.size() == 2); // to delete after every use case
-      while (iterator.hasNext()) {
-        AbstractFeature abs = iterator.next();
-        if (abs.getClass().getName().equals(ExcelFeature)) {
-          ExcelFeature excelFeature = (ExcelFeature) abs;
-          Map<String, List<List<String>>> dataTable = excelFeature.getSheetTableData();
-          assertTrue(dataTable.size() == 2);
-          TestExcelContent(dataTable);
-        }
+    // contains both tika and excel feature
+    assertTrue(abstractFeatureC.size() == 2); // to delete after every use case
+    while (iterator.hasNext()) {
+      AbstractFeature abs = iterator.next();
+      if (abs.getClass().getName().equals(ExcelFeature)) {
+        ExcelFeature excelFeature = (ExcelFeature) abs;
+        Map<String, List<List<String>>> dataTable = excelFeature.getSheetTableData();
+        assertTrue(dataTable.size() == 2);
+        TestExcelContent(dataTable);
       }
     }
+
     System.out.println("Deleting " + path + filename);
   }
 
@@ -298,95 +261,63 @@ class ExcelFeatureTests {
   void TestOneSheetExcelXlsxContentParser() throws Exception {
 
     System.out.println("Testing testExcelXlsxContentParser");
-    String path = "target/samples/excelXlsxSheetOne/";
+    String path = "src/test/resources";
 
-    String filenamePrefix = "cars_";
+    String filenamePrefix = "manual_cars_";
     String filename = filenamePrefix + 0 + ".xlsx";
 
-    // to delete after every use case
-    System.out.println("Deleting " + path + filename);
+    // ExcelFileGenerator.generateFixedCarsExcelFiles(
+    //    XLSX, false, 100, 1, Paths.get(path), filenamePrefix);
 
-    File delFile = new File(path + filename);
-    FileUtilForTesting.deleteTestFile(delFile);
+    GEMFile gFile = new GEMFile(filename, path);
+    gFile.extract();
+    Collection<AbstractFeature> abstractFeatureC = gFile.getData();
 
-    File file = new File(path);
-    file.mkdirs();
+    Iterator<AbstractFeature> iterator = abstractFeatureC.iterator();
 
-    ExcelFileGenerator.generateFixedCarsExcelFiles(
-        XLSX, false, 100, 1, Paths.get(path), filenamePrefix);
-
-    TikaUtil tikaUtil = new TikaUtil();
-    List<Path> results = FileUtil.walkPath(path);
-
-    for (Path result : results) {
-      System.out.println("each result is " + result.toAbsolutePath());
-
-      GEMFile gFile = new GEMFile(result.getFileName().toString(), result.getParent().toString());
-      gFile.extract();
-      Collection<AbstractFeature> abstractFeatureC = gFile.getData();
-
-      Iterator<AbstractFeature> iterator = abstractFeatureC.iterator();
-
-      // contains both tika and excel feature
-      assertTrue(abstractFeatureC.size() == 2); // to delete after every use case
-      while (iterator.hasNext()) {
-        AbstractFeature abs = iterator.next();
-        if (abs.getClass().getName().equals(ExcelFeature)) {
-          ExcelFeature excelFeature = (ExcelFeature) abs;
-          Map<String, List<List<String>>> dataTable = excelFeature.getSheetTableData();
-          assertTrue(dataTable.size() == 1);
-          TestExcelContent(dataTable);
-        }
+    // contains both tika and excel feature
+    assertTrue(abstractFeatureC.size() == 2); // to delete after every use case
+    while (iterator.hasNext()) {
+      AbstractFeature abs = iterator.next();
+      if (abs.getClass().getName().equals(ExcelFeature)) {
+        ExcelFeature excelFeature = (ExcelFeature) abs;
+        Map<String, List<List<String>>> dataTable = excelFeature.getSheetTableData();
+        assertTrue(dataTable.size() == 1);
+        TestExcelContent(dataTable);
       }
     }
-    System.out.println("Deleting " + path + filename);
   }
 
   @Test
   void TestTwoSheetExcelXlsxContentParser() throws Exception {
 
     System.out.println("Testing testExcelXlsxTwoContentParser");
-    String path = "target/samples/excelXlsxSheetTwo/";
+    String path = "src/test/resources";
 
-    String filenamePrefix = "cars_";
+    String filenamePrefix = "manual2_cars_";
     String filename = filenamePrefix + 0 + ".xlsx";
 
-    // to delete after every use case
-    System.out.println("Deleting " + path + filename);
+    // ExcelFileGenerator.generateFixedCarsExcelFiles(
+    //    XLSX, true, 100, 1, Paths.get(path), filenamePrefix);
 
-    File delFile = new File(path + filename);
-    FileUtilForTesting.deleteTestFile(delFile);
+    GEMFile gFile = new GEMFile(filename, path);
+    gFile.extract();
+    Collection<AbstractFeature> abstractFeatureC = gFile.getData();
 
-    File file = new File(path);
-    file.mkdirs();
+    Iterator<AbstractFeature> iterator = abstractFeatureC.iterator();
 
-    ExcelFileGenerator.generateFixedCarsExcelFiles(
-        XLSX, true, 100, 1, Paths.get(path), filenamePrefix);
-
-    TikaUtil tikaUtil = new TikaUtil();
-    List<Path> results = FileUtil.walkPath(path);
-
-    for (Path result : results) {
-      System.out.println("each result is " + result.toAbsolutePath());
-
-      GEMFile gFile = new GEMFile(result.getFileName().toString(), result.getParent().toString());
-      gFile.extract();
-      Collection<AbstractFeature> abstractFeatureC = gFile.getData();
-
-      Iterator<AbstractFeature> iterator = abstractFeatureC.iterator();
-
-      // contains both tika and excel feature
-      assertTrue(abstractFeatureC.size() == 2); // to delete after every use case
-      while (iterator.hasNext()) {
-        AbstractFeature abs = iterator.next();
-        if (abs.getClass().getName().equals(ExcelFeature)) {
-          ExcelFeature excelFeature = (ExcelFeature) abs;
-          Map<String, List<List<String>>> dataTable = excelFeature.getSheetTableData();
-          assertTrue(dataTable.size() == 2);
-          TestExcelContent(dataTable);
-        }
+    // contains both tika and excel feature
+    assertTrue(abstractFeatureC.size() == 2); // to delete after every use case
+    while (iterator.hasNext()) {
+      AbstractFeature abs = iterator.next();
+      if (abs.getClass().getName().equals(ExcelFeature)) {
+        ExcelFeature excelFeature = (ExcelFeature) abs;
+        Map<String, List<List<String>>> dataTable = excelFeature.getSheetTableData();
+        assertTrue(dataTable.size() == 2);
+        TestExcelContent(dataTable);
       }
     }
+
     System.out.println("Deleting " + path + filename);
   }
 }
