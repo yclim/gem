@@ -90,11 +90,13 @@ public class ExcelFileGenerator {
 
     for (int i = 0; i < numOfFiles; i++) {
       Workbook workbook;
+      String extension = ".xls";
 
       if (excelType.equals("xls")) {
         workbook = new HSSFWorkbook();
       } else {
         workbook = new XSSFWorkbook();
+        extension = ".xlsx";
       }
       List<List<String>> sheetOneTable = generateFixedSheetOneDataTables(numOfLines);
       populateSheet(workbook, "Cars", sheetOneTable);
@@ -103,7 +105,7 @@ public class ExcelFileGenerator {
         List<List<String>> sheetTwoTable = generateFixedSheetTwoDataTables(numOfLines);
         populateSheet(workbook, "Cars Dealer", sheetTwoTable);
       }
-      String filename = fileNamePrefix + i + ".xls";
+      String filename = fileNamePrefix + i + extension;
 
       FileOutputStream outputStream =
           new FileOutputStream(Paths.get(dest.toString(), filename).toFile());
