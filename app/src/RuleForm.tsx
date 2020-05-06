@@ -13,13 +13,15 @@ interface IProps {
   setRule: (r: Rule) => void;
   groupName: string;
   handleSubmit: () => void;
+  isUpdate?: boolean;
 }
 
 const RuleForm: FunctionComponent<IProps> = ({
   rule,
   setRule,
   groupName,
-  handleSubmit
+  handleSubmit,
+  isUpdate
 }) => {
   const [param1, setParam1] = useState<string | null>(
     rule.params.length > 0 ? rule.params[0].value : ""
@@ -200,7 +202,7 @@ const RuleForm: FunctionComponent<IProps> = ({
             className="bp3-button bp3-intent-primary"
             onClick={e => handleFormSubmit()}
           >
-            Add to {groupName}
+            {isUpdate ? "Update Rule" : `Add to ${groupName}`}
           </button>
         </div>
       </div>

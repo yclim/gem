@@ -164,6 +164,7 @@ const GroupCard: FunctionComponent<IProps> = ({
             setRule={setEditRule}
             groupName={focusGroup.name}
             handleSubmit={handleDialogSubmit}
+            isUpdate={true}
           />
         ) : (
           ""
