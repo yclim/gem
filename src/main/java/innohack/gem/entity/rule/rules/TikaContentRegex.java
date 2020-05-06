@@ -2,14 +2,11 @@ package innohack.gem.entity.rule.rules;
 
 import com.google.common.collect.Lists;
 import innohack.gem.entity.GEMFile;
-import innohack.gem.entity.feature.AbstractFeature;
 import innohack.gem.entity.feature.TikaFeature;
 import innohack.gem.entity.rule.ParamType;
 import innohack.gem.entity.rule.Parameter;
 import innohack.gem.entity.rule.RuleType;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,20 +30,10 @@ public class TikaContentRegex extends Rule {
 
   @Override
   public boolean check(GEMFile gemFile) {
-    Collection<AbstractFeature> abstractFeatureC = gemFile.getData();
-
-    Iterator<AbstractFeature> iterator = abstractFeatureC.iterator();
-
-    // contains both tika and csv feature
-    while (iterator.hasNext()) {
-      AbstractFeature abs = iterator.next();
-      if (abs.getClass().getName().equals(TikaFeature.class.getName())) {
-        return checkTikaContent((TikaFeature) abs);
-      }
-    }
-
-    return false;
-    // LOGGER.debug("File Extension {} rule: {}", ext, gemFile.getExtension());
+    return gemFile.getData().stream()
+        .filter(feature -> feature instanceof TikaFeature)
+        .map(feature -> (TikaFeature) feature)
+        .anyMatch(tikaFeature -> checkTikaContent(tikaFeature));
   }
 
   private boolean checkTikaContent(TikaFeature abs) {
