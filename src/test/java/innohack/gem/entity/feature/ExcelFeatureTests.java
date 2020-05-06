@@ -64,9 +64,6 @@ class ExcelFeatureTests {
     String filenamePrefix = "manual_cars_";
     String filename = filenamePrefix + 0 + ".xls";
 
-    // ExcelFileGenerator.generateFixedCarsExcelFiles(
-    //    XLS, false, 100, 1, Paths.get(path), filenamePrefix);
-
     GEMFile gFile = new GEMFile(filename, path);
     gFile.extract();
     Collection<AbstractFeature> abstractFeatureC = gFile.getData();
@@ -96,9 +93,6 @@ class ExcelFeatureTests {
 
     String filenamePrefix = "manual2_cars_";
     String filename = filenamePrefix + 0 + ".xls";
-
-    // ExcelFileGenerator.generateFixedCarsExcelFiles(
-    //    XLS, true, 100, 1, Paths.get(path), filenamePrefix);
 
     GEMFile gFile = new GEMFile(filename, path);
     gFile.extract();

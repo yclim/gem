@@ -29,7 +29,6 @@ public class TikaMetadataRegexTest {
 
     System.out.println("Testing testInvalidCheckTikaMetadata");
     String path = "src/test/resources";
-
     String filenamePrefix = "story_";
     String filename = filenamePrefix + 0 + ".pdf";
 

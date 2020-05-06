@@ -20,13 +20,9 @@ class CSVFeatureTests {
 
     System.out.println("Testing testCSVContentParser");
     String path = "src/test/resources";
-    File file = new File(path);
-    file.mkdirs();
 
     String filenamePrefix = "customer_";
     String filename = filenamePrefix + 0 + ".csv";
-
-    // CsvFileGenerator.generateFixedCustomerCsvFiles(1, Paths.get(path), 100000, filename);
 
     GEMFile gFile = new GEMFile(filename, path);
     gFile.extract();

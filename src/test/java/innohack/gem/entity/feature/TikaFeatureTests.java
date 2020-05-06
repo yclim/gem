@@ -24,8 +24,6 @@ class TikaFeatureTests {
     String filenamePrefix = "customer_";
     String filename = filenamePrefix + 0 + ".csv";
 
-    // CsvFileGenerator.generateFixedCustomerCsvFiles(1, Paths.get(path), 100000, filename);
-
     GEMFile gFile = new GEMFile(filename, path);
     gFile.extract();
     Collection<AbstractFeature> abstractFeatureC = gFile.getData();

@@ -10,7 +10,6 @@ public class TikaContentRegexTest {
 
   @Test
   public void testValidCheckTikaContent() throws Exception {
-
     System.out.println("Testing testCheckTikaContent");
     String path = "src/test/resources";
 
