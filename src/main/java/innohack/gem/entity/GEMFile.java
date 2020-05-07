@@ -8,10 +8,12 @@ import innohack.gem.entity.feature.TikaFeature;
 import innohack.gem.entity.feature.common.FeatureExtractorUtil;
 import innohack.gem.example.tika.TikaMimeEnum;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.tika.config.TikaConfig;
+import org.apache.tika.exception.TikaException;
 import org.apache.tika.mime.MediaType;
 
 /** Container that keeps all data extracted from a file */
@@ -24,6 +26,12 @@ public class GEMFile implements Comparable<GEMFile> {
   private String mimeType;
 
   public GEMFile() {}
+
+    public static void main(String[] arg) {
+
+        GEMFile f = new GEMFile("/home/ysj/Desktop/GEM/gem/target/samples/customer_8.csv");
+        f.extract();
+    }
 
   public GEMFile(String filePath) {
     File file = new File(filePath);
@@ -111,20 +119,29 @@ public class GEMFile implements Comparable<GEMFile> {
   }
 
   // Perform extraction
-  public GEMFile extract() throws Exception {
-    File file = new File(directory, fileName);
-    MediaType mediaType = FeatureExtractorUtil.extractMime(new TikaConfig(), file.toPath());
-    this.mimeType = mediaType.toString();
-    String subtype = mediaType.getSubtype();
-    if (subtype.equals(TikaMimeEnum.MSEXCELXLSX.getMimeType())
-        || subtype.equals(TikaMimeEnum.MSEXCELXLS.getMimeType())) {
-      extractExcel(mediaType);
-    } else if (mediaType.getSubtype().equals(TikaMimeEnum.CSV.getMimeType())) {
-      extractCSV();
-    }
-    //  we always want to use Tika no matter what file type
-    extractTika();
-
+  public GEMFile extract() {
+      try {
+          File file = new File(directory, fileName);
+          MediaType mediaType = new FeatureExtractorUtil().extractMime(new TikaConfig(), file.toPath());
+          this.mimeType = mediaType.toString();
+          String subtype = mediaType.getSubtype();
+          if (subtype.equals(TikaMimeEnum.MSEXCELXLSX.getMimeType())
+                  || subtype.equals(TikaMimeEnum.MSEXCELXLS.getMimeType())) {
+              extractExcel(mediaType);
+          } else if (mediaType.getSubtype().equals(TikaMimeEnum.CSV.getMimeType())) {
+              extractCSV();
+          }
+          //  we always want to use Tika no matter what file type
+          extractTika();
+      } catch (RuntimeException e) {
+          e.printStackTrace();
+      } catch (TikaException e) {
+          e.printStackTrace();
+      } catch (IOException e) {
+          e.printStackTrace();
+      } catch (Exception e) {
+          e.printStackTrace();
+      }
     return this;
   }
 

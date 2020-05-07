@@ -6,9 +6,9 @@ import java.util.List;
 
 public abstract class GroupExportMixin {
 
-    @JsonIgnore
-    abstract int getMatchedCount();
+  @JsonIgnore
+  abstract int getMatchedCount();
 
-    @JsonIgnore
-    abstract List<GEMFile> getMatchedFile();
+  @JsonIgnore
+  abstract List<GEMFile> getMatchedFile();
 }

@@ -17,6 +17,10 @@ public class GEMFileService {
   private static final Logger LOGGER = LoggerFactory.getLogger(GEMFileService.class);
   @Autowired private IGEMFileDao gemFileDao;
   @Autowired private MatchService matcheService;
+  @Autowired
+  private GroupService groupService;
+  @Autowired
+  private ExtractFileService extractFileService;
 
   public String getCurrentDirectory() {
     return gemFileDao.getCurrentDirectory();
@@ -40,37 +44,75 @@ public class GEMFileService {
    * @param folderPath directory path of files to sync
    * @return list of files that was processed and stored {@link GEMFile @GEMFile}
    */
-  public List<GEMFile> syncFiles(String folderPath) throws Exception {
+  public synchronized List<GEMFile> syncFiles(String folderPath) {
     LOGGER.info("Syncing from folder {}: {}", folderPath, new File(folderPath).exists());
     List<GEMFile> oldfilelist = gemFileDao.getFiles();
     List<GEMFile> newFilelist = gemFileDao.getLocalFiles(folderPath);
-    Map<String, GEMFile> fileToDelete = new HashMap();
-    Map<String, GEMFile> fileToSave = new HashMap();
-    for (GEMFile oldFile : oldfilelist) {
-      if (!newFilelist.contains(oldFile)) {
-        fileToDelete.put(oldFile.getAbsolutePath(), oldFile);
-      } else {
-        newFilelist.remove(oldFile);
-      }
+    if (getSyncProgress() == 1) {
+      gemFileDao.setSyncStatus(0);
+      extractFileService.setNewFilelist(newFilelist);
+      extractFileService.setOldfilelist(oldfilelist);
+      Thread syncThread = new Thread(extractFileService);
+      syncThread.start();
     }
-    for (GEMFile file : newFilelist) {
-      try {
-        file.extract();
-      } catch (Exception ex) {
-        LOGGER.debug("{}: {}", GEMFileService.class, ex.getStackTrace());
-      }
-      fileToSave.put(file.getAbsolutePath(), file);
-    }
+    return newFilelist;
+  }
 
-    gemFileDao.saveFiles(fileToSave);
-    for (GEMFile file : fileToSave.values()) {
-      matcheService.onUpdateEvent(file);
+  public synchronized List<GEMFile> syncFiles1(String folderPath) {
+    LOGGER.info("Syncing from folder {}: {}", folderPath, new File(folderPath).exists());
+    List<GEMFile> oldfilelist = gemFileDao.getFiles();
+    List<GEMFile> newFilelist = gemFileDao.getLocalFiles(folderPath);
+    if (getSyncProgress() == 1) {
+      gemFileDao.setSyncStatus(0);
+      float totalProcesses = 0;
+      float totalProcessed = 0;
+      // files that does not exist in newFileList but in oldFileList
+      Map<String, GEMFile> fileToDelete = new HashMap();
+      // files that does not exist in oldFileList but in newFileList
+      Map<String, GEMFile> fileToSave = new HashMap();
+
+      for (GEMFile newFile : newFilelist) {
+        if (!oldfilelist.contains(newFile)) {
+          fileToSave.put(newFile.getAbsolutePath(), newFile);
+        } else {
+          oldfilelist.remove(newFile);
+        }
+      }
+
+      for (GEMFile oldFile : oldfilelist) {
+        fileToDelete.put(oldFile.getAbsolutePath(), oldFile);
+      }
+
+      totalProcesses =
+              totalProcesses + fileToDelete.size() + fileToSave.size() + fileToSave.size() + 1;
+      gemFileDao.deleteFiles(fileToDelete.keySet());
+      for (GEMFile file : fileToDelete.values()) {
+        matcheService.onUpdateEvent(file);
+        totalProcessed = totalProcessed + 1;
+        gemFileDao.setSyncStatus(totalProcessed / totalProcesses);
+      }
+      gemFileDao.saveFiles(fileToSave);
+      for (GEMFile file : fileToSave.values()) {
+        try {
+          file.extract();
+        } catch (Exception ex) {
+          LOGGER.debug("{}: {}", GEMFileService.class, ex.getStackTrace());
+        }
+        fileToSave.put(file.getAbsolutePath(), file);
+        totalProcessed = totalProcessed + 1;
+        gemFileDao.setSyncStatus(totalProcessed / totalProcesses);
+      }
+
+      gemFileDao.saveFiles(fileToSave);
+      for (GEMFile file : fileToSave.values()) {
+        matcheService.onUpdateEvent(file);
+        totalProcessed = totalProcessed + 1;
+        gemFileDao.setSyncStatus(totalProcessed / totalProcesses);
+      }
+      groupService.createDefaultGroup(fileToSave.values());
+      gemFileDao.setSyncStatus(1);
     }
-    gemFileDao.deleteFiles(fileToDelete.keySet());
-    for (GEMFile file : fileToSave.values()) {
-      matcheService.onUpdateEvent(file);
-    }
-    return getFileList();
+    return gemFileDao.getFiles();
   }
 
   /**
@@ -100,5 +142,10 @@ public class GEMFileService {
    */
   public List<String> getFileTypes() {
     return gemFileDao.getFileTypes();
+  }
+
+  public float getSyncProgress() {
+    float progress = gemFileDao.getSyncStatus();
+    return progress;
   }
 }

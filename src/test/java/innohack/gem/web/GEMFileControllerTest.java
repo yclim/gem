@@ -22,7 +22,12 @@ public class GEMFileControllerTest {
 
   @Test
   public void testSync() throws Exception {
+      gemFileDao.setSyncStatus(1);
     gemFileController.sync("src/test/resources");
+      Thread.sleep(1000);
+      while (gemFileDao.getSyncStatus() < 1) {
+          Thread.sleep(1000);
+      }
     for (GEMFile file : gemFileDao.getFiles()) {
       String extension = file.getExtension().toUpperCase();
       String defaultGroupName = extension;

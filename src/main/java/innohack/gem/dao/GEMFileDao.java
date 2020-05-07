@@ -13,6 +13,16 @@ import java.util.concurrent.ConcurrentHashMap;
 public class GEMFileDao implements IGEMFileDao {
   private static ConcurrentHashMap<String, GEMFile> featureStore = new ConcurrentHashMap<>();
   private static String directoryStore = "";
+  private static float syncStatus = 1f;
+
+  public float getSyncStatus() {
+    return syncStatus;
+  }
+
+  public void setSyncStatus(float syncStatus) {
+    GEMFileDao.syncStatus = syncStatus;
+  }
+
   public static List<String> fileTypeStore = new ArrayList<String>();
 
   // Get current directory path where files uploaded

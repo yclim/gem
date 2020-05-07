@@ -18,6 +18,7 @@ public class GEMFileRockDao implements IGEMFileDao {
   static final String DB_NAME = "GEMFile";
   // private static ConcurrentHashMap<String, GEMFile> featureStore = new ConcurrentHashMap<>();
   private static String directoryStore = AppProperties.get(AppProperties.PROP_SYNC_DIRECTORY);
+    RocksDatabase gemFileState;
   RocksDatabase gemFileDb;
   RocksDatabase gemFileFileTypesDb;
   // public static Set<String> fileTypeStore = new HashSet<String>();
@@ -27,6 +28,7 @@ public class GEMFileRockDao implements IGEMFileDao {
     gemFileDb = RocksDatabase.getInstance(DB_NAME, String.class, GEMFile.class);
     gemFileFileTypesDb =
         RocksDatabase.getInstance(DB_NAME + "_FileType", String.class, Boolean.class);
+      gemFileState = RocksDatabase.getInstance(DB_NAME + "_FileState", String.class, String.class);
   }
 
   /**
@@ -175,4 +177,42 @@ public class GEMFileRockDao implements IGEMFileDao {
     gemFileDb.putHashMap(filesMap);
     gemFileFileTypesDb.putHashMap(fileTypesMap);
   }
+
+    private static final String STATE_SYNC_PROGRESS = "sync.progress";
+    private static final String STATE_SYNC_TIME = "sync.time";
+
+    public float getSyncStatus() {
+        Object o = gemFileState.get(STATE_SYNC_PROGRESS);
+        if (o == null) {
+            return 1;
+        }
+        float process = 1;
+        try {
+            process = Float.parseFloat((String) o);
+        } catch (Exception e) {
+
+        }
+      /*
+    if (process < 1) {
+      long lastUpdate = 0;
+      long timeNow = System.currentTimeMillis();
+      try {
+        Object time = gemFileState.get(STATE_SYNC_TIME);
+        lastUpdate = Long.parseLong((String) time);
+      } catch (Exception e) {
+
+      }
+      if (timeNow - lastUpdate > 1000 * 60 * 24) {
+        gemFileState.put(STATE_SYNC_PROGRESS, "1");
+        process = 1;
+      }
+    }
+    */
+        return process;
+    }
+
+    public void setSyncStatus(float syncStatus) {
+        gemFileState.put(STATE_SYNC_PROGRESS, syncStatus + "");
+        // gemFileState.put(STATE_SYNC_TIME, System.currentTimeMillis() + "");
+    }
 }

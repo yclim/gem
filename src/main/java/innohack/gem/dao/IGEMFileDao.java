@@ -12,6 +12,10 @@ import java.util.Map;
  */
 public interface IGEMFileDao {
 
+    float getSyncStatus();
+
+    void setSyncStatus(float syncStatus);
+
   // Get current directory path where files uploaded
   /**
    * Find document in feature store by file name and directory

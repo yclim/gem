@@ -13,6 +13,14 @@ public class TikaFeature extends AbstractFeature {
 
   private String content;
 
+  public String getContent() {
+    return content;
+  }
+
+  public void setContent(String content) {
+    this.content = content;
+  }
+
   @Override
   public void extract(File f) throws Exception {
     Parser parser = new AutoDetectParser();
@@ -28,13 +36,5 @@ public class TikaFeature extends AbstractFeature {
     for (String name : metadataNames) {
       addMetadata(name, metadata.get(name));
     }
-  }
-
-  public String getContent() {
-    return content;
-  }
-
-  public void setContent(String content) {
-    this.content = content;
   }
 }

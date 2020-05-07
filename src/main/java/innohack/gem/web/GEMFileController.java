@@ -55,10 +55,13 @@ public class GEMFileController {
       @RequestParam(name = "directory", defaultValue = "/usr/share/gem/files") String directory)
       throws Exception {
     List<GEMFile> files = fileService.syncFiles(directory);
-    groupService.createDefaultGroup(files);
     return files;
   }
 
+    @GetMapping("/sync/status")
+    public float getSyncStatus() {
+        return fileService.getSyncProgress();
+    }
   /**
    * Retrieves list of document metadata associated with given document name
    *

@@ -18,10 +18,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.rocksdb.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RocksDatabase<K, V> {
 
-  private static final String DB_PATH = "./GemDB/";
+    private static final Logger LOGGER = LoggerFactory.getLogger(RocksDatabase.class);
+    private static final String DB_PATH = "./target/GemDB/";
 
   static {
     RocksDB.loadLibrary();
@@ -73,15 +76,14 @@ public class RocksDatabase<K, V> {
       try (final RocksDB db = RocksDB.open(options, dbFile.getAbsolutePath())) {
         byte[] key_byte = serialize(key);
         byte[] value_byte = serialize(value);
-        System.out.println(dbName + ": " + "put " + key + ", " + value);
+          LOGGER.info(dbName + ": " + "put " + key + ", " + value);
         db.put(key_byte, value_byte);
         db.close();
         result = true;
       }
 
     } catch (Exception e) {
-      // do some error handling
-      e.printStackTrace();
+        LOGGER.info(e.getMessage());
     } finally {
       dbLock.writeLock().unlock();
     }
@@ -101,7 +103,7 @@ public class RocksDatabase<K, V> {
           V value = map.get(key);
           byte[] key_byte = serialize(key);
           byte[] value_byte = serialize(value);
-          System.out.println(dbName + ": " + "put " + key + ", " + value);
+            LOGGER.info(dbName + ": " + "put " + key + ", " + value);
           db.put(key_byte, value_byte);
         }
         db.close();
@@ -109,8 +111,7 @@ public class RocksDatabase<K, V> {
       }
 
     } catch (Exception e) {
-      // do some error handling
-      e.printStackTrace();
+        LOGGER.info(e.getMessage());
     } finally {
       dbLock.writeLock().unlock();
     }
@@ -124,13 +125,13 @@ public class RocksDatabase<K, V> {
     try (final Options options = new Options().setCreateIfMissing(true)) {
       try (final RocksDB db = RocksDB.open(options, dbFile.getAbsolutePath())) {
         byte[] key_byte = serialize(key);
-        System.out.println(dbName + ": " + "delete " + key);
+          LOGGER.info(dbName + ": " + "delete " + key);
         db.delete(key_byte);
         db.close();
         result = true;
       }
     } catch (Exception e) {
-      e.printStackTrace();
+        LOGGER.info(e.getMessage());
     } finally {
       dbLock.writeLock().unlock();
     }
@@ -152,11 +153,10 @@ public class RocksDatabase<K, V> {
         db.delete(end);
         itr.close();
         db.close();
-        System.out.println(dbName + ": " + "deleteAll");
+          LOGGER.info(dbName + ": " + "deleteAll");
         result = true;
       }
     } catch (Exception e) {
-      e.printStackTrace();
     } finally {
       dbLock.writeLock().unlock();
     }
@@ -174,11 +174,11 @@ public class RocksDatabase<K, V> {
           db.delete(key_byte);
         }
         db.close();
-        System.out.println(dbName + ": " + "delete list " + keys);
+          LOGGER.info(dbName + ": " + "delete list " + keys);
         result = true;
       }
     } catch (Exception e) {
-      e.printStackTrace();
+        LOGGER.info(e.getMessage());
     } finally {
       dbLock.writeLock().unlock();
     }
@@ -198,12 +198,11 @@ public class RocksDatabase<K, V> {
         byte[] key_byte = serialize(key);
         byte[] value = db.get(key_byte);
         db.close();
-        System.out.println(dbName + ": " + "get " + key);
+          LOGGER.info(dbName + ": " + "get " + key);
         result = (V) deserialize(valueType, value);
       }
     } catch (Exception e) {
-      // do some error handling
-      e.printStackTrace();
+        LOGGER.info(e.getMessage());
     } finally {
       dbLock.readLock().unlock();
     }
@@ -216,23 +215,25 @@ public class RocksDatabase<K, V> {
     try (final Options options = new Options().setCreateIfMissing(true)) {
       // a factory method that returns a RocksDB instance
       File dbFile = new File(DB_PATH, dbName);
-      try (final RocksDB db = RocksDB.openReadOnly(options, dbFile.getAbsolutePath())) {
-        try (final RocksIterator iterator = db.newIterator(new ReadOptions())) {
-          for (iterator.seekToFirst(); iterator.isValid(); iterator.next()) {
-            if (type == keyType) {
-              final K key = (K) deserialize(keyType, iterator.key());
-              list.add(key);
-            } else {
-              final V val = (V) deserialize(valueType, iterator.value());
-              list.add(val);
+        try (final RocksDB db = RocksDB.openReadOnly(options, dbFile.getAbsolutePath())) {
+            try (final RocksIterator iterator = db.newIterator(new ReadOptions())) {
+                for (iterator.seekToFirst(); iterator.isValid(); iterator.next()) {
+                    if (type == keyType) {
+                        final K key = (K) deserialize(keyType, iterator.key());
+                        list.add(key);
+                    } else {
+                        final V val = (V) deserialize(valueType, iterator.value());
+                        list.add(val);
+                    }
+                }
+                iterator.close();
+                db.close();
+            } catch (IOException e) {
+                LOGGER.info(e.getMessage());
             }
-          }
-          iterator.close();
-          db.close();
+        } catch (RocksDBException e) {
+            LOGGER.info(e.getMessage());
         }
-      }
-    } catch (Exception e) {
-      System.out.println(e.getMessage());
     } finally {
       dbLock.readLock().unlock();
     }
@@ -240,12 +241,12 @@ public class RocksDatabase<K, V> {
   }
 
   public List<K> getKeys() {
-    System.out.println(dbName + ": " + "getKeys ");
+      LOGGER.info(dbName + ": " + "getKeys ");
     return (List<K>) getKeysOrValue(keyType);
   }
 
   public List<V> getValues() {
-    System.out.println(dbName + ": " + "getValues ");
+      LOGGER.info(dbName + ": " + "getValues ");
     return (List<V>) getKeysOrValue(valueType);
   }
 
@@ -254,7 +255,7 @@ public class RocksDatabase<K, V> {
   }
 
   public ConcurrentHashMap<K, V> getKeyValues(Collection<K> keys) {
-    System.out.println(dbName + ": " + "getKeyValues ");
+      LOGGER.info(dbName + ": " + "getKeyValues ");
     ConcurrentHashMap<K, V> hashMap = new ConcurrentHashMap();
 
     dbLock.readLock().lock();
@@ -275,7 +276,7 @@ public class RocksDatabase<K, V> {
         }
       }
     } catch (Exception e) {
-      System.out.println(e.getMessage());
+        LOGGER.info(e.getMessage());
     } finally {
       dbLock.readLock().unlock();
     }
@@ -331,8 +332,7 @@ public class RocksDatabase<K, V> {
         db.close();
       }
     } catch (Exception e) {
-      // do some error handling
-      System.out.println(e.getMessage());
+        LOGGER.info(e.getMessage());
     } finally {
       dbLock.readLock().unlock();
     }
@@ -346,7 +346,7 @@ public class RocksDatabase<K, V> {
       db = RocksDB.openReadOnly(options, new File(DB_PATH, dbName).getAbsolutePath());
       return new Iterator<K, V>(db.newIterator(new ReadOptions()));
     } catch (Exception e) {
-      System.out.println(e.getMessage());
+        LOGGER.info(e.getMessage());
     } finally {
       dbLock.readLock().unlock();
     }
@@ -421,7 +421,7 @@ public class RocksDatabase<K, V> {
           return deserialize(_class, content);
         }
       } catch (IOException e) {
-        System.out.println(e.getMessage());
+          LOGGER.info(e.getMessage());
       }
       return null;
     }

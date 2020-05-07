@@ -11,6 +11,7 @@ import innohack.gem.entity.rule.rules.FileExtension;
 import innohack.gem.entity.rule.rules.Rule;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.slf4j.Logger;
@@ -72,7 +73,7 @@ public class GroupService {
 
   public static final String DEFAULT_FILEEXT_RULENAME_PREFIX = "File Extension";
 
-  public void createDefaultGroup(List<GEMFile> files) {
+  public void createDefaultGroup(Collection<GEMFile> files) {
     for (GEMFile file : files) {
       String extension = file.getExtension().toUpperCase();
       String defaultGroupName = extension;
