@@ -8,7 +8,6 @@ import innohack.gem.entity.GEMFile;
 import innohack.gem.entity.rule.Group;
 import innohack.gem.entity.rule.rules.FileExtension;
 import innohack.gem.entity.rule.rules.Rule;
-import innohack.gem.service.GroupService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,11 +21,12 @@ public class GEMFileControllerTest {
 
   @Test
   public void testSync() throws Exception {
-    gemFileController.sync("src/test/resources");
+    gemFileController.sync("src/test/resources/innohack/gem/web/GemFileController");
+    int counter = 1;
     for (GEMFile file : gemFileDao.getFiles()) {
       String extension = file.getExtension().toUpperCase();
       String defaultGroupName = extension;
-      String defaultRuleName = extension + " " + GroupService.DEFAULT_FILEEXT_RULENAME_PREFIX;
+      String defaultRuleName = "FE-" + counter++;
 
       Group group = groupDao.getGroup(defaultGroupName);
       assertTrue(group != null);
