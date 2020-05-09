@@ -40,7 +40,7 @@ class CSVFeatureTests {
   }
 
   void TestCSVContents(CsvFeature abs) {
-    CsvFeature csvFeature = (CsvFeature) abs;
+    CsvFeature csvFeature = abs;
     List<List<String>> dataTable = csvFeature.getTableData();
     int rowCount = 0;
     for (List<String> row : dataTable) {
