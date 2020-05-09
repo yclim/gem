@@ -149,7 +149,9 @@ const RuleList: FunctionComponent<IProps> = ({
         {rules.filter(r => r.ruleType === "FILE").map(r => renderButton(r))}
         <h4> TIKA RULES</h4>
         <Divider />
-        {rules.filter(r => r.ruleType === "TIKA").map(r => renderButton(r))}
+        {rules
+          .filter(r => r.ruleType?.startsWith("TIKA"))
+          .map(r => renderButton(r))}
         <h4> CSV RULES</h4>
         <Divider />
         {rules.filter(r => r.ruleType === "CSV").map(r => renderButton(r))}

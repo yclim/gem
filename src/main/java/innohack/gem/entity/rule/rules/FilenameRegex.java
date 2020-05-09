@@ -6,7 +6,6 @@ import innohack.gem.entity.rule.ParamType;
 import innohack.gem.entity.rule.Parameter;
 import innohack.gem.entity.rule.RuleType;
 import innohack.gem.util.Util;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.slf4j.Logger;
@@ -18,15 +17,13 @@ public class FilenameRegex extends Rule {
 
   static final String LABEL = "Filename Regex";
   static final RuleType RULE_TYPE = RuleType.FILE;
-  static final List<Parameter> PARAMETERS =
-      Lists.newArrayList(new Parameter("regex", "string", ParamType.REGEX));
 
   public FilenameRegex() {
     this(null);
   }
 
   public FilenameRegex(String value) {
-    Parameter param = new Parameter("regex", "string", ParamType.REGEX, value);
+    Parameter param = new Parameter("Regex", ".*\\s+[0-9]{3}.*", ParamType.REGEX, value);
 
     this.setLabel(LABEL);
     this.setRuleType(RULE_TYPE);

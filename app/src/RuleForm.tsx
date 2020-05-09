@@ -68,6 +68,7 @@ const RuleForm: FunctionComponent<IProps> = ({
                 ? Intent.DANGER
                 : Intent.NONE
             }
+            style={p.type === "REGEX" ? { fontFamily: "consolas" } : {}}
           />
         </FormGroup>
       </div>

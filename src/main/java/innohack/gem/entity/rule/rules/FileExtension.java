@@ -21,7 +21,7 @@ public class FileExtension extends Rule {
   }
 
   public FileExtension(String value) {
-    Parameter param = new Parameter("extension", "string", ParamType.STRING, value);
+    Parameter param = new Parameter("File extension", "txt", ParamType.STRING, value);
 
     this.setLabel(LABEL);
     this.setRuleType(RULE_TYPE);

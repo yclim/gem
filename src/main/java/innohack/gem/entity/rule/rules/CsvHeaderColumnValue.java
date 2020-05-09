@@ -16,21 +16,16 @@ public class CsvHeaderColumnValue extends Rule {
 
   static final String LABEL = "CSV Header Column Value";
   static final RuleType RULE_TYPE = RuleType.CSV;
-  static final List<Parameter> PARAMETERS =
-      Lists.newArrayList(new Parameter("headers", "aa,bb,cc", ParamType.STRING_LIST));
 
   public CsvHeaderColumnValue() {
-    this.setLabel(LABEL);
-    this.setRuleType(RULE_TYPE);
-    this.setParams(PARAMETERS);
+    this(null);
   }
 
   public CsvHeaderColumnValue(String value) {
-    Parameter param = new Parameter("headers", "string", ParamType.STRING, value);
-
     this.setLabel(LABEL);
     this.setRuleType(RULE_TYPE);
-    this.setParams(Lists.newArrayList(param));
+    this.setParams(
+        Lists.newArrayList(new Parameter("Headers", "aa,bb,cc", ParamType.STRING_LIST, value)));
   }
 
   @Override
