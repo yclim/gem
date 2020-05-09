@@ -9,7 +9,7 @@ import org.apache.tika.mime.MediaType;
 
 public class FeatureExtractorUtil {
 
-  public static MediaType extractMime(TikaConfig tikaConfig, Path path) throws IOException {
+  public MediaType extractMime(TikaConfig tikaConfig, Path path) throws IOException {
     Metadata meta = new Metadata();
     meta.set(Metadata.RESOURCE_NAME_KEY, path.toString());
     MediaType mimeType = tikaConfig.getDetector().detect(TikaInputStream.get(path), meta);

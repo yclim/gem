@@ -4,17 +4,36 @@ import com.google.common.collect.Lists;
 import innohack.gem.entity.GEMFile;
 import java.io.File;
 import java.nio.file.Paths;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.springframework.stereotype.Repository;
 
-@Repository
 public class GEMFileDao implements IGEMFileDao {
   private static ConcurrentHashMap<String, GEMFile> featureStore = new ConcurrentHashMap<>();
   private static String directoryStore = "";
-  public static Set<String> fileTypeStore = new HashSet<String>();
+
+  // To keep track of the sync progress
+  private static float syncStatus = 1f;
+
+  /**
+   * get sync progress, 0-1 where 1 means sync complete
+   * @return syncStatus
+   */
+  public float getSyncStatus() {
+    return syncStatus;
+  }
+
+  /**
+   * set the sync progress
+   * @param syncStatus: float
+   */
+  public void setSyncStatus(float syncStatus) {
+    GEMFileDao.syncStatus = syncStatus;
+  }
+
+  public static List<String> fileTypeStore = new ArrayList<String>();
 
   // Get current directory path where files uploaded
   /**
@@ -33,7 +52,7 @@ public class GEMFileDao implements IGEMFileDao {
    * @return list of file extension
    */
   @Override
-  public Set<String> getFileTypes() {
+  public List<String> getFileTypes() {
     return fileTypeStore;
   }
 
@@ -45,6 +64,16 @@ public class GEMFileDao implements IGEMFileDao {
   @Override
   public void delete(String absolutePath) {
     featureStore.remove(absolutePath);
+  }
+
+  /**
+   * Batch delete to reduce Db open and close overhead
+   */
+  @Override
+  public void deleteFiles(Collection<String> absolutePaths) {
+    for (String path : absolutePaths) {
+      delete(path);
+    }
   }
 
   // This method get file data from feature store
@@ -122,7 +151,22 @@ public class GEMFileDao implements IGEMFileDao {
   // save file to feature store
   @Override
   public void saveFile(GEMFile file) {
-    fileTypeStore.add(file.getExtension());
+    if (!fileTypeStore.contains(file.getExtension())) {
+      fileTypeStore.add(file.getExtension());
+    }
     featureStore.put(file.getAbsolutePath(), file);
+  }
+
+  /**
+   * Batch files save to reduce Db open and close overhead
+   */
+  @Override
+  public void saveFiles(Map<String, GEMFile> map) {
+    for (String key : map.keySet()) {
+      if (!fileTypeStore.contains(map.get(key).getExtension())) {
+        fileTypeStore.add(map.get(key).getExtension());
+      }
+      featureStore.put(key, map.get(key));
+    }
   }
 }
