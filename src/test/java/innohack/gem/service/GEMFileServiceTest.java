@@ -1,8 +1,8 @@
 package innohack.gem.service;
 
 import com.google.common.collect.Lists;
-import innohack.gem.dao.GEMFileDao;
-import innohack.gem.dao.GroupDao;
+import innohack.gem.dao.IGEMFileDao;
+import innohack.gem.dao.IGroupDao;
 import innohack.gem.entity.GEMFile;
 import innohack.gem.entity.rule.Group;
 import innohack.gem.filegen.GenerateMockFiles;
@@ -15,8 +15,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class GEMFileServiceTest {
 
-  @Autowired GEMFileDao gemFileDao;
-  @Autowired GroupDao groupDao;
+  @Autowired IGEMFileDao gemFileDao;
+  @Autowired IGroupDao groupDao;
   @Autowired GEMFileService gemFileService;
 
   Group csv_group;
@@ -62,5 +62,7 @@ public class GEMFileServiceTest {
     // sync file again and test file count again
     List<GEMFile> list = gemFileService.syncFiles("target/samples/");
     assert (list.size() == getFiles(dir).size());
+    gemFileDao.deleteAll();
+    groupDao.deleteAll();
   }
 }

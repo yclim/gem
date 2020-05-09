@@ -1,8 +1,7 @@
-package innohack.gem.service;
+package innohack.gem.dao;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import innohack.gem.dao.IGroupDao;
 import innohack.gem.entity.rule.Group;
 import innohack.gem.entity.rule.rules.FileExtension;
 import innohack.gem.entity.rule.rules.FilenamePrefix;
@@ -10,20 +9,16 @@ import innohack.gem.entity.rule.rules.Rule;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-public class GroupTest {
-
-  @Autowired IGroupDao groupDao;
-  @Autowired GroupService groupService;
+class GroupRockDaoTest {
 
   Group ext_csv_group;
   Group ext_dat_group;
   Group prefix_d_group;
 
-  public GroupTest() {
+  public GroupRockDaoTest() {
     this.ext_csv_group = new Group();
     ext_csv_group.setName("extension_csv_grouprule");
     Rule rule1 = new FileExtension("csv");
@@ -47,17 +42,37 @@ public class GroupTest {
   }
 
   @Test
-  public void testSaveGroup() {
-    groupService.saveGroup(ext_csv_group);
-    int id = ext_csv_group.getGroupId();
-    String oldname = ext_csv_group.getName();
-    Group g1 = groupService.getGroup(id);
-    Group g2 = groupService.getGroup(oldname);
-    assertTrue(g1.getName().equals(g2.getName()));
-    assertTrue(g1.getGroupId() == g2.getGroupId());
-    String newname = "ABC";
-    groupService.updateGroupName(oldname, newname);
-    groupService.saveGroup(ext_csv_group);
-    assertTrue(groupService.getGroup(id).getName().equals(newname));
+  public void testSaveGroup() throws Exception {
+    GroupRockDao groupDao = new GroupRockDao();
+    groupDao.saveGroup(ext_dat_group);
+    Group group = groupDao.getGroup(ext_dat_group.getGroupId());
+    assertTrue(group.getName().equals(ext_dat_group.getName()));
+    assertTrue(group.getGroupId() == (ext_dat_group.getGroupId()));
+    assertTrue(group.getRules().equals(ext_dat_group.getRules()));
+
+    groupDao.saveGroup(ext_csv_group);
+    group = groupDao.getGroup(ext_csv_group.getName());
+    assertTrue(group.getName().equals(ext_csv_group.getName()));
+    assertTrue(group.getGroupId() == (ext_csv_group.getGroupId()));
+
+    groupDao.deleteAll();
+  }
+
+  @Test
+  public void testDeleteGroupById() throws Exception {
+    GroupRockDao groupDao = new GroupRockDao();
+    groupDao.saveGroup(ext_dat_group);
+    groupDao.deleteGroup(ext_dat_group.getGroupId());
+    Group group = groupDao.getGroup(ext_dat_group.getGroupId());
+    assertTrue(group == null);
+  }
+
+  @Test
+  public void testDeleteGroupByName() throws Exception {
+    GroupRockDao groupDao = new GroupRockDao();
+    groupDao.saveGroup(ext_dat_group);
+    groupDao.deleteGroup(ext_dat_group.getName());
+    Group group = groupDao.getGroup(ext_dat_group.getName());
+    assertTrue(group == null);
   }
 }

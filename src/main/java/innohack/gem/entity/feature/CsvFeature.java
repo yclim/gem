@@ -22,6 +22,7 @@ import java.util.List;
 public class CsvFeature extends AbstractFeature {
 
   private List<List<String>> tableData = new ArrayList<>();
+  private List<String> headers = new ArrayList<>();
 
   @Override
   public void extract(File f) throws Exception {
@@ -33,8 +34,16 @@ public class CsvFeature extends AbstractFeature {
     return tableData;
   }
 
+  public void setTableData(List<List<String>> tableData) {
+    this.tableData = tableData;
+  }
+
   public List<String> getHeaders() {
-    return this.tableData.get(0);
+    return headers;
+  }
+
+  public void setHeaders(List<String> headers) {
+    this.headers = headers;
   }
 
   private void contentParser(File f) throws IOException, CsvException {
@@ -51,7 +60,9 @@ public class CsvFeature extends AbstractFeature {
       }
       tableData.add(recordBuilder);
     }
-
+    if (tableData.size() > 0) {
+      headers = tableData.get(0);
+    }
     csvReader.close();
   }
 

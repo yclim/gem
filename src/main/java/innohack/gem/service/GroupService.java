@@ -11,6 +11,7 @@ import innohack.gem.entity.rule.rules.FileExtension;
 import innohack.gem.entity.rule.rules.Rule;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.slf4j.Logger;
@@ -24,7 +25,7 @@ public class GroupService {
   private static final Logger LOGGER = LoggerFactory.getLogger(GroupService.class);
 
   @Autowired private IGroupDao groupDao;
-  @Autowired private MatchService matcherService;
+  @Autowired private MatchService matchService;
 
   public List<Group> getGroups() {
     List<Group> group = groupDao.getGroups();
@@ -50,7 +51,7 @@ public class GroupService {
     List<Rule> rules = new ArrayList<>();
     group.setRules(rules);
     boolean result = groupDao.deleteGroup(groupId);
-    matcherService.onUpdateEvent(group);
+    matchService.onUpdateEvent(group);
     return result;
   }
 
@@ -60,24 +61,23 @@ public class GroupService {
     List<Rule> rules = new ArrayList<>();
     group.setRules(rules);
     boolean result = groupDao.deleteGroup(groupName);
-    matcherService.onUpdateEvent(group);
+    matchService.onUpdateEvent(group);
     return result;
   }
 
   public Group saveGroup(Group group) {
     group = groupDao.saveGroup(group);
-    matcherService.onUpdateEvent(group);
+    matchService.onUpdateEvent(group);
     return group;
   }
 
   public static final String DEFAULT_FILEEXT_RULENAME_PREFIX = "File Extension";
 
-  public void createDefaultGroup(List<GEMFile> files) {
-    int counter = 1;
+  public void createDefaultGroup(Collection<GEMFile> files) {
     for (GEMFile file : files) {
       String extension = file.getExtension().toUpperCase();
       String defaultGroupName = extension;
-      String defaultRuleName = "FE-" + counter++;
+      String defaultRuleName = extension + " " + GroupService.DEFAULT_FILEEXT_RULENAME_PREFIX;
       Group default_extension_group = groupDao.getGroup(defaultGroupName);
       if (default_extension_group == null) {
         default_extension_group = new Group();
@@ -86,7 +86,7 @@ public class GroupService {
         rule.setName(defaultRuleName);
         default_extension_group.setRules(Lists.newArrayList(rule));
         groupDao.saveGroup(default_extension_group);
-        matcherService.onUpdateEvent(default_extension_group);
+        matchService.onUpdateEvent(default_extension_group);
       }
     }
   }
