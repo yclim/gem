@@ -5,8 +5,7 @@ import { Intent } from "@blueprintjs/core/lib/esm/common/intent";
 import { File } from "./api";
 import fileService from "./api/FileService";
 import FileList from "./FileList";
-import LoadingBar from 'react-top-loading-bar';
-
+import LoadingBar from "react-top-loading-bar";
 
 const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
   const ALL = "All";
@@ -21,12 +20,12 @@ const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
       setDirectory(response.data);
     });
     fileService.getSyncStatus().then(response => {
-                    setSyncStatus(response.data);
+      setSyncStatus(response.data);
     });
     const interval = setInterval(() => {
-        fileService.getSyncStatus().then(response => {
-                setSyncStatus(response.data);
-        });
+      fileService.getSyncStatus().then(response => {
+        setSyncStatus(response.data);
+      });
     }, 5000);
     return () => clearInterval(interval);
   }, []);
@@ -48,7 +47,6 @@ const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
       setTypes(response.data);
     });
   }, [files]);
-
 
   function renderTypeButton() {
     return types.map(t => (
@@ -77,9 +75,9 @@ const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
     <div className="stack">
       <div>
         <LoadingBar
-          progress={ (syncStatus * 100) % 100 }
+          progress={(syncStatus * 100) % 100}
           height={3}
-          color='red'
+          color="red"
           onLoaderFinished={() => this.onLoaderFinished()}
         />
         <label className="editable-label"> Directory: </label>
@@ -90,10 +88,12 @@ const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
           onChange={e => setDirectory(e)}
         />
         <Button
-          icon={(syncStatus < 1) ? <Spinner size={Spinner.SIZE_SMALL} /> : "refresh"}
+          icon={
+            syncStatus < 1 ? <Spinner size={Spinner.SIZE_SMALL} /> : "refresh"
+          }
           text="Synchronize"
           onClick={() => handleSynchronize()}
-          disabled={(syncStatus < 1)}
+          disabled={syncStatus < 1}
         />
       </div>
       <div className="grid2">
