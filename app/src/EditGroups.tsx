@@ -217,9 +217,11 @@ function handleUpdateRule(
   groups: Map<string, Group>,
   input: UpdateRuleInput
 ): Map<string, Group> {
-  if (rulenameExist(groups, input.newRuleName)) {
+  if (
+    input.oldRuleName !== input.newRuleName &&
+    rulenameExist(groups, input.newRuleName)
+  ) {
     alert("rulename already exist!");
-    return groups;
   } else {
     const group = groups.get(input.groupName);
     if (group) {
@@ -229,6 +231,7 @@ function handleUpdateRule(
         rule.params = input.ruleParams.map(p => {
           return { value: p };
         });
+        groupRuleService.saveGroup(group).then();
       }
     }
   }
