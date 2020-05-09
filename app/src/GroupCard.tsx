@@ -34,6 +34,8 @@ const GroupCard: FunctionComponent<IProps> = ({
   const [grp, setGrp] = useState(group);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedRule, setSelectedRule] = useState<Rule | null>(null);
+  // editRule will be pass to GroupForm by reference so we can refer to the existing version
+  const [editRule, setEditRule] = useState<Rule | null>(null);
 
   function renderMenu(r: Rule) {
     return (
@@ -91,6 +93,7 @@ const GroupCard: FunctionComponent<IProps> = ({
 
   function handleDialogOpen(r: Rule) {
     setSelectedRule(r);
+    setEditRule(JSON.parse(JSON.stringify(r)));
     setIsOpen(true);
   }
 
@@ -99,7 +102,18 @@ const GroupCard: FunctionComponent<IProps> = ({
   }
 
   function handleDialogSubmit() {
-    console.log(selectedRule);
+    if (editRule && selectedRule) {
+      groupDispatcher(
+        GroupActions.updateRule({
+          groupName: group.name,
+          newRuleName: editRule.name,
+          oldRuleName: selectedRule.name,
+          ruleParams: editRule.params.map(p => p.value)
+        })
+      );
+    }
+
+    setIsOpen(false);
   }
 
   function handleDeleteGroupRule(curGrp: Group, r: Rule) {
@@ -144,12 +158,13 @@ const GroupCard: FunctionComponent<IProps> = ({
         title={`${selectedRule ? selectedRule.label : "-"}`}
         transitionDuration={100}
       >
-        {selectedRule && focusGroup ? (
+        {editRule && focusGroup ? (
           <RuleForm
-            rule={selectedRule}
-            setRule={setSelectedRule}
+            rule={editRule}
+            setRule={setEditRule}
             groupName={focusGroup.name}
             handleSubmit={handleDialogSubmit}
+            isUpdate={true}
           />
         ) : (
           ""
