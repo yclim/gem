@@ -6,10 +6,11 @@ import innohack.gem.entity.rule.ParamType;
 import innohack.gem.entity.rule.Parameter;
 import innohack.gem.entity.rule.RuleType;
 import innohack.gem.util.Util;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class FilenameRegex extends Rule {
 
@@ -39,7 +40,7 @@ public class FilenameRegex extends Rule {
 
     while (matcher.find()) {
       String matchString = matcher.group();
-      System.out.println("The  match string is " + matchString);
+      LOGGER.debug("The  match string is " + matchString);
       return true;
     }
     return false;

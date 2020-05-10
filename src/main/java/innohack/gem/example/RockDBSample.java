@@ -6,12 +6,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import innohack.gem.entity.feature.CsvFeature;
-import java.io.*;
+import org.rocksdb.Options;
+import org.rocksdb.ReadOptions;
+import org.rocksdb.RocksDB;
+import org.rocksdb.RocksIterator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.rocksdb.*;
 
 public class RockDBSample {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(RockDBSample.class);
 
   static {
     RocksDB.loadLibrary();
@@ -46,7 +56,7 @@ public class RockDBSample {
         List<byte[]> results = db.multiGetAsList(lookupKeys);
         for (byte[] result : results) {
           CsvFeature temp = deserialize(result);
-          System.out.println("total row: " + temp.getTableData().size());
+          LOGGER.debug("total row: " + temp.getTableData().size());
           list.add(temp);
         }
       }
@@ -90,7 +100,7 @@ public class RockDBSample {
 
             if (key.startsWith(prefixString)) {
               list.add(key);
-              System.out.println("key: " + key);
+              LOGGER.debug("key: " + key);
             } else {
               /* To check
               Since next() can go across the boundary to a different prefix,
@@ -135,21 +145,20 @@ public class RockDBSample {
           // the key already exists in the database, the previous value will be overwritten.
           // need a unique key
           // Keys and values are byte arrays.
-          System.out.println("Put fileKey" + file.getName());
+          LOGGER.debug("Put fileKey" + file.getName());
 
           db.put(fileKey, value);
 
           // convert byte array back to csv feature
           CsvFeature testFeature = deserialize(db.get(fileKey));
 
-          System.out.println("check assertions");
           // assert csv feature and test feature
           assert csvFeature.getTableData().size() == testFeature.getTableData().size()
               : "total row not matched";
           assert csvFeature.getHeaders() == testFeature.getHeaders() : "header not matched";
           assert csvFeature.getTableData() == testFeature.getTableData() : "content not matched";
         } else {
-          System.out.println("File not found: " + filePath);
+          LOGGER.debug("File not found: " + filePath);
         }
       }
 

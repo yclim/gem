@@ -9,15 +9,16 @@ import innohack.gem.entity.rule.Group;
 import innohack.gem.entity.rule.GroupExportMixin;
 import innohack.gem.entity.rule.rules.FileExtension;
 import innohack.gem.entity.rule.rules.Rule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 @Service
 public class GroupService {
@@ -92,13 +93,13 @@ public class GroupService {
   }
 
   public List<Group> importProject(byte[] data) throws IOException {
-    LOGGER.info("Importing project...");
+    LOGGER.debug("Importing project...");
     ObjectMapper mapper = new ObjectMapper();
     return mapper.readValue(data, Project.class).getGroups();
   }
 
   public byte[] exportProject() throws IOException {
-    LOGGER.info("Exporting the project as json...");
+    LOGGER.debug("Exporting the project as json...");
     try {
       List<Group> groups = groupDao.getGroups();
       Project project = new Project();

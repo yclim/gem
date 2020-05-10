@@ -1,17 +1,21 @@
 package innohack.gem.example.poi;
 
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 public class PoiExcelParser {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(PoiExcelParser.class);
   private Path filePath;
 
   public PoiExcelParser(Path filePath) {
-    System.out.println("POI filepath is " + filePath);
+    LOGGER.debug("POI filepath is " + filePath);
     this.filePath = filePath;
   }
 
@@ -31,7 +35,7 @@ public class PoiExcelParser {
     }
 
     // Retrieving the number of sheets in the Workbook
-    System.out.println("Workbook has " + workbook.getNumberOfSheets() + " Sheets : ");
+    LOGGER.debug("Workbook has " + workbook.getNumberOfSheets() + " Sheets : ");
 
     return workbook;
   }

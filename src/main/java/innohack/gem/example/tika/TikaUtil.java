@@ -2,18 +2,22 @@ package innohack.gem.example.tika;
 
 import innohack.gem.entity.GEMFile;
 import innohack.gem.example.util.FileUtil;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.List;
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.List;
 
 public class TikaUtil {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(TikaUtil.class);
   private TikaConfig tika;
 
   public TikaConfig getTika() {
@@ -29,7 +33,7 @@ public class TikaUtil {
       tika = new TikaConfig();
 
     } catch (IOException | TikaException ex) {
-      System.out.println("error ex: " + ex.toString());
+      LOGGER.error("error ex: " + ex.toString());
     }
   }
 
@@ -43,7 +47,7 @@ public class TikaUtil {
     List<Path> results = FileUtil.walkPath(path);
 
     for (Path result : results) {
-      System.out.println("each result is " + result.toAbsolutePath());
+      LOGGER.debug("each result is " + result.toAbsolutePath());
       Metadata metadata = new Metadata();
       metadata.set(Metadata.RESOURCE_NAME_KEY, result.toString());
       MediaType mimetype = null;
@@ -55,7 +59,7 @@ public class TikaUtil {
       }
 
       TikaMimeEnum mimeType = determineMimeTypeAndParser(mimetype, result);
-      System.out.println(
+      LOGGER.debug(
           "result is " + result.toAbsolutePath() + " mimeType is " + mimeType.getMimeType());
     }
   }

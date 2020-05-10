@@ -1,13 +1,14 @@
 package innohack.gem.example.opencsv;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import au.com.bytecode.opencsv.CSVReader;
 import com.opencsv.CSVParser;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.enums.CSVReaderNullFieldIndicator;
 import com.opencsv.exceptions.CsvException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -17,12 +18,16 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 public class OpenCsvParser {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(OpenCsvParser.class);
 
   private Path filePath;
 
   public OpenCsvParser(Path filePath) {
-    System.out.println("filepath is " + filePath);
+    LOGGER.debug("filepath is " + filePath);
     this.filePath = filePath;
   }
 
@@ -58,7 +63,7 @@ public class OpenCsvParser {
       }
       pBuffered.reset();
     }
-    System.out.println("The seperator is " + lCharMax);
+    LOGGER.debug("The seperator is " + lCharMax);
     return lCharMax;
   }
 
@@ -69,7 +74,7 @@ public class OpenCsvParser {
     try {
       reader = Files.newBufferedReader(this.filePath, UTF_8);
 
-      System.out.println(" Using opencsv ");
+      LOGGER.debug(" Using opencsv ");
       CSVParser parser =
           new CSVParserBuilder()
               .withSeparator(detectSeparators((BufferedReader) reader))

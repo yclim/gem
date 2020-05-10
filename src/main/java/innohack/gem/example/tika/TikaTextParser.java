@@ -1,18 +1,22 @@
 package innohack.gem.example.tika;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.file.Path;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.txt.TXTParser;
 import org.apache.tika.sax.BodyContentHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Path;
 
 public class TikaTextParser {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(TikaTextParser.class);
   /**
    * parseText use tika to parse through pure text
    *
@@ -31,12 +35,12 @@ public class TikaTextParser {
     // Text document parser
     TXTParser textParser = new TXTParser();
     textParser.parse(inputstream, handler, metadata, pcontext);
-    System.out.println("Contents of the document:" + handler.toString());
-    System.out.println("Metadata of the document:");
+    LOGGER.debug("Contents of the document:" + handler.toString());
+    LOGGER.debug("Metadata of the document:");
     String[] metadataNames = metadata.names();
 
     for (String name : metadataNames) {
-      System.out.println(name + " : " + metadata.get(name));
+      LOGGER.debug(name + " : " + metadata.get(name));
     }
     inputstream.close();
   }

@@ -1,18 +1,23 @@
 package innohack.gem.example.tika;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.file.Path;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.pdf.PDFParser;
 import org.apache.tika.sax.BodyContentHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Path;
+
 public class TikaPdfParser {
+
   private Path filePath;
+  private static final Logger LOGGER = LoggerFactory.getLogger(TikaPdfParser.class);
 
   public TikaPdfParser(Path filePath) {
     this.filePath = filePath;
@@ -39,14 +44,14 @@ public class TikaPdfParser {
     pdfparser.parse(inputstream, handler, metadata, pcontext);
 
     // getting the content of the document
-    System.out.println("Contents of the PDF :" + handler.toString());
+    LOGGER.debug("Contents of the PDF :" + handler.toString());
 
     // getting metadata of the document
     // System.out.println("Metadata of the PDF:");
     String[] metadataNames = metadata.names();
 
     for (String name : metadataNames) {
-      System.out.println(name + " : " + metadata.get(name));
+      LOGGER.debug(name + " : " + metadata.get(name));
     }
     inputstream.close();
   }

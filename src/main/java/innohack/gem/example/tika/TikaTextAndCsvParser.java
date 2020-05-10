@@ -1,21 +1,26 @@
 package innohack.gem.example.tika;
 
-import com.opencsv.*;
-import java.io.*;
-import java.nio.file.Path;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.csv.TextAndCSVParser;
 import org.apache.tika.sax.BodyContentHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Path;
 
 public class TikaTextAndCsvParser {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(TikaTextAndCsvParser.class);
   private Path filePath;
 
   public TikaTextAndCsvParser(Path filePath) {
-    System.out.println("filepath is " + filePath);
+    LOGGER.debug("filepath is " + filePath);
     this.filePath = filePath;
   }
 
@@ -39,12 +44,12 @@ public class TikaTextAndCsvParser {
     TextAndCSVParser csvParser = new TextAndCSVParser();
     csvParser.parse(inputstream, handler, metadata, pcontext);
 
-    System.out.println("Contents of the document:" + handler.toString());
-    System.out.println("Metadata of the document:");
+    LOGGER.debug("Contents of the document:" + handler.toString());
+    LOGGER.debug("Metadata of the document:");
     String[] metadataNames = metadata.names();
 
     for (String name : metadataNames) {
-      System.out.println(name + " : " + metadata.get(name));
+      LOGGER.debug(name + " : " + metadata.get(name));
     }
   }
 
@@ -67,8 +72,8 @@ public class TikaTextAndCsvParser {
     TextAndCSVParser csvParser = new TextAndCSVParser();
     csvParser.parse(inputstream, handler, metadata, pcontext);
 
-    // System.out.println("Contents of the document:" + handler.toString());
-    // System.out.println("Metadata of the document:");
+    // LOGGER.debug("Contents of the document:" + handler.toString());
+    // LOGGER.debug("Metadata of the document:");
     inputstream.close();
     return metadata;
   }
