@@ -1,14 +1,11 @@
 package innohack.gem.entity.rule;
 
 import innohack.gem.entity.rule.rules.Rule;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.*;
 
 public class RuleFactory {
 
@@ -52,7 +49,7 @@ public class RuleFactory {
       while (iterator.hasNext()) {
         Class<? extends Rule> ruleClass = iterator.next();
         Rule rule = ruleClass.newInstance();
-        LOGGER.info("(createAllInstance) rule added : {}", rule);
+        LOGGER.debug("(createAllInstance) rule added : {}", rule);
         rules.add(rule);
       }
     } catch (InstantiationException e) {

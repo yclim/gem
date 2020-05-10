@@ -4,8 +4,12 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ExtractHtml {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(ExtractHtml.class);
 
   public static void main(String[] args) throws Exception {
 
@@ -23,26 +27,22 @@ public class ExtractHtml {
       // Possible info to extract from html
 
       // print title and body
-      System.out.println("(i) Print Title and Body");
-      System.out.println(doc.title());
-      System.out.println(doc.body().text());
-      System.out.println();
+      LOGGER.debug("(i) Print Title and Body");
+      LOGGER.debug(doc.title());
+      LOGGER.debug(doc.body().text());
 
-      System.out.println("(ii) Print Meta Tags");
+      LOGGER.debug("(ii) Print Meta Tags");
       // print meta tag -author name, org name etc
       Elements metaTags = doc.getElementsByTag("meta");
       printMetaTagFromHtml(metaTags);
-      System.out.println();
 
       // print all links
-      System.out.println("(iii) Print Links from Html");
+      LOGGER.debug("(iii) Print Links from Html");
       printLinksFromHtml(doc);
-      System.out.println();
 
       // print table data - like contact list table from html?
-      System.out.println("(iv) Print Tables from Html");
+      LOGGER.debug("(iv) Print Tables from Html");
       printTableFromHtml(doc);
-      System.out.println();
 
     } catch (Exception e) {
       // TODO Auto-generated catch block
@@ -84,7 +84,7 @@ public class ExtractHtml {
     for (Element table : doc.select("table")) {
       System.out.println("");
       for (Element row : table.select("tr")) {
-        System.out.println(String.join(",", row.select("td,th").eachText()));
+        LOGGER.debug(String.join(",", row.select("td,th").eachText()));
       }
     }
   }
@@ -102,7 +102,7 @@ public class ExtractHtml {
   }
 
   private static void print(String msg, Object... args) {
-    System.out.println(String.format(msg, args));
+    LOGGER.debug(String.format(msg, args));
   }
 
   private static String trim(String s, int width) {

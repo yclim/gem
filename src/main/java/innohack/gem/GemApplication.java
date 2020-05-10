@@ -1,13 +1,14 @@
 package innohack.gem;
 
 import innohack.gem.filegen.GenerateMockFiles;
-import java.io.File;
-import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import java.io.File;
+import java.io.IOException;
 
 @SpringBootApplication
 public class GemApplication {
@@ -20,10 +21,10 @@ public class GemApplication {
         File folder = new File(path);
         if (folder.exists() && folder.isDirectory()) {
           FileUtils.deleteDirectory(new File(path));
-          LOGGER.info("Removed old sample files");
+          LOGGER.debug("Removed old sample files");
         }
         GenerateMockFiles.main(new String[] {path, count});
-        LOGGER.info("Generated {} sample files in {}", path, count);
+        LOGGER.debug("Generated {} sample files in {}", path, count);
       } catch (IOException ex) {
         LOGGER.error("Error in generating sample files", ex);
       }

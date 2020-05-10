@@ -2,13 +2,14 @@ package innohack.gem.service;
 
 import innohack.gem.dao.IGEMFileDao;
 import innohack.gem.entity.GEMFile;
-import java.io.File;
-import java.util.Collections;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.File;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 public class GEMFileService {
@@ -42,7 +43,7 @@ public class GEMFileService {
    * @return list of files that was processed and stored {@link GEMFile @GEMFile}
    */
   public synchronized List<GEMFile> syncFiles(String folderPath) {
-    LOGGER.info("Syncing from folder {}: {}", folderPath, new File(folderPath).exists());
+    LOGGER.debug("Syncing from folder {}: {}", folderPath, new File(folderPath).exists());
 
     List<GEMFile> oldfilelist = gemFileDao.getFiles();
     List<GEMFile> newFilelist = gemFileDao.getLocalFiles(folderPath);

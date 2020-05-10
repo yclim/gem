@@ -1,13 +1,17 @@
 package innohack.gem.entity.feature;
 
-import java.io.File;
-import java.util.*;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.util.*;
 
 /** Object to hold wrap extracted excel data */
 public class ExcelFeature extends AbstractFeature {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(ExcelFeature.class);
   private Map<String, List<List<String>>> sheetTableData;
 
   public void setSheetTableData(Map<String, List<List<String>>> sheetTableData) {
@@ -30,8 +34,8 @@ public class ExcelFeature extends AbstractFeature {
           String sheetName = sheetParser(workbook, i, sheetTableData);
           List<List<String>> dataList = sheetTableData.get(sheetName);
 
-          System.out.println("size of row" + dataList.size());
-          System.out.println(
+          LOGGER.debug("size of row" + dataList.size());
+          LOGGER.debug(
               "SheetNo: "
                   + (i + 1)
                   + "sheetFeatures is "

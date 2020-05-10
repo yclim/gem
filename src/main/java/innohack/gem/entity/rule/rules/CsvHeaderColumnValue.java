@@ -47,7 +47,6 @@ public class CsvHeaderColumnValue extends Rule {
       }
     }
 
-    // LOGGER.debug("File Extension {} rule: {}", ext, gemFile.getExtension());
     return true;
   }
 

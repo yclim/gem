@@ -2,6 +2,9 @@ package innohack.gem.entity.feature;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +16,9 @@ import java.util.Map;
   @JsonSubTypes.Type(value = ExcelFeature.class)
 })
 public abstract class AbstractFeature {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(AbstractFeature.class);
+
   private Map<String, String> metadata = null;
 
   public Map<String, String> getMetadata() {
@@ -34,7 +40,7 @@ public abstract class AbstractFeature {
 
   public void printMetadata() {
     for (Map.Entry<String, String> entry : metadata.entrySet()) {
-      System.out.println(entry.getKey() + " = " + entry.getValue());
+      LOGGER.debug(entry.getKey() + " = " + entry.getValue());
     }
   }
 
