@@ -39,17 +39,9 @@ class GroupRuleService extends Api {
     return this.delete("group/name?name=" + groupName);
   }
 
-  public saveGroup(group: Group): Promise<AxiosResponse<any>> {
-    // JSON.stringify() doesn't know how to serialize a BigInt
-    const jsonStr = JSON.stringify(group, (key, value) => {
-      if (typeof value === "bigint") {
-        return value.toString() + "n";
-      } else {
-        return value;
-      }
-    });
-
-    return this.post<any>("group", jsonStr, {
+  public saveGroup(group: Group): Promise<AxiosResponse<Group>> {
+    const jsonStr = JSON.stringify(group);
+    return this.post<Group>("group", jsonStr, {
       headers: { "Content-Type": "application/json" }
     });
   }

@@ -14,8 +14,9 @@ import {
   Tag
 } from "@blueprintjs/core";
 import { Group, Rule } from "./api";
-import { GroupAction, GroupActions } from "./EditGroups";
+import { GroupAction, GroupActions, rulenameExist } from "./EditGroups";
 import RuleForm from "./RuleForm";
+import groupRuleService from "./api/GroupRuleService";
 
 interface IProps {
   group: Group;
@@ -23,13 +24,15 @@ interface IProps {
   focusGroup: Group | null;
   setFocusGroup: (g: Group) => void;
   newGroupRuleName: string | null;
+  groups: Map<string, Group>;
 }
 const GroupCard: FunctionComponent<IProps> = ({
   group,
   groupDispatcher,
   focusGroup,
   setFocusGroup,
-  newGroupRuleName
+  newGroupRuleName,
+  groups
 }) => {
   const [grp, setGrp] = useState(group);
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -79,16 +82,11 @@ const GroupCard: FunctionComponent<IProps> = ({
   }
 
   function handleConfirm() {
-    groupDispatcher(
-      GroupActions.updateGroupName({
-        oldGroupName: group.name,
-        newGroupName: grp.name
-      })
-    );
+    GroupActions.updateGroupName(groupDispatcher, group.name, grp.name);
   }
 
   function handleDeleteGroup() {
-    groupDispatcher(GroupActions.removeGroup(grp.name));
+    GroupActions.removeGroup(groupDispatcher, grp.name);
   }
 
   function handleDialogOpen(r: Rule) {
@@ -103,23 +101,20 @@ const GroupCard: FunctionComponent<IProps> = ({
 
   function handleDialogSubmit() {
     if (editRule && selectedRule) {
-      groupDispatcher(
-        GroupActions.updateRule({
-          groupName: group.name,
-          newRuleName: editRule.name,
-          oldRuleName: selectedRule.name,
-          ruleParams: editRule.params.map(p => p.value)
-        })
+      GroupActions.updateGroupRule(
+        groupDispatcher,
+        groups,
+        group,
+        selectedRule.name,
+        editRule
       );
     }
 
     setIsOpen(false);
   }
 
-  function handleDeleteGroupRule(curGrp: Group, r: Rule) {
-    groupDispatcher(
-      GroupActions.removeGroupRule({ groupName: curGrp.name, rule: r })
-    );
+  function handleDeleteGroupRule(curGrp: Group, rule: Rule) {
+    GroupActions.removeGroupRule(groupDispatcher, group, rule.name);
   }
 
   return (

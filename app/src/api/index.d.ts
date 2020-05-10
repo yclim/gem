@@ -37,7 +37,7 @@ export interface TikaFeature {
 
 export interface File {
   fileName: string;
-  size: bigint;
+  size: number;
   extension: string;
   directory: string;
   mimeType: string;

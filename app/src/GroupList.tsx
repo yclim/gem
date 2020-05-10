@@ -28,8 +28,8 @@ const GroupList: FunctionComponent<IProps> = ({
   setCurrentGroup,
   newGroupRuleName
 }) => {
-  function createGroup() {
-    groupDispatcher(GroupActions.newGroupAction());
+  function handleCreateGroup() {
+    GroupActions.newGroup(groupDispatcher, groups);
   }
 
   function handleFileSelected(file: string) {
@@ -37,11 +37,7 @@ const GroupList: FunctionComponent<IProps> = ({
     const data = new FormData();
     data.append("file", selectedFile);
     groupRuleService.importGroupsFile(data).then(results => {
-      if (results.status === 200) {
-        groupDispatcher(GroupActions.initGroup(results.data));
-      } else {
-        alert("Import failed");
-      }
+      GroupActions.initGroup(results.data);
     });
   }
 
@@ -52,7 +48,7 @@ const GroupList: FunctionComponent<IProps> = ({
           icon="add"
           large={false}
           text="Create Group"
-          onClick={() => createGroup()}
+          onClick={() => handleCreateGroup()}
           className="add-right-margin"
         />
         <AnchorButton
@@ -89,6 +85,7 @@ const GroupList: FunctionComponent<IProps> = ({
               focusGroup={currentGroup}
               setFocusGroup={setCurrentGroup}
               newGroupRuleName={newGroupRuleName}
+              groups={groups}
             />
           ))}
         <Card
