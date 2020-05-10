@@ -5,6 +5,7 @@ import { Intent } from "@blueprintjs/core/lib/esm/common/intent";
 import { File } from "./api";
 import fileService from "./api/FileService";
 import FileList from "./FileList";
+import LoadingBar from "react-top-loading-bar";
 
 const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
   const ALL = "All";
@@ -12,12 +13,21 @@ const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
   const [types, setTypes] = useState<string[]>([]);
   const [files, setFiles] = useState<File[]>([]);
   const [directory, setDirectory] = useState<string>("");
-  const [isLoading, setLoading] = useState(false);
+  const [syncStatus, setSyncStatus] = useState(0.0);
 
   useEffect(() => {
     fileService.getCurrentDirectory().then(response => {
       setDirectory(response.data);
     });
+    fileService.getSyncStatus().then(response => {
+      setSyncStatus(response.data);
+    });
+    const interval = setInterval(() => {
+      fileService.getSyncStatus().then(response => {
+        setSyncStatus(response.data);
+      });
+    }, 5000);
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -55,16 +65,21 @@ const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
   }
 
   function handleSynchronize() {
-    setLoading(true);
+    setSyncStatus(0);
     fileService.sync(directory).then(response => {
       setFiles(response.data);
-      setLoading(false);
     });
   }
 
   return (
     <div className="stack">
       <div>
+        <LoadingBar
+          progress={(syncStatus * 100) % 100}
+          height={3}
+          color="red"
+          onLoaderFinished={() => this.onLoaderFinished()}
+        />
         <label className="editable-label"> Directory: </label>
         <EditableText
           className="editable-text"
@@ -73,10 +88,12 @@ const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
           onChange={e => setDirectory(e)}
         />
         <Button
-          icon={isLoading ? <Spinner size={Spinner.SIZE_SMALL} /> : "refresh"}
+          icon={
+            syncStatus < 1 ? <Spinner size={Spinner.SIZE_SMALL} /> : "refresh"
+          }
           text="Synchronize"
           onClick={() => handleSynchronize()}
-          disabled={isLoading}
+          disabled={syncStatus < 1}
         />
       </div>
       <div className="grid2">

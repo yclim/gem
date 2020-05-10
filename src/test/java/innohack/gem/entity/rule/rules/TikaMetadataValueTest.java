@@ -6,28 +6,25 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import innohack.gem.entity.GEMFile;
 import org.junit.jupiter.api.Test;
 
-public class TikaContentRegexTest {
+public class TikaMetadataValueTest {
 
   @Test
-  public void testValidCheckTikaContent() throws Exception {
-
+  public void testValidCheckTikaMetadata() throws Exception {
     GEMFile pdfFile =
         new GEMFile(
             "story_0.pdf", "src/test/resources/innohack/gem/entity/rule/rules/TikaMetadataValue");
     pdfFile.extract();
-    TikaContentRegex contentRegexCheck = new TikaContentRegex(".*(white|black).*");
-    assertTrue(contentRegexCheck.check(pdfFile));
+    TikaMetaValue metadaCheck = new TikaMetaValue("Content-Type", "application/pdf");
+    assertTrue(metadaCheck.check(pdfFile));
   }
 
   @Test
-  public void testInvalidCheckTikaContent() throws Exception {
-
+  public void testInvalidCheckTikaMetadata() throws Exception {
     GEMFile pdfFile =
         new GEMFile(
             "story_0.pdf", "src/test/resources/innohack/gem/entity/rule/rules/TikaMetadataValue");
     pdfFile.extract();
-    TikaContentRegex contentRegexCheck = new TikaContentRegex(".*(orange|brown).*");
-    pdfFile.extract();
-    assertFalse(contentRegexCheck.check(pdfFile));
+    TikaMetaValue metadaCheck = new TikaMetaValue("Owner", "orhorh");
+    assertFalse(metadaCheck.check(pdfFile));
   }
 }

@@ -4,7 +4,6 @@ import innohack.gem.entity.GEMFile;
 import innohack.gem.service.GEMFileService;
 import innohack.gem.service.GroupService;
 import java.util.List;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -60,10 +59,13 @@ public class GEMFileController {
       @RequestParam(name = "directory", defaultValue = "/usr/share/gem/files") String directory)
       throws Exception {
     List<GEMFile> files = fileService.syncFiles(directory);
-    groupService.createDefaultGroup(files);
     return files;
   }
 
+  @GetMapping("/sync/status")
+  public float getSyncStatus() {
+    return fileService.getSyncProgress();
+  }
   /**
    * Retrieves list of document metadata associated with given document name
    *
@@ -93,7 +95,7 @@ public class GEMFileController {
    * @return list of file extension
    */
   @RequestMapping("/extensions/list")
-  public Set<String> getFileTypes() {
+  public List<String> getFileTypes() {
     return fileService.getFileTypes();
   }
 }
