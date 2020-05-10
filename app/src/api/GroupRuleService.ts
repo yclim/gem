@@ -55,7 +55,7 @@ class GroupRuleService extends Api {
   }
 
   public importGroupsFile(data: FormData): Promise<AxiosResponse<any>> {
-    return this.post<any>("group/import", data);
+    return this.post<any>("group/import", JSON.stringify(data));
   }
 }
 
