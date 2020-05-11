@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import innohack.gem.dao.IGEMFileDao;
 import innohack.gem.dao.IGroupDao;
+import innohack.gem.dao.IMatchFileDao;
 import innohack.gem.entity.GEMFile;
 import innohack.gem.entity.rule.Group;
 import innohack.gem.entity.rule.rules.FileExtension;
@@ -18,15 +19,24 @@ public class GEMFileControllerTest {
 
   @Autowired IGEMFileDao gemFileDao;
   @Autowired IGroupDao groupDao;
+  @Autowired IMatchFileDao matchFileDao;
   @Autowired GEMFileController gemFileController;
 
   @Test
   public void testSync() throws Exception {
+    gemFileDao.deleteAll();
+    groupDao.deleteAll();
+    matchFileDao.deleteAll();
+
     gemFileDao.setSyncStatus(1);
     gemFileController.sync("src/test/resources");
     Thread.sleep(1000);
     while (gemFileDao.getSyncStatus() < 1) {
       Thread.sleep(1000);
+    }
+    System.out.println(gemFileDao.getFileTypes());
+    for (Group g : groupDao.getGroups()) {
+      System.out.println(g.getName() + ": " + g.getGroupId());
     }
     for (GEMFile file : gemFileDao.getFiles()) {
       String extension = file.getExtension().toUpperCase();
@@ -43,5 +53,6 @@ public class GEMFileControllerTest {
     }
     gemFileDao.deleteAll();
     groupDao.deleteAll();
+    matchFileDao.deleteAll();
   }
 }

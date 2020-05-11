@@ -19,6 +19,7 @@ public class GEMFileDao implements IGEMFileDao {
 
   /**
    * get sync progress, 0-1 where 1 means sync complete
+   *
    * @return syncStatus
    */
   public float getSyncStatus() {
@@ -27,6 +28,7 @@ public class GEMFileDao implements IGEMFileDao {
 
   /**
    * set the sync progress
+   *
    * @param syncStatus: float
    */
   public void setSyncStatus(float syncStatus) {
@@ -66,9 +68,7 @@ public class GEMFileDao implements IGEMFileDao {
     featureStore.remove(absolutePath);
   }
 
-  /**
-   * Batch delete to reduce Db open and close overhead
-   */
+  /** Batch delete to reduce Db open and close overhead */
   @Override
   public void deleteFiles(Collection<String> absolutePaths) {
     for (String path : absolutePaths) {
@@ -157,9 +157,7 @@ public class GEMFileDao implements IGEMFileDao {
     featureStore.put(file.getAbsolutePath(), file);
   }
 
-  /**
-   * Batch files save to reduce Db open and close overhead
-   */
+  /** Batch files save to reduce Db open and close overhead */
   @Override
   public void saveFiles(Map<String, GEMFile> map) {
     for (String key : map.keySet()) {

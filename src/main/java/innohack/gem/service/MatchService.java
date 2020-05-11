@@ -25,12 +25,12 @@ public class MatchService {
 
   public MatchService() {}
 
-  public static Map<String, MatchFileGroup> getMatchFileGroupTable() {
-    return matchFileGroupTable;
-  }
-
   public static Map<String, MatchFileRule> getMatchFileRuleTable() {
     return matchFileRuleTable;
+  }
+
+  public static Map<String, MatchFileGroup> getMatchFileGroupTable() {
+    return matchFileGroupTable;
   }
 
   public synchronized void onUpdateEvent(Object o) {
@@ -52,7 +52,7 @@ public class MatchService {
   }
 
   private static Thread backupProcessThread;
-  private static final long BACKUP_WAIT_TIME = 1000 * 60 * 2;
+  private static final long BACKUP_WAIT_TIME = 1000 * 1 * 1;
 
   private void backupMatchFile() {
     Runnable backupProcess =
@@ -62,12 +62,11 @@ public class MatchService {
           } catch (InterruptedException e) {
             e.printStackTrace();
           }
+          backupProcessThread = null;
           matchFileDao.saveMatchGroup(matchFileGroupTable);
           matchFileDao.saveMatchRule(matchFileRuleTable);
-          backupProcessThread = null;
         };
     if (backupProcessThread == null) {
-      System.out.println("MatchFile backup called");
       backupProcessThread = new Thread(backupProcess);
       backupProcessThread.start();
     }
@@ -221,9 +220,12 @@ public class MatchService {
       matchFileRuleTable.put(fileKey, matchFileRule);
     }
 
+    Map<Integer, String> groupIdsMap = groupDao.getGroupIds();
     for (String fileKey : matchFileGroupTable.keySet()) {
       MatchFileGroup matchFileGroup = matchFileGroupTable.get(fileKey);
       matchFileGroup.getMatchedGroupIds().remove(group.getGroupId());
+      // System.out.println(groupIdsMap.get(group.getGroupId()));
+      // matchFileGroup.getMatchedGroupNames().remove(groupIdsMap.get(group.getGroupId()));
       matchFileGroupTable.put(fileKey, matchFileGroup);
     }
   }
@@ -238,17 +240,20 @@ public class MatchService {
       filesWithConflictMatch = new ArrayList<MatchFileGroup>();
       filesWithoutMatch = new ArrayList<MatchFileGroup>();
       Map<Integer, String> groupIdsMap = groupDao.getGroupIds();
-      filesWithConflictMatch.clear();
-      filesWithoutMatch.clear();
       for (GEMFile file : gemFileDao.getFiles()) {
         String fileKey = file.getAbsolutePath();
+        if (matchFileGroupTable == null) {
+          matchFileGroupTable = matchFileDao.getMatchGroup();
+        }
         MatchFileGroup matchFileGroup = matchFileGroupTable.get(fileKey);
-        for (int grpId : matchFileGroup.getMatchedGroupIds()) {
-          Set<String> groupNames = matchFileGroup.getMatchedGroupNames();
-          if (groupNames == null) {
-            groupNames = new HashSet();
+        Set<String> groupNames = new HashSet();
+        if (matchFileGroup != null) {
+          for (int grpId : matchFileGroup.getMatchedGroupIds()) {
+            if (groupNames == null) {
+              groupNames = new HashSet();
+            }
+            groupNames.add(groupIdsMap.get(grpId));
           }
-          groupNames.add(groupIdsMap.get(grpId));
           matchFileGroup.setMatchedGroupNames(groupNames);
         }
         if (matchFileGroup != null && matchFileGroup.getMatchedGroupIds().size() > 1) {
@@ -271,5 +276,13 @@ public class MatchService {
 
   public List<MatchFileGroup> getFilesWithoutMatch() {
     return filesWithoutMatch;
+  }
+
+  public int[] getFileStat() {
+    Map<String, List<MatchFileGroup>> counts = getMatchCount();
+    int[] intArr = new int[2];
+    intArr[0] = counts.get(NO_MATCH_TAG).size();
+    intArr[1] = counts.get(CONFLICT_TAG).size();
+    return intArr;
   }
 }

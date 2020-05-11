@@ -1,14 +1,13 @@
 package innohack.gem;
 
 import innohack.gem.filegen.GenerateMockFiles;
+import java.io.File;
+import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import java.io.File;
-import java.io.IOException;
 
 @SpringBootApplication
 public class GemApplication {

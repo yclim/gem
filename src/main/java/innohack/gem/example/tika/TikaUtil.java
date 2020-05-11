@@ -2,6 +2,9 @@ package innohack.gem.example.tika;
 
 import innohack.gem.entity.GEMFile;
 import innohack.gem.example.util.FileUtil;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.List;
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.io.TikaInputStream;
@@ -10,10 +13,6 @@ import org.apache.tika.mime.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
-
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.List;
 
 public class TikaUtil {
 

@@ -1,12 +1,13 @@
 package innohack.gem.entity.feature;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import com.opencsv.CSVParser;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.enums.CSVReaderNullFieldIndicator;
 import com.opencsv.exceptions.CsvException;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -16,8 +17,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 /** Object to hold wrap csv data */
 public class CsvFeature extends AbstractFeature {

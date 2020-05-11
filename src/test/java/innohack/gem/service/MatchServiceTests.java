@@ -3,6 +3,7 @@ package innohack.gem.service;
 import com.google.common.collect.Lists;
 import innohack.gem.dao.IGEMFileDao;
 import innohack.gem.dao.IGroupDao;
+import innohack.gem.dao.MatchFileDao;
 import innohack.gem.entity.GEMFile;
 import innohack.gem.entity.match.MatchFileGroup;
 import innohack.gem.entity.match.MatchFileRule;
@@ -24,6 +25,7 @@ public class MatchServiceTests {
   @Autowired IGEMFileDao gemFileDao;
   @Autowired IGroupDao groupDao;
   @Autowired MatchService matchService;
+  @Autowired MatchFileDao matchFileDao;
   @Autowired GEMFileController gemFileController;
 
   Group ext_csv_group;
@@ -73,6 +75,7 @@ public class MatchServiceTests {
       groupDao.deleteGroup(group.getName());
       matchService.onUpdateEvent(group);
     }
+    matchFileDao.deleteAll();
 
     List<GEMFile> files = Lists.newArrayList(csvFile, csvcsvFile, txtFile, datFile);
     List<Group> groups = Lists.newArrayList(ext_csv_group, ext_dat_group, prefix_d_group);
@@ -188,6 +191,7 @@ public class MatchServiceTests {
     MatchService.getMatchFileGroupTable().clear();
     gemFileDao.deleteAll();
     groupDao.deleteAll();
+    matchFileDao.deleteAll();
   }
 
   private void printMatchedCount() {
