@@ -13,75 +13,130 @@ import "@blueprintjs/table/lib/css/table.css";
 import FileList from "./FileList";
 import { AxiosResponse } from "axios";
 
-export interface AddGroupRuleInput {
-  groupName: string;
-  rule: Rule;
-}
-export interface RemoveGroupRuleInput {
-  groupName: string;
-  rule: Rule;
-}
-
 export interface UpdateGroupNameInput {
   oldGroupName: string;
   newGroupName: string;
 }
 
-export interface UpdateRuleInput {
-  groupName: string;
-  oldRuleName: string;
-  newRuleName: string;
-  ruleParams: string[];
-}
-
 const INIT_GROUPS = "INIT_GROUPS";
 const NEW_GROUP = "NEW_GROUP";
 const REMOVE_GROUP = "REMOVE_GROUP";
-const ADD_GROUP_RULE = "ADD_GROUP_RULE";
-const REMOVE_GROUP_RULE = "REMOVE_GROUP_RULE";
+const UPDATE_GROUP_RULE = "UPDATE_GROUP_RULE";
 const UPDATE_GROUP_NAME = "UPDATE_GROUP_NAME";
-const UPDATE_RULE = "UPDATE_RULE";
 
 export type GroupAction =
   | { type: typeof INIT_GROUPS; groups: Group[] }
-  | { type: typeof NEW_GROUP }
+  | { type: typeof NEW_GROUP; group: Group }
   | { type: typeof REMOVE_GROUP; groupName: string }
-  | { type: typeof ADD_GROUP_RULE; addGroupRuleInput: AddGroupRuleInput }
+  | { type: typeof UPDATE_GROUP_RULE; group: Group }
   | {
       type: typeof UPDATE_GROUP_NAME;
       updateGroupNameInput: UpdateGroupNameInput;
-    }
-  | { type: typeof UPDATE_RULE; updateRuleInput: UpdateRuleInput }
-  | {
-      type: typeof REMOVE_GROUP_RULE;
-      removeGroupRuleInput: RemoveGroupRuleInput;
     };
 
 export abstract class GroupActions {
-  static initGroup(groups: Group[]): GroupAction {
-    return { type: INIT_GROUPS, groups };
+  static initGroup(dispatcher: React.Dispatch<GroupAction>) {
+    groupRuleService.getGroups().then((resp: AxiosResponse<Group[]>) => {
+      dispatcher({ type: INIT_GROUPS, groups: resp.data });
+    });
   }
-  static newGroupAction(): GroupAction {
-    return { type: NEW_GROUP };
+  static newGroup(
+    dispatcher: React.Dispatch<GroupAction>,
+    groups: Map<string, Group>
+  ) {
+    const name = "untitled";
+    let counter = 1;
+    const maxTries = 100;
+    while (counter < maxTries) {
+      const modName = name + "-" + counter;
+      if (!groups.has(modName)) {
+        const newGroup: Group = {
+          name: modName,
+          rules: []
+        };
+        groupRuleService.saveGroup(newGroup).then(response => {
+          dispatcher({ type: NEW_GROUP, group: response.data });
+        });
+        break;
+      } else {
+        counter++;
+      }
+    }
+    if (counter === maxTries) {
+      throw Error("(newGroup) too many tries");
+    }
   }
-  static removeGroup(groupName: string): GroupAction {
-    return { type: REMOVE_GROUP, groupName };
+
+  static removeGroup(
+    dispatcher: React.Dispatch<GroupAction>,
+    groupName: string
+  ) {
+    groupRuleService.deleteGroup(groupName).then(response => {
+      dispatcher({ type: REMOVE_GROUP, groupName });
+    });
   }
-  static addGroupRule(addGroupRuleInput: AddGroupRuleInput): GroupAction {
-    return { type: ADD_GROUP_RULE, addGroupRuleInput };
+
+  static addGroupRule(
+    dispatcher: React.Dispatch<GroupAction>,
+    groups: Map<string, Group>,
+    groupName: string,
+    rule: Rule
+  ) {
+    const group = groups.get(groupName);
+    if (group) {
+      group.rules = [...group.rules, rule];
+      groupRuleService.saveGroup(group).then(response => {
+        dispatcher({ type: UPDATE_GROUP_RULE, group });
+      });
+    }
   }
+
+  static updateGroupRule(
+    dispatcher: React.Dispatch<GroupAction>,
+    groups: Map<string, Group>,
+    group: Group,
+    oldRulename: string,
+    rule: Rule
+  ) {
+    if (rule.name !== oldRulename && rulenameExist(groups, rule.name)) {
+      alert("rulename already exist!");
+    }
+    const oldRule = group.rules.find(r => r.name === oldRulename);
+    if (oldRule) {
+      oldRule.name = rule.name;
+      oldRule.params = rule.params;
+      groupRuleService.saveGroup(group).then(response => {
+        dispatcher({ type: UPDATE_GROUP_RULE, group });
+      });
+    }
+  }
+
   static removeGroupRule(
-    removeGroupRuleInput: RemoveGroupRuleInput
-  ): GroupAction {
-    return { type: REMOVE_GROUP_RULE, removeGroupRuleInput };
+    dispatcher: React.Dispatch<GroupAction>,
+    group: Group,
+    ruleName: string
+  ) {
+    group.rules = group.rules.filter(r => {
+      return r.name !== ruleName;
+    });
+    groupRuleService.saveGroup(group).then(response => {
+      dispatcher({ type: UPDATE_GROUP_RULE, group });
+    });
   }
+
   static updateGroupName(
-    updateGroupNameInput: UpdateGroupNameInput
-  ): GroupAction {
-    return { type: UPDATE_GROUP_NAME, updateGroupNameInput };
-  }
-  static updateRule(updateRuleInput: UpdateRuleInput): GroupAction {
-    return { type: UPDATE_RULE, updateRuleInput };
+    dispatcher: React.Dispatch<GroupAction>,
+    oldGroupName: string,
+    newGroupName: string
+  ) {
+    groupRuleService
+      .updateGroupName(oldGroupName, newGroupName)
+      .then(response => {
+        dispatcher({
+          type: UPDATE_GROUP_NAME,
+          updateGroupNameInput: { oldGroupName, newGroupName }
+        });
+      });
   }
 }
 
@@ -90,104 +145,39 @@ export function groupsReducer(state: Map<string, Group>, action: GroupAction) {
     case INIT_GROUPS:
       return new Map(action.groups.map(g => [g.name, g]));
     case NEW_GROUP:
-      return handleNewGroup(state);
+      return handleNewGroup(state, action.group);
     case REMOVE_GROUP:
       return handleRemoveGroup(state, action.groupName);
-    case ADD_GROUP_RULE:
-      return handleAddGroupRule(state, action.addGroupRuleInput);
-    case REMOVE_GROUP_RULE:
-      return handleRemoveGroupRule(state, action.removeGroupRuleInput);
+    case UPDATE_GROUP_RULE:
+      return handleUpdateGroupRule(state, action.group);
     case UPDATE_GROUP_NAME:
       return handleUpdateGroupName(state, action.updateGroupNameInput);
-    case UPDATE_RULE:
-      return handleUpdateRule(state, action.updateRuleInput);
     default:
       throw new Error();
   }
 }
 
-function handleNewGroup(groups: Map<string, Group>): Map<string, Group> {
-  const name = "untitled";
-  let counter = 1;
-  while (true) {
-    const modName = name + "-" + counter;
-
-    if (!groups.has(modName)) {
-      // create new group
-      const newGroup: Group = {
-        name: modName,
-        rules: [],
-        matchedCount: 0
-      };
-      // update backend
-      groupRuleService.saveGroup(newGroup).then(response => {
-        if (response.status !== 200) {
-          alert("saveGroup fail with status: " + response.status);
-        }
-      });
-      return new Map(groups.set(modName, { name: modName, rules: [] }));
-    } else {
-      counter++;
-    }
-  }
+function handleNewGroup(
+  groups: Map<string, Group>,
+  group: Group
+): Map<string, Group> {
+  groups.set(group.name, group);
+  return new Map(groups);
 }
 
 function handleRemoveGroup(
   groups: Map<string, Group>,
   groupName: string
 ): Map<string, Group> {
-  const group = groups.get(groupName);
-  if (group) {
-    groupRuleService.deleteGroup(groupName).then(response => {
-      if (response.status !== 200) {
-        alert("deleteGroup fail with status: " + response.status);
-      }
-    });
-    groups.delete(groupName);
-    return new Map(groups);
-  } else {
-    return groups;
-  }
-}
-
-function handleAddGroupRule(
-  groups: Map<string, Group>,
-  input: AddGroupRuleInput
-): Map<string, Group> {
-  const group = groups.get(input.groupName);
-  if (group) {
-    group.rules = [...group.rules, input.rule];
-
-    groupRuleService.saveGroup(group).then(response => {
-      if (response.status !== 200) {
-        alert("saveGroup fail with status: " + response.status);
-      }
-    });
-    groups.set(input.groupName, group);
-  }
+  groups.delete(groupName);
   return new Map(groups);
 }
 
-function handleRemoveGroupRule(
+function handleUpdateGroupRule(
   groups: Map<string, Group>,
-  input: RemoveGroupRuleInput
+  group: Group
 ): Map<string, Group> {
-  const group = groups.get(input.groupName);
-  if (group) {
-    const ruleName = input.rule.name;
-    group.rules = group.rules.filter(r => {
-      return r.name !== ruleName;
-    });
-    groupRuleService.saveGroup(group).then(response => {
-      if (response.status !== 200) {
-        alert(
-          "Unable to remove rule: saveGroup fail with status: " +
-            response.status
-        );
-      }
-    });
-    groups.set(input.groupName, group);
-  }
+  groups.set(group.name, group);
   return new Map(groups);
 }
 
@@ -197,46 +187,12 @@ function handleUpdateGroupName(
 ): Map<string, Group> {
   const group = groups.get(input.oldGroupName);
   if (group) {
-    groupRuleService
-      .updateGroupName(input.oldGroupName, input.newGroupName)
-      .then(response => {
-        if (response.status !== 200) {
-          alert("updateGroupName fail with status: " + response.status);
-          console.log("updateGroupName fail with status: " + response.status);
-        }
-      });
     groups.delete(input.oldGroupName);
     group.name = input.newGroupName;
     return new Map([...groups.set(input.newGroupName, group).entries()].sort());
   } else {
     return groups;
   }
-}
-
-function handleUpdateRule(
-  groups: Map<string, Group>,
-  input: UpdateRuleInput
-): Map<string, Group> {
-  if (
-    input.oldRuleName !== input.newRuleName &&
-    rulenameExist(groups, input.newRuleName)
-  ) {
-    alert("rulename already exist!");
-  } else {
-    const group = groups.get(input.groupName);
-    if (group) {
-      const rule = group.rules.find(r => r.name === input.oldRuleName);
-      if (rule) {
-        rule.name = input.newRuleName;
-        rule.params = input.ruleParams.map(p => {
-          return { value: p };
-        });
-        groupRuleService.saveGroup(group).then();
-      }
-    }
-  }
-
-  return groups;
 }
 
 export function rulenameExist(
@@ -255,16 +211,13 @@ const EditGroups: FunctionComponent<RouteComponentProps> = () => {
     groupsReducer,
     new Map<string, Group>()
   );
+
   const [newGroupRuleName, setNewGroupRuleName] = useState<string | null>(null);
   const [currentGroup, setCurrentGroup] = useState<Group | null>(null);
   const [files, setFiles] = useState<File[]>([]);
 
   useEffect(() => {
-    if (groups.size === 0) {
-      groupRuleService.getGroups().then((resp: AxiosResponse<Group[]>) => {
-        dispatcher(GroupActions.initGroup(resp.data));
-      });
-    }
+    GroupActions.initGroup(dispatcher);
   }, []);
 
   useEffect(() => {

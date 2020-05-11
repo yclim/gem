@@ -1,5 +1,13 @@
 import React, { Dispatch, FunctionComponent } from "react";
-import { Button, AnchorButton, Card, Elevation, FileInput, Intent, Tag } from "@blueprintjs/core";
+import {
+  Button,
+  AnchorButton,
+  Card,
+  Elevation,
+  FileInput,
+  Intent,
+  Tag
+} from "@blueprintjs/core";
 import { Group } from "./api";
 import groupRuleService from "./api/GroupRuleService";
 import GroupCard from "./GroupCard";
@@ -20,20 +28,16 @@ const GroupList: FunctionComponent<IProps> = ({
   setCurrentGroup,
   newGroupRuleName
 }) => {
-  function createGroup() {
-    groupDispatcher(GroupActions.newGroupAction());
+  function handleCreateGroup() {
+    GroupActions.newGroup(groupDispatcher, groups);
   }
 
-  function handleFileSelected(evt) {
-    const selectedFile = evt.target.files[0];
+  function handleFileSelected(file: string) {
+    const selectedFile = file;
     const data = new FormData();
-    data.append('file', selectedFile);
+    data.append("file", selectedFile);
     groupRuleService.importGroupsFile(data).then(results => {
-      if(results.status===200) {
-        groupDispatcher(GroupActions.initGroup(results.data));
-      } else {
-        alert('Import failed');
-      }
+      GroupActions.initGroup(results.data);
     });
   }
 
@@ -44,13 +48,23 @@ const GroupList: FunctionComponent<IProps> = ({
           icon="add"
           large={false}
           text="Create Group"
-          onClick={() => createGroup()}
+          onClick={() => handleCreateGroup()}
           className="add-right-margin"
         />
-        <AnchorButton icon="export" text="Export Spec" href="/api/group/export" />
+        <AnchorButton
+          icon="export"
+          text="Export Spec"
+          href="/api/group/export"
+        />
       </div>
       <div>
-        <FileInput text="Choose spec file..." buttonText="Import" onInputChange={(evt) => handleFileSelected(evt)} />
+        <FileInput
+          text="Choose spec file..."
+          buttonText="Import"
+          onInputChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            handleFileSelected(e.target.value)
+          }
+        />
       </div>
       <div className="stack">
         {Array.from(groups, ([k, v]) => v)
@@ -71,6 +85,7 @@ const GroupList: FunctionComponent<IProps> = ({
               focusGroup={currentGroup}
               setFocusGroup={setCurrentGroup}
               newGroupRuleName={newGroupRuleName}
+              groups={groups}
             />
           ))}
         <Card

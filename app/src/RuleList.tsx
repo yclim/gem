@@ -1,11 +1,5 @@
-import React, {
-  ChangeEvent,
-  Dispatch,
-  FunctionComponent,
-  useEffect,
-  useState
-} from "react";
-import { Group, Parameter, Rule } from "./api";
+import React, { Dispatch, FunctionComponent, useEffect, useState } from "react";
+import { Group, Rule } from "./api";
 import groupRuleService from "./api/GroupRuleService";
 import {
   Alignment,
@@ -13,7 +7,6 @@ import {
   ButtonGroup,
   Dialog,
   Divider,
-  InputGroup,
   Menu,
   MenuDivider,
   MenuItem,
@@ -47,11 +40,11 @@ const RuleList: FunctionComponent<IProps> = ({
 
   function addRuleToGroup() {
     if (currentRule && currentGroup) {
-      groupDispatcher(
-        GroupActions.addGroupRule({
-          groupName: currentGroup.name,
-          rule: currentRule
-        })
+      GroupActions.addGroupRule(
+        groupDispatcher,
+        groups,
+        currentGroup.name,
+        currentRule
       );
       setNewGroupRuleName(currentRule.name);
       setCurrentRule(null);
