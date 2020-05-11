@@ -20,6 +20,7 @@ public class CSVExtractor extends AbstractExtractor {
 
   @Override
   public ExtractedRecords extract(GEMFile f) throws Exception {
+    f.extract();
     for(AbstractFeature feature: f.getData()) {
       if(feature instanceof CsvFeature) {
         List<String> extractColumns = getExtractConfig().getNamesColumn();
@@ -27,7 +28,7 @@ public class CSVExtractor extends AbstractExtractor {
         
         ExtractedRecords results = new ExtractedRecords();
         List<List<String>> rows = ((CsvFeature) feature).getTableData();
-        for(int i=0; i<rows.size(); i++)
+        for(int i=1; i<rows.size(); i++)
           results.getRecords().add(Lists.newArrayList());
         List<String> columns = ((CsvFeature) feature).getHeaders();
         for(int i=0; i<columns.size(); i++) {
@@ -57,12 +58,12 @@ public class CSVExtractor extends AbstractExtractor {
       formatter = new SimpleDateFormat(dateFormat);
     
     results.getHeaders().add(name);
-    for(int i=0; i<rows.size(); i++) {
+    for(int i=1; i<rows.size(); i++) {
       String value = rows.get(i).get(columnIdx);
       if(formatter!=null) {
         value = String.valueOf(formatter.parse(value).getTime());
       }
-      results.getRecords().get(i).add(value);
+      results.getRecords().get(i-1).add(value);
     }
   }
   

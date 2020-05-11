@@ -1,12 +1,17 @@
 package innohack.gem.entity.extractor;
 
-import java.util.ArrayList;
+import com.beust.jcommander.internal.Lists;
 import java.util.List;
 
 public class ExtractConfig {
   private String name;
   private List<String> namesColumn;
   private List<TimestampColumn> timestampColumn;
+  
+  public ExtractConfig() {
+    namesColumn = Lists.newArrayList();
+    timestampColumn = Lists.newArrayList();
+  }
 
   public String getName() {
     return name;
@@ -25,28 +30,18 @@ public class ExtractConfig {
   }
 
   public void addColumnNames(String value) {
-    if (namesColumn == null) {
-      namesColumn = new ArrayList<>();
-    }
     namesColumn.add(value);
   }
 
   public void removeColumnName(String value) {
-    if (namesColumn != null) {
-      namesColumn.remove(value);
-    }
+    namesColumn.remove(value);
   }
 
   public void addColumnTimestamp(TimestampColumn value) {
-    if (timestampColumn == null) {
-      timestampColumn = new ArrayList<>();
-    }
     timestampColumn.add(value);
   }
 
   public void removeColumnTimestamp(TimestampColumn value) {
-    if (timestampColumn != null) {
-      timestampColumn.remove(value);
-    }
+    timestampColumn.remove(value);
   }
 }

@@ -29,7 +29,7 @@ public class ExtractService {
       
       ExtractedFile ef = new ExtractedFile();
       ef.setFilename(f.getFileName());
-      ef.setCount(0); //TODO get this from the Extractor?
+      ef.setCount(0); //TODO get this from the XXXExtractor?
       return ef;
     }).collect(Collectors.toList());
   }
