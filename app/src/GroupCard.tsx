@@ -14,7 +14,7 @@ import {
   Tag
 } from "@blueprintjs/core";
 import { Group, Rule } from "./api";
-import { GroupAction, GroupActions, rulenameExist } from "./EditGroups";
+import {CounterAction, CounterActions, GroupAction, GroupActions, rulenameExist} from "./EditGroups";
 import RuleForm from "./RuleForm";
 import groupRuleService from "./api/GroupRuleService";
 
@@ -25,6 +25,8 @@ interface IProps {
   setFocusGroup: (g: Group) => void;
   newGroupRuleName: string | null;
   groups: Map<string, Group>;
+  countDispatcher: Dispatch<CounterAction>;
+  fileStat: number[];
 }
 const GroupCard: FunctionComponent<IProps> = ({
   group,
@@ -32,7 +34,9 @@ const GroupCard: FunctionComponent<IProps> = ({
   focusGroup,
   setFocusGroup,
   newGroupRuleName,
-  groups
+  groups,
+  countDispatcher,
+  fileStat
 }) => {
   const [grp, setGrp] = useState(group);
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -83,10 +87,12 @@ const GroupCard: FunctionComponent<IProps> = ({
 
   function handleConfirm() {
     GroupActions.updateGroupName(groupDispatcher, group.name, grp.name);
+    CounterActions.getFileStat(countDispatcher);
   }
 
   function handleDeleteGroup() {
     GroupActions.removeGroup(groupDispatcher, grp.name);
+    CounterActions.getFileStat(countDispatcher);
   }
 
   function handleDialogOpen(r: Rule) {
@@ -108,6 +114,7 @@ const GroupCard: FunctionComponent<IProps> = ({
         selectedRule.name,
         editRule
       );
+      CounterActions.getFileStat(countDispatcher);
     }
 
     setIsOpen(false);
@@ -115,6 +122,7 @@ const GroupCard: FunctionComponent<IProps> = ({
 
   function handleDeleteGroupRule(curGrp: Group, rule: Rule) {
     GroupActions.removeGroupRule(groupDispatcher, group, rule.name);
+    CounterActions.getFileStat(countDispatcher);
   }
 
   return (
@@ -137,7 +145,7 @@ const GroupCard: FunctionComponent<IProps> = ({
           />
         </div>
         <div className="counter">
-          <Tag round={true}>123</Tag>
+          <Tag round={true}>{group.matchedCount}</Tag>
         </div>
       </div>
       <div>

@@ -243,6 +243,14 @@ public class MatchService {
     }
   }
 
+  public int[] getFileStat() {
+    calculateAbnormalMatchCount();
+    int[] intArr = new int[2];
+    intArr[0] = filesWithoutMatch.size();
+    intArr[1] = filesWithConflictMatch.size();
+    return intArr;
+  }
+
   public List<GEMFile> getFilesWithConflictMatch() {
     return filesWithConflictMatch;
   }
