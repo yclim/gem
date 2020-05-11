@@ -20,7 +20,7 @@ class GroupRuleService extends Api {
 
   public getRule(ruleId: string): Promise<AxiosResponse<Rule>> {
     return this.get<Rule>("rule", {
-      params: {setNewGroupRuleName
+      params: {
         ruleId
       }
     });
