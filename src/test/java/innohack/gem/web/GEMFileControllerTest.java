@@ -22,6 +22,8 @@ public class GEMFileControllerTest {
 
   @Test
   public void testSync() throws Exception {
+    gemFileDao.deleteAll();
+    groupDao.deleteAll();
     gemFileDao.setSyncStatus(1);
     gemFileController.sync("src/test/resources");
     Thread.sleep(1000);
