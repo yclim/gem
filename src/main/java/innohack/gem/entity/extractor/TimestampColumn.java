@@ -1,6 +1,8 @@
 package innohack.gem.entity.extractor;
 
 public class TimestampColumn {
+  
+  private static final String DEFAULT_TIMEZONE = "GMT+8";
 
   private String name;
   
@@ -8,16 +10,23 @@ public class TimestampColumn {
   
   private String format;
   
+  private String timezeone; //Optional for users
+  
   
   public TimestampColumn() {
-    
+    this(null, null, null);
   }
 
   public TimestampColumn(String name, String fromColumn, String format) {
+    this(name, fromColumn, format, DEFAULT_TIMEZONE);
+  }
+  
+  public TimestampColumn(String name, String fromColumn, String format, String timezone) {
     super();
     this.name = name;
     this.fromColumn = fromColumn;
     this.format = format;
+    this.timezeone = timezone;
   }
 
   public String getName() {
@@ -42,6 +51,14 @@ public class TimestampColumn {
 
   public void setFormat(String format) {
     this.format = format;
+  }
+
+  public String getTimezeone() {
+    return timezeone;
+  }
+
+  public void setTimezeone(String timezeone) {
+    this.timezeone = timezeone;
   }
 
   @Override

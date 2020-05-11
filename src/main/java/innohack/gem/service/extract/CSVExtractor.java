@@ -11,6 +11,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.TimeZone;
 
 public class CSVExtractor extends AbstractExtractor {
 
@@ -38,7 +39,7 @@ public class CSVExtractor extends AbstractExtractor {
           }
           for(TimestampColumn extractTSColumn: extractTSColumns) {
             if(extractTSColumn.getFromColumn().equals(column)) {
-              populate(results, rows, i, extractTSColumn.getName(), extractTSColumn.getFormat());
+              populate(results, rows, i, extractTSColumn.getName(), extractTSColumn.getFormat(), extractTSColumn.getTimezeone());
             }
           }
         }
@@ -49,13 +50,15 @@ public class CSVExtractor extends AbstractExtractor {
   }
 
   private void populate(ExtractedRecords results, List<List<String>> rows, int columnIdx, String name) throws ParseException {
-    populate(results, rows, columnIdx, name, null);
+    populate(results, rows, columnIdx, name, null, null);
   }
   
-  private void populate(ExtractedRecords results, List<List<String>> rows, int columnIdx, String name, String dateFormat) throws ParseException {
+  private void populate(ExtractedRecords results, List<List<String>> rows, int columnIdx, String name, String dateFormat, String timezone) throws ParseException {
     DateFormat formatter = null;
-    if(dateFormat!=null)
+    if(dateFormat!=null) {
       formatter = new SimpleDateFormat(dateFormat);
+      formatter.setTimeZone(TimeZone.getTimeZone(timezone));
+    }
     
     results.getHeaders().add(name);
     for(int i=1; i<rows.size(); i++) {
