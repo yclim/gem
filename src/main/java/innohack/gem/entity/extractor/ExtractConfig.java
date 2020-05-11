@@ -6,7 +6,7 @@ import java.util.List;
 public class ExtractConfig {
   private String name;
   private List<String> namesColumn;
-  private List<String> timestampColumn;
+  private List<TimestampColumn> timestampColumn;
 
   public String getName() {
     return name;
@@ -14,6 +14,14 @@ public class ExtractConfig {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public List<String> getNamesColumn() {
+    return namesColumn;
+  }
+
+  public List<TimestampColumn> getTimestampColumn() {
+    return timestampColumn;
   }
 
   public void addColumnNames(String value) {
@@ -29,14 +37,14 @@ public class ExtractConfig {
     }
   }
 
-  public void addColumnTimestamp(String value) {
+  public void addColumnTimestamp(TimestampColumn value) {
     if (timestampColumn == null) {
       timestampColumn = new ArrayList<>();
     }
     timestampColumn.add(value);
   }
 
-  public void removeColumnTimestamp(String value) {
+  public void removeColumnTimestamp(TimestampColumn value) {
     if (timestampColumn != null) {
       timestampColumn.remove(value);
     }

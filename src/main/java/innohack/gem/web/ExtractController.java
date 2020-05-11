@@ -20,17 +20,17 @@ public class ExtractController {
   @Autowired private ExtractService extractService;
 
   @PostMapping("/{groupId}")
-  public List<ExtractedFile> extract(@PathVariable String groupId) {
+  public List<ExtractedFile> extract(@PathVariable int groupId) {
     return extractService.extract(groupId);
   }
   
   @PostMapping("/{groupId}/{filename}")
-  public ExtractedRecords getExtractedRecords(@PathVariable String groupId, @PathVariable String filename) {
-    return extractService.extractRecords(groupId);
+  public ExtractedRecords getExtractedRecords(@PathVariable int groupId, @PathVariable String filename) {
+    return extractService.extractRecords(groupId, filename);
   }
   
   @PutMapping("/config/{groupId}")
-  public ExtractConfig updateExtractConfig(@PathVariable String groupId, @RequestBody ExtractConfig config) {
+  public ExtractConfig updateExtractConfig(@PathVariable int groupId, @RequestBody ExtractConfig config) {
     return extractService.updateExtractConfig(groupId, config);
   }
   

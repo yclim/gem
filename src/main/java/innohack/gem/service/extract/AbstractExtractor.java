@@ -1,6 +1,7 @@
-package innohack.gem.entity.extractor;
+package innohack.gem.service.extract;
 
 import innohack.gem.entity.GEMFile;
+import innohack.gem.entity.extractor.ExtractConfig;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;

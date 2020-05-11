@@ -1,11 +1,12 @@
-package innohack.gem.entity.extractor;
+package innohack.gem.service.extract;
 
 import innohack.gem.entity.GEMFile;
+import innohack.gem.entity.extractor.ExtractConfig;
 import java.util.List;
 
-public class CSVExtractor extends AbstractExtractor {
+public class ExcelExtractor extends AbstractExtractor {
 
-  public CSVExtractor(ExtractConfig extractConfig) {
+  public ExcelExtractor(ExtractConfig extractConfig) {
     this.setExtractConfig(extractConfig);
   }
 
