@@ -2,7 +2,7 @@ package innohack.gem.service.extract;
 
 import innohack.gem.entity.GEMFile;
 import innohack.gem.entity.extractor.ExtractConfig;
-import java.util.List;
+import innohack.gem.entity.extractor.ExtractedRecords;
 
 public class ExcelExtractor extends AbstractExtractor {
 
@@ -11,7 +11,7 @@ public class ExcelExtractor extends AbstractExtractor {
   }
 
   @Override
-  public List<List<String>> extract(GEMFile f) throws Exception {
+  public ExtractedRecords extract(GEMFile f) throws Exception {
     return null;
   }
 }

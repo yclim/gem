@@ -2,8 +2,7 @@ package innohack.gem.service.extract;
 
 import innohack.gem.entity.GEMFile;
 import innohack.gem.entity.extractor.ExtractConfig;
-import java.util.ArrayList;
-import java.util.List;
+import innohack.gem.entity.extractor.ExtractedRecords;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,5 +19,5 @@ public abstract class AbstractExtractor {
     this.extractConfig = extractConfig;
   }
 
-  public abstract List<List<String>> extract(GEMFile f) throws Exception;
+  public abstract ExtractedRecords extract(GEMFile f) throws Exception;
 }
