@@ -45,13 +45,17 @@ public class GroupDao implements IGroupDao {
 
   @Override
   public boolean updateGroupName(String oldGroupName, String newGroupName) {
-    if (featureStore.containsKey(oldGroupName)) {
-      Group existingGroup = featureStore.get(oldGroupName);
-      featureStore.remove(oldGroupName);
-      existingGroup.setName(newGroupName);
-      featureStore.put(existingGroup.getName(), existingGroup);
-      featureStoreId.put(existingGroup.getGroupId(), existingGroup.getName());
-      return true;
+    if (!featureStore.containsKey(newGroupName)) {
+      if (featureStore.containsKey(oldGroupName)) {
+        Group existingGroup = featureStore.get(oldGroupName);
+        featureStore.remove(oldGroupName);
+        existingGroup.setName(newGroupName);
+        featureStore.put(existingGroup.getName(), existingGroup);
+        featureStoreId.put(existingGroup.getGroupId(), existingGroup.getName());
+        return true;
+      } else {
+        return false;
+      }
     } else {
       return false;
     }

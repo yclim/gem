@@ -41,13 +41,17 @@ public class GroupRockDao implements IGroupDao {
 
   @Override
   public boolean updateGroupName(String oldGroupName, String newGroupName) {
-    Group existingGroup = getGroup(oldGroupName);
-    if (existingGroup != null) {
-      groupDb.delete(oldGroupName);
-      existingGroup.setName(newGroupName);
-      groupDb.put(existingGroup.getName(), existingGroup);
-      groupIdDb.put(existingGroup.getGroupId(), existingGroup.getName());
-      return true;
+    if (getGroup(newGroupName) == null) {
+      Group existingGroup = getGroup(oldGroupName);
+      if (existingGroup != null) {
+        groupDb.delete(oldGroupName);
+        existingGroup.setName(newGroupName);
+        groupDb.put(existingGroup.getName(), existingGroup);
+        groupIdDb.put(existingGroup.getGroupId(), existingGroup.getName());
+        return true;
+      } else {
+        return false;
+      }
     } else {
       return false;
     }
