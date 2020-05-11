@@ -2,7 +2,7 @@ package innohack.gem.entity.extractor;
 
 public class TimestampColumn {
   
-  private static final String DEFAULT_TIMEZONE = "GMT+8";
+  public static final String DEFAULT_TIMEZONE = "GMT+8";
 
   private String name;
   
