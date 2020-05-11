@@ -143,8 +143,8 @@ public class MatchService {
   private void onUpdateFile(GEMFile updatedFile) {
     Map<String, Group> groupToSave = new HashMap();
     List<Group> groupList = groupDao.getGroups();
-    String fileKey = updatedFile.getAbsolutePath();
-    GEMFile storedFile = gemFileDao.getFileByAbsolutePath(fileKey);
+    GEMFile fileKey = new GEMFile(updatedFile.getAbsolutePath());
+    GEMFile storedFile = gemFileDao.getFileByAbsolutePath(updatedFile.getAbsolutePath());
     if (storedFile != null) {
       // on new file added
       for (Group group : groupList) {
@@ -171,8 +171,8 @@ public class MatchService {
           groupToSave.put(group.getName(), group);
         }
       }
-      matchFileRuleTable.remove(fileKey);
-      matchFileGroupTable.remove(fileKey);
+      matchFileRuleTable.remove(fileKey.getAbsolutePath());
+      matchFileGroupTable.remove(fileKey.getAbsolutePath());
     }
     groupDao.saveGroups(groupToSave);
   }
@@ -185,7 +185,7 @@ public class MatchService {
       // on new or update grouprule
       boolean groupUpdated = false;
       for (GEMFile gemFile : gemFileList) {
-        String fileKey = gemFile.getAbsolutePath();
+        GEMFile fileKey = new GEMFile(gemFile.getAbsolutePath());
         // perform matching, if file match the group, add the file to the group's list else remove
         // it
         if (checkMatching(storedGroupRule, gemFile)) {

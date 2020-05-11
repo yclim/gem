@@ -13,6 +13,12 @@ class GroupRuleService extends Api {
 
   public getFileStat(): Promise<AxiosResponse<number[]>> {
     return this.get<number[]>("group/getFileStat");
+
+  public getGroup(name: string): Promise<AxiosResponse<Group>> {
+    return this.get<Group>("group/name", { params: {
+                                             name
+                                           }
+                                         });
   }
 
   public getRule(ruleId: string): Promise<AxiosResponse<Rule>> {
