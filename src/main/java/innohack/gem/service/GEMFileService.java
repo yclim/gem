@@ -44,8 +44,9 @@ public class GEMFileService {
   public synchronized List<GEMFile> syncFiles(String folderPath) {
     LOGGER.debug("Syncing from folder {}: {}", folderPath, new File(folderPath).exists());
 
-    List<GEMFile> oldfilelist = gemFileDao.getFiles();
-    List<GEMFile> newFilelist = gemFileDao.getLocalFiles(folderPath);
+    final List<GEMFile> oldfilelist = gemFileDao.getFiles();
+    final List<GEMFile> newFilelist = gemFileDao.getLocalFiles(folderPath);
+    Collections.sort(newFilelist);
     if (getSyncProgress() == 1) {
       gemFileDao.setSyncStatus(0);
       syncFileService.setNewFilelist(newFilelist);
@@ -53,7 +54,6 @@ public class GEMFileService {
       Thread syncThread = new Thread(syncFileService);
       syncThread.start();
     }
-    Collections.sort(newFilelist);
     return newFilelist;
   }
 

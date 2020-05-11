@@ -96,24 +96,24 @@ public class MatchServiceTests {
       for (Group group : groupDao.getGroups()) {
         System.out.println(
             group.getName() + " matched file count: " + group.getMatchedFile().size());
-        for (String f : group.getMatchedFile()) {
-          System.out.println(f);
+        for (GEMFile f : group.getMatchedFile()) {
+          System.out.println(f.getAbsolutePath());
         }
       }
       System.out.println("=====================");
     }
     // ext_csv_group: check matched list
-    List<String> matchedFiles = groupDao.getGroup(ext_csv_group.getGroupId()).getMatchedFile();
-    assert (matchedFiles.contains(csvFile.getAbsolutePath()));
-    assert (matchedFiles.contains(csvcsvFile.getAbsolutePath()));
+    List<GEMFile> matchedFiles = groupDao.getGroup(ext_csv_group.getGroupId()).getMatchedFile();
+    assert (matchedFiles.contains(new GEMFile(csvFile.getAbsolutePath())));
+    assert (matchedFiles.contains(new GEMFile(csvcsvFile.getAbsolutePath())));
     assert (matchedFiles.size() == 2);
     // ext_dat_group: check matched list
     matchedFiles = groupDao.getGroup(ext_dat_group.getGroupId()).getMatchedFile();
-    assert (matchedFiles.contains(datFile.getAbsolutePath()));
+    assert (matchedFiles.contains(new GEMFile(datFile.getAbsolutePath())));
     assert (matchedFiles.size() == 1);
     // prefix_d_group: check matched list
     matchedFiles = groupDao.getGroup(prefix_d_group.getGroupId()).getMatchedFile();
-    assert (matchedFiles.contains(datFile.getAbsolutePath()));
+    assert (matchedFiles.contains(new GEMFile(datFile.getAbsolutePath())));
     assert (matchedFiles.size() == 1);
 
     boolean exist = false;
@@ -193,8 +193,8 @@ public class MatchServiceTests {
   private void printMatchedCount() {
     for (Group group : groupDao.getGroups()) {
       System.out.println(group.getName() + " matched file count: " + group.getMatchedFile().size());
-      for (String path : group.getMatchedFile()) {
-        System.out.println(path);
+      for (GEMFile file : group.getMatchedFile()) {
+        System.out.println(file.getAbsolutePath());
       }
     }
   }
