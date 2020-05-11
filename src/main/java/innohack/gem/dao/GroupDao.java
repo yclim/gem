@@ -29,6 +29,11 @@ public class GroupDao implements IGroupDao {
   }
 
   @Override
+  public Map<Integer, String> getGroupIds() {
+    return featureStoreId;
+  }
+
+  @Override
   public Group getGroup(int groupId) {
     for (Group group : featureStore.values()) {
       if (group.getGroupId() == groupId) {
