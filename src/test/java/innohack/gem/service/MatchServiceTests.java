@@ -13,6 +13,7 @@ import innohack.gem.entity.rule.rules.Rule;
 import innohack.gem.web.GEMFileController;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -115,23 +116,31 @@ public class MatchServiceTests {
     assert (matchedFiles.contains(datFile.getAbsolutePath()));
     assert (matchedFiles.size() == 1);
 
+    boolean exist = false;
     // prefix_d_group: check conflict and file not matched
-    matchService.calculateAbnormalMatchCount();
-    System.out.println(
-        "matchService.getFilesWithoutMatch: " + matchService.getFilesWithoutMatch().size());
-    for (GEMFile f : matchService.getFilesWithoutMatch()) {
-      System.out.println(f.getAbsolutePath());
+    Map<String, List<MatchFileGroup>> countResult = matchService.getMatchCount();
+    System.out.println("matchService.getFilesWithoutMatch: ");
+    for (MatchFileGroup mfg : countResult.get(MatchService.NO_MATCH_TAG)) {
+      System.out.println(mfg.getFilePath());
+      if (mfg.getFilePath().equals(txtFile.getAbsolutePath())) {
+        exist = true;
+        break;
+      }
     }
-    System.out.println(
-        "matchService.getFilesWithConflictMatch: "
-            + matchService.getFilesWithConflictMatch().size());
-    for (GEMFile f : matchService.getFilesWithConflictMatch()) {
-      System.out.println(f.getAbsolutePath());
-    }
-    List<GEMFile> filesWithoutMatch = matchService.getFilesWithoutMatch();
-    assert (filesWithoutMatch.contains(txtFile));
     assert (matchService.getFilesWithoutMatch().size() == 1);
-    assert (matchService.getFilesWithConflictMatch().contains(datFile));
+    assert (exist);
+
+    exist = false;
+    System.out.println("matchService.getFilesWithConflictMatch: ");
+    for (MatchFileGroup mfg : countResult.get(MatchService.CONFLICT_TAG)) {
+      System.out.println(mfg.getFilePath());
+      if (mfg.getFilePath().equals(datFile.getAbsolutePath())) {
+        exist = true;
+        break;
+      }
+    }
+
+    assert (exist);
     assert (matchService.getFilesWithConflictMatch().size() == 1);
 
     MatchFileRule matchFileRule =

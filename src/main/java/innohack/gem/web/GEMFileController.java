@@ -1,9 +1,12 @@
 package innohack.gem.web;
 
 import innohack.gem.entity.GEMFile;
+import innohack.gem.entity.match.MatchFileGroup;
 import innohack.gem.service.GEMFileService;
 import innohack.gem.service.GroupService;
+import innohack.gem.service.MatchService;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class GEMFileController {
 
   @Autowired private GEMFileService fileService;
+  @Autowired private MatchService matchService;
   @Autowired private GroupService groupService;
 
   /**
@@ -97,5 +101,10 @@ public class GEMFileController {
   @RequestMapping("/extensions/list")
   public List<String> getFileTypes() {
     return fileService.getFileTypes();
+  }
+
+  @RequestMapping("/noMatches")
+  public Map<String, List<MatchFileGroup>> getNoMatchesFile() {
+    return matchService.getMatchCount();
   }
 }

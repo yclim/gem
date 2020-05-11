@@ -29,6 +29,11 @@ public class GroupRockDao implements IGroupDao {
   }
 
   @Override
+  public Map<Integer, String> getGroupIds() {
+    return groupIdDb.getKeyValues();
+  }
+
+  @Override
   public Group getGroup(int groupId) {
     String groupName = (String) groupIdDb.get(groupId);
     return (Group) groupDb.get(groupName);

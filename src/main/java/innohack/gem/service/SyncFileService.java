@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ExtractFileService implements Runnable {
-  private static final Logger LOGGER = LoggerFactory.getLogger(ExtractFileService.class);
+public class SyncFileService implements Runnable {
+  private static final Logger LOGGER = LoggerFactory.getLogger(SyncFileService.class);
   @Autowired private IGEMFileDao gemFileDao;
   @Autowired private MatchService matcheService;
   @Autowired private GroupService groupService;
