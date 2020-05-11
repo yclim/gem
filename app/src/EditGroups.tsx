@@ -86,7 +86,7 @@ export abstract class GroupActions {
     if (group) {
       group.rules = [...group.rules, rule];
       groupRuleService.saveGroup(group).then(response => {
-        dispatcher({ type: UPDATE_GROUP_RULE, group });
+        dispatcher({ type: UPDATE_GROUP_RULE, group: response.data  });
       });
     }
   }
@@ -106,7 +106,7 @@ export abstract class GroupActions {
       oldRule.name = rule.name;
       oldRule.params = rule.params;
       groupRuleService.saveGroup(group).then(response => {
-        dispatcher({ type: UPDATE_GROUP_RULE, group });
+        dispatcher({ type: UPDATE_GROUP_RULE, group: response.data });
       });
     }
   }
@@ -221,8 +221,21 @@ const EditGroups: FunctionComponent<RouteComponentProps> = () => {
   }, []);
 
   useEffect(() => {
-    // TODO: call api to get all files that matched the group
-  }, [currentGroup]);
+    if(currentGroup != null){
+        groupRuleService
+          .getGroup(currentGroup.name)
+          .then(response => {
+                // Check for undefined to takecare of deleted group
+                if (typeof response.data.matchedFile !== 'undefined') {
+                    setFiles(response.data.matchedFile);
+                } else {
+                    setFiles([]);
+                }
+          });
+    } else {
+        setFiles([]);
+    }
+  }, [currentGroup, groups]);
 
   return (
     <div className="grid3">
