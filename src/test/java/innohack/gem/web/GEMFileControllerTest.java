@@ -31,7 +31,6 @@ public class GEMFileControllerTest {
     gemFileDao.deleteAll();
     groupDao.deleteAll();
     matchFileDao.deleteAll();
-
     gemFileDao.setSyncStatus(1);
     gemFileController.sync("src/test/resources/sync");
     Thread.sleep(1000);

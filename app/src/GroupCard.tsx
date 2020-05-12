@@ -14,8 +14,8 @@ import {
   Tag
 } from "@blueprintjs/core";
 import { Group, Rule } from "./api";
-import {GroupAction, GroupActions, rulenameExist} from "./EditGroups";
-import {FileStatAction, FileStatActions} from "./FileStat";
+import { GroupAction, GroupActions, rulenameExist } from "./EditGroups";
+import { FileStatAction, FileStatActions } from "./FileStat";
 import RuleForm from "./RuleForm";
 import groupRuleService from "./api/GroupRuleService";
 

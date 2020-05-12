@@ -51,6 +51,7 @@ public class GroupServiceTest {
 
   @Test
   public void testSync() throws Exception {
+    groupDao.deleteAll();
     groupService.saveGroup(ext_csv_group);
     int id = ext_csv_group.getGroupId();
     String oldname = ext_csv_group.getName();
@@ -62,7 +63,6 @@ public class GroupServiceTest {
     groupService.saveGroup(ext_csv_group);
     assertTrue(groupService.getGroup(id).getName().equals(newname));
     groupService.deleteGroup(ext_csv_group.getName());
-
     groupDao.deleteAll();
   }
 }

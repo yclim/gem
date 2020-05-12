@@ -51,7 +51,7 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
 
   function renderTable(tableData: string[][]) {
     return (
-      <div className="detail-box">
+      <div className="vertical-scroll-only">
         <table className="bp3-html-table bp3-html-table-striped bp3-small">
           <thead>
             <tr>
@@ -80,7 +80,7 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
     const pairs = keys.map((k, i) => [k, values[i]]);
 
     return (
-      <div className="detail-box">
+      <div className="vertical-scroll-only">
         <table className="bp3-html-table bp3-html-table-striped keyval-table">
           <thead>
             <tr>
@@ -146,7 +146,7 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
       if (index > -1) {
         const data = currentFile.data[index] as CsvFeature;
         return (
-          <div className="vertical-container">
+          <div className="vertical-scroll-only">
             {renderTable(data.tableData)}
           </div>
         );
@@ -171,20 +171,22 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
         const sheetsTables = sheets.map((s, i) => [s, tables[i]]);
 
         return (
-          <Tabs
-            id="ExcelSheetTabs"
-            selectedTabId={activeExcelTab}
-            onChange={handleExcelTabChange}
-          >
-            {sheetsTables.map((arr, i) => (
-              <Tab
-                key={`${arr[0]}-${i}`}
-                id={`${arr[0]}-${i}`}
-                title={arr[0]}
-                panel={renderTable(arr[1])}
-              />
-            ))}
-          </Tabs>
+          <div>
+            <Tabs
+              id="ExcelSheetTabs"
+              selectedTabId={activeExcelTab}
+              onChange={handleExcelTabChange}
+            >
+              {sheetsTables.map((arr, i) => (
+                <Tab
+                  key={`${arr[0]}-${i}`}
+                  id={`${arr[0]}-${i}`}
+                  title={arr[0]}
+                  panel={renderTable(arr[1])}
+                />
+              ))}
+            </Tabs>
+          </div>
         );
       } else {
         return NOT_APPLICABLE;
@@ -235,9 +237,9 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
           <Column name="Matched filenames" cellRenderer={cellRenderer} />
         </Table>
       </div>
-      <div className="box">
+      <div className="grid1">
         <Tabs
-          id="TabsExample"
+          id="DetailsTab"
           selectedTabId={activeTab}
           onChange={handleNavbarTabChange}
         >
