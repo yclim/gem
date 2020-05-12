@@ -225,7 +225,6 @@ public class MatchService {
     for (String fileKey : matchFileGroupTable.keySet()) {
       MatchFileGroup matchFileGroup = matchFileGroupTable.get(fileKey);
       matchFileGroup.getMatchedGroupIds().remove(group.getGroupId());
-      // System.out.println(groupIdsMap.get(group.getGroupId()));
       // matchFileGroup.getMatchedGroupNames().remove(groupIdsMap.get(group.getGroupId()));
       matchFileGroupTable.put(fileKey, matchFileGroup);
     }

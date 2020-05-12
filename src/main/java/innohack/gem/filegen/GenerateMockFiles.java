@@ -4,11 +4,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GenerateMockFiles {
 
-  static final Path defaultDest = Paths.get("target/samples/");
-  static final int defaultNumOfFiles = 20;
+  private static final Logger LOGGER = LoggerFactory.getLogger(GenerateMockFiles.class);
+  private static final Path defaultDest = Paths.get("target/samples/");
+  private static final int defaultNumOfFiles = 20;
 
   public static void main(String[] args) throws IOException {
     Path dest = defaultDest;
@@ -18,8 +21,8 @@ public class GenerateMockFiles {
       numOfFiles = Integer.parseInt(args[1]);
     }
 
-    System.out.println("dest:" + dest);
-    System.out.println("numOfFiles:" + numOfFiles);
+    LOGGER.info("dest: {}", dest);
+    LOGGER.info("numOfFiles: {}", numOfFiles);
 
     if (!dest.toFile().exists()) {
       Files.createDirectory(dest);

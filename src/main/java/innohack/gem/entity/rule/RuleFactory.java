@@ -14,7 +14,7 @@ public class RuleFactory {
     HashMap<RuleType, List<Rule>> mapping = new HashMap<>();
     List<Rule> rules = RuleFactory.createAllInstance();
     for (Rule r : rules) {
-      System.out.println(r.getRuleType());
+      LOGGER.info("Rule: {}", r.getRuleType());
       List<Rule> ruleList = mapping.get(r.getRuleType());
       if (ruleList == null) {
         ruleList = new ArrayList<Rule>();
