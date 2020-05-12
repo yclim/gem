@@ -12,7 +12,7 @@ import groupRuleService from "./api/GroupRuleService";
 import "@blueprintjs/table/lib/css/table.css";
 import FileList from "./FileList";
 import { AxiosResponse } from "axios";
-import fileStatReducer , {FileStatActions} from "./FileStat";
+import fileStatReducer, { FileStatActions } from "./FileStat";
 
 export interface UpdateGroupNameInput {
   oldGroupName: string;
@@ -87,7 +87,7 @@ export abstract class GroupActions {
     if (group) {
       group.rules = [...group.rules, rule];
       groupRuleService.saveGroup(group).then(response => {
-        dispatcher({ type: UPDATE_GROUP_RULE, group: response.data  });
+        dispatcher({ type: UPDATE_GROUP_RULE, group: response.data });
       });
     }
   }
@@ -213,10 +213,7 @@ const EditGroups: FunctionComponent<RouteComponentProps> = () => {
     new Map<string, Group>()
   );
 
-  const [fileStat, fileStatDispatcher] = useReducer(
-      fileStatReducer,
-      []
-  );
+  const [fileStat, fileStatDispatcher] = useReducer(fileStatReducer, []);
 
   const [newGroupRuleName, setNewGroupRuleName] = useState<string | null>(null);
   const [currentGroup, setCurrentGroup] = useState<Group | null>(null);
@@ -224,23 +221,21 @@ const EditGroups: FunctionComponent<RouteComponentProps> = () => {
 
   useEffect(() => {
     GroupActions.initGroup(dispatcher);
-    FileStatActions.getFileStat(fileStatDispatcher)
+    FileStatActions.getFileStat(fileStatDispatcher);
   }, []);
 
   useEffect(() => {
-    if(currentGroup != null){
-        groupRuleService
-          .getGroup(currentGroup.name)
-          .then(response => {
-                // Check for undefined to takecare of deleted group
-                if (typeof response.data.matchedFile !== 'undefined') {
-                    setFiles(response.data.matchedFile);
-                } else {
-                    setFiles([]);
-                }
-          });
+    if (currentGroup != null) {
+      groupRuleService.getGroup(currentGroup.name).then(response => {
+        // Check for undefined to takecare of deleted group
+        if (typeof response.data.matchedFile !== "undefined") {
+          setFiles(response.data.matchedFile);
+        } else {
+          setFiles([]);
+        }
+      });
     } else {
-        setFiles([]);
+      setFiles([]);
     }
   }, [currentGroup, groups]);
 
