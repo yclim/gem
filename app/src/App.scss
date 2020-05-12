@@ -152,12 +152,20 @@
 .extractDataTable {
   height: 80vh;
   width: 65vh;
-  oveflow-x: scroll;
 }
 
 .detail-box {
+  overflow: auto;
   height: 80vh;
-  overflow: scroll;
+}
+
+.vertical-scroll-only {
+  overflow-y: auto;
+  height: 80vh;
+}
+
+#bp3-tab-panel_DetailsTab_tikaContent[aria-hidden="false"] {
+  display: grid;
 }
 
 @keyframes highlight {
