@@ -3,7 +3,7 @@ package innohack.gem.service;
 import com.google.common.collect.Lists;
 import innohack.gem.dao.IGEMFileDao;
 import innohack.gem.dao.IGroupDao;
-import innohack.gem.dao.MatchFileRockDao;
+import innohack.gem.dao.IMatchFileDao;
 import innohack.gem.entity.GEMFile;
 import innohack.gem.entity.match.MatchFileGroup;
 import innohack.gem.entity.match.MatchFileRule;
@@ -15,16 +15,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@SpringBootTest
+@Import(SkipRockDBConfig.class)
+@ExtendWith(SpringExtension.class)
 public class MatchServiceTests {
 
   @Autowired private IGEMFileDao gemFileDao;
   @Autowired private IGroupDao groupDao;
   @Autowired private MatchService matchService;
-  @Autowired private MatchFileRockDao matchFileDao;
+  @Autowired private IMatchFileDao matchFileDao;
   
   private Group ext_csv_group;
   private Group ext_dat_group;

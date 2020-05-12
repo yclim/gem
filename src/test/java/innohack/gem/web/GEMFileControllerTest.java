@@ -11,10 +11,14 @@ import innohack.gem.entity.rule.rules.FileExtension;
 import innohack.gem.entity.rule.rules.Rule;
 import innohack.gem.service.GroupService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@SpringBootTest
+//@SpringBootTest //use this for integration test with RockDB
+@Import(ControllerConfig.class)
+@ExtendWith(SpringExtension.class)
 public class GEMFileControllerTest {
 
   @Autowired IGEMFileDao gemFileDao;
@@ -34,7 +38,7 @@ public class GEMFileControllerTest {
     while (gemFileDao.getSyncStatus() < 1) {
       Thread.sleep(1000);
     }
-    System.out.println(gemFileDao.getFileTypes());
+//    System.out.println(gemFileDao.getFileTypes());
 //    for (Group g : groupDao.getGroups()) {
 //      System.out.println(g.getName() + ": " + g.getGroupId());
 //    }
@@ -51,7 +55,6 @@ public class GEMFileControllerTest {
       assertTrue(rule.getName().equalsIgnoreCase(defaultRuleName));
       assertTrue(ruleParamVal.equalsIgnoreCase(extension));
     }
-    System.out.println("end");
     gemFileDao.deleteAll();
     groupDao.deleteAll();
     matchFileDao.deleteAll();

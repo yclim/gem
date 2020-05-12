@@ -7,10 +7,13 @@ import innohack.gem.dao.IGroupDao;
 import innohack.gem.entity.GEMFile;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@SpringBootTest
+@Import(SkipRockDBConfig.class)
+@ExtendWith(SpringExtension.class)
 public class GEMFileServiceTest {
 
   @Autowired private IGEMFileDao gemFileDao;
