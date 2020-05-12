@@ -1,49 +1,39 @@
 package innohack.gem.dao;
 
-import innohack.gem.database.RocksDatabase;
+import com.google.common.collect.Maps;
 import innohack.gem.entity.match.MatchFileGroup;
 import innohack.gem.entity.match.MatchFileRule;
 import java.util.Map;
-import org.springframework.stereotype.Repository;
 
-@Repository
 public class MatchFileDao implements IMatchFileDao {
 
-  private static final String DB_NAME = "MatchFile";
-  private RocksDatabase<String, MatchFileGroup> matchFileGroupDb;
-  private RocksDatabase<String, MatchFileRule> matchFileRuleDb;
-
-  public MatchFileDao() {
-    matchFileGroupDb =
-        RocksDatabase.getInstance(DB_NAME + "_Group", String.class, MatchFileGroup.class);
-    matchFileRuleDb =
-        RocksDatabase.getInstance(DB_NAME + "_Rule", String.class, MatchFileRule.class);
-  }
+  private Map<String, MatchFileGroup> matchFileGroupDb = Maps.newConcurrentMap();
+  private Map<String, MatchFileRule> matchFileRuleDb = Maps.newConcurrentMap();
 
   @Override
   public Map<String, MatchFileGroup> getMatchGroup() {
-    return matchFileGroupDb.getKeyValues();
+    return matchFileGroupDb;
   }
 
   @Override
   public Map<String, MatchFileRule> getMatchRule() {
-    return matchFileRuleDb.getKeyValues();
+    return matchFileRuleDb;
   }
 
   @Override
   public void saveMatchGroup(Map<String, MatchFileGroup> map) {
-    matchFileGroupDb.putHashMap(map, true);
+    matchFileGroupDb.putAll(map);
   }
 
   @Override
   public void saveMatchRule(Map<String, MatchFileRule> map) {
-    matchFileRuleDb.deleteAll();
-    matchFileRuleDb.putHashMap(map, true);
+    matchFileRuleDb.clear();
+    matchFileRuleDb.putAll(map);
   }
 
   @Override
   public void deleteAll() {
-    matchFileRuleDb.deleteAll();
-    matchFileGroupDb.deleteAll();
+    matchFileRuleDb.clear();
+    matchFileGroupDb.clear();
   }
 }

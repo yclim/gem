@@ -3,7 +3,7 @@ package innohack.gem.service;
 import com.google.common.collect.Lists;
 import innohack.gem.dao.IGEMFileDao;
 import innohack.gem.dao.IGroupDao;
-import innohack.gem.dao.MatchFileDao;
+import innohack.gem.dao.MatchFileRockDao;
 import innohack.gem.entity.GEMFile;
 import innohack.gem.entity.match.MatchFileGroup;
 import innohack.gem.entity.match.MatchFileRule;
@@ -24,7 +24,7 @@ public class MatchServiceTests {
   @Autowired private IGEMFileDao gemFileDao;
   @Autowired private IGroupDao groupDao;
   @Autowired private MatchService matchService;
-  @Autowired private MatchFileDao matchFileDao;
+  @Autowired private MatchFileRockDao matchFileDao;
   
   private Group ext_csv_group;
   private Group ext_dat_group;
