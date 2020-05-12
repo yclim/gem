@@ -9,9 +9,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class MatchFileDao implements IMatchFileDao {
 
-  static final String DB_NAME = "MatchFile";
-  RocksDatabase matchFileGroupDb;
-  RocksDatabase matchFileRuleDb;
+  private static final String DB_NAME = "MatchFile";
+  private RocksDatabase<String, MatchFileGroup> matchFileGroupDb;
+  private RocksDatabase<String, MatchFileRule> matchFileRuleDb;
 
   public MatchFileDao() {
     matchFileGroupDb =

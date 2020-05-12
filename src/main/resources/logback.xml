@@ -12,7 +12,7 @@
         <appender-ref ref="CONSOLE"/>
     </root>
 
-    <logger name="innohack" level="debug" additivity="false">
+    <logger name="innohack" level="info" additivity="false">
         <appender-ref ref="CONSOLE"/>
     </logger>
 

@@ -13,11 +13,8 @@ public class CsvHeaderColumnValueTest {
 
     // changes for this
     CsvHeaderColumnValue csvHeader = new CsvHeaderColumnValue("Customer Name,Contact Number,Email");
-    System.out.println("Testing testCSVContentParser");
     String path = "src/test/resources";
-
-    String filenamePrefix = "customer_";
-    String filename = filenamePrefix + 0 + ".csv";
+    String filename = "customer_0.csv";
 
     GEMFile gFile = new GEMFile(filename, path);
     gFile.extract();
@@ -29,11 +26,8 @@ public class CsvHeaderColumnValueTest {
 
     CsvHeaderColumnValue csvHeader =
         new CsvHeaderColumnValue("Customer Name,Contactor Number,Email");
-    System.out.println("Testing testCSVContentParser");
     String path = "src/test/resources";
-
-    String filenamePrefix = "customer_";
-    String filename = filenamePrefix + 0 + ".csv";
+    String filename = "customer_0.csv";
 
     GEMFile gFile = new GEMFile(filename, path);
     gFile.extract();
@@ -46,11 +40,8 @@ public class CsvHeaderColumnValueTest {
 
     CsvHeaderColumnValue csvHeader =
         new CsvHeaderColumnValue("Customer Name,Contact Number,MailADDR");
-    System.out.println("Testing testCSVContentParser");
     String path = "src/test/resources";
-
-    String filenamePrefix = "customer_";
-    String filename = filenamePrefix + 0 + ".csv";
+    String filename = "customer_0.csv";
 
     GEMFile gFile = new GEMFile(filename, path);
     gFile.extract();

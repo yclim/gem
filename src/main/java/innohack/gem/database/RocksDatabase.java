@@ -25,19 +25,24 @@ public class RocksDatabase<K, V> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(RocksDatabase.class);
   private static final String DB_PATH = "./target/GemDB/";
+  
+  /*
+  Use to ensure singleton instance for each database file
+   */
+  private static ConcurrentHashMap<String, RocksDatabase> instancesMap = new ConcurrentHashMap<>();
 
   static {
     RocksDB.loadLibrary();
   }
 
   // each instance will have a pair of readwrite lock to manage concurrent access
-  ReadWriteLock dbLock;
-  RocksDB db;
+  private ReadWriteLock dbLock;
+  private RocksDB db;
   private String dbName;
-  private Class keyType;
-  private Class valueType;
+  private Class<K> keyType;
+  private Class<V> valueType;
 
-  public RocksDatabase(String dbName, Class keyType, Class valueType) {
+  private RocksDatabase(String dbName, Class<K> keyType, Class<V> valueType) {
     this.dbName = dbName;
     createFolderPath(DB_PATH);
     this.keyType = keyType;
@@ -45,17 +50,12 @@ public class RocksDatabase<K, V> {
     this.dbLock = new ReentrantReadWriteLock();
   }
 
-  /*
-  Use to ensure singleton instance for each database file
-   */
-  private static ConcurrentHashMap<String, RocksDatabase> instancesMap = new ConcurrentHashMap<>();
-
-  public static RocksDatabase getInstance(String dbName, Class keyType, Class valueType) {
-    RocksDatabase db = instancesMap.get(dbName);
+  public static <K, V> RocksDatabase<K, V> getInstance(String dbName, Class<K> keyType, Class<V> valueType) {
+    RocksDatabase<K, V> db = instancesMap.get(dbName);
     if (db != null) {
       return db;
     } else {
-      db = new RocksDatabase(dbName, keyType, valueType);
+      db = new RocksDatabase<K, V>(dbName, keyType, valueType);
       instancesMap.put(dbName, db);
       return db;
     }

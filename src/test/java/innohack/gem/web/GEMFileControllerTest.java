@@ -29,15 +29,15 @@ public class GEMFileControllerTest {
     matchFileDao.deleteAll();
 
     gemFileDao.setSyncStatus(1);
-    gemFileController.sync("src/test/resources");
+    gemFileController.sync("src/test/resources/sync");
     Thread.sleep(1000);
     while (gemFileDao.getSyncStatus() < 1) {
       Thread.sleep(1000);
     }
     System.out.println(gemFileDao.getFileTypes());
-    for (Group g : groupDao.getGroups()) {
-      System.out.println(g.getName() + ": " + g.getGroupId());
-    }
+//    for (Group g : groupDao.getGroups()) {
+//      System.out.println(g.getName() + ": " + g.getGroupId());
+//    }
     for (GEMFile file : gemFileDao.getFiles()) {
       String extension = file.getExtension().toUpperCase();
       String defaultGroupName = extension;
@@ -51,6 +51,7 @@ public class GEMFileControllerTest {
       assertTrue(rule.getName().equalsIgnoreCase(defaultRuleName));
       assertTrue(ruleParamVal.equalsIgnoreCase(extension));
     }
+    System.out.println("end");
     gemFileDao.deleteAll();
     groupDao.deleteAll();
     matchFileDao.deleteAll();

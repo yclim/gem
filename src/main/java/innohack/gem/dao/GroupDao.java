@@ -25,7 +25,7 @@ public class GroupDao implements IGroupDao {
 
   @Override
   public List<Group> getGroups() {
-    return new ArrayList(featureStore.values());
+    return new ArrayList<Group>(featureStore.values());
   }
 
   @Override
