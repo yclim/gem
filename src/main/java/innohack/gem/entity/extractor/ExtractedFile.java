@@ -3,7 +3,7 @@ package innohack.gem.entity.extractor;
 public class ExtractedFile {
 
   private String filename;
-  
+
   private int count;
 
   public String getFilename() {
@@ -21,5 +21,4 @@ public class ExtractedFile {
   public void setCount(int count) {
     this.count = count;
   }
-  
 }

@@ -18,16 +18,16 @@ import org.slf4j.LoggerFactory;
 
 /** Container that keeps all data extracted from a file */
 public class GEMFile implements Comparable<GEMFile> {
-  
+
   private static final Logger LOGGER = LoggerFactory.getLogger(GEMFile.class);
-  
+
   private String fileName;
   private String directory;
   private Long size;
   private String extension;
   private List<AbstractFeature> data;
   private String mimeType;
-  
+
   private transient boolean extracted;
 
   public GEMFile() {}
@@ -118,12 +118,13 @@ public class GEMFile implements Comparable<GEMFile> {
   }
 
   // Perform extraction
-  //TODO move this to service? Ideally entities do not perform logic
+  // TODO move this to service? Ideally entities do not perform logic
   public GEMFile extract() {
-    if(!extracted) {
+    if (!extracted) {
       try {
         File file = new File(directory, fileName);
-        MediaType mediaType = new FeatureExtractorUtil().extractMime(new TikaConfig(), file.toPath());
+        MediaType mediaType =
+            new FeatureExtractorUtil().extractMime(new TikaConfig(), file.toPath());
         this.mimeType = mediaType.toString();
         String subtype = mediaType.getSubtype();
         if (subtype.equals(TikaMimeEnum.MSEXCELXLSX.getMimeType())
@@ -139,7 +140,7 @@ public class GEMFile implements Comparable<GEMFile> {
         LOGGER.error("Error in extract", e);
       }
     }
-    
+
     return this;
   }
 

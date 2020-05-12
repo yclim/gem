@@ -16,7 +16,8 @@ public class GEMFileRockDaoTest {
   private String filename3 = "cars_0.xls";
   private String dir = "src/test/resources";
   private String dbName = "TESTDB";
-  private RocksDatabase<String, GEMFile> db = RocksDatabase.getInstance(dbName, String.class, GEMFile.class);
+  private RocksDatabase<String, GEMFile> db =
+      RocksDatabase.getInstance(dbName, String.class, GEMFile.class);
 
   @Test
   void testSaveFile() throws Exception {
@@ -121,8 +122,8 @@ public class GEMFileRockDaoTest {
     RocksDatabase<String, GEMFile>.Iterator<String, GEMFile> itr = db.iterator();
     List<String> keys = new ArrayList<>();
     while (itr.isValid()) {
-//      System.out.println(itr.keyValue().key);
-//      System.out.println(itr.keyValue().value);
+      //      System.out.println(itr.keyValue().key);
+      //      System.out.println(itr.keyValue().value);
       keys.add((String) itr.keyValue().key);
       itr.next();
       count++;

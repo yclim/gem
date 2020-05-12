@@ -28,7 +28,7 @@ public class MatchServiceTests {
   @Autowired private IGroupDao groupDao;
   @Autowired private MatchService matchService;
   @Autowired private IMatchFileDao matchFileDao;
-  
+
   private Group ext_csv_group;
   private Group ext_dat_group;
   private Group prefix_d_group;

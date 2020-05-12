@@ -37,17 +37,17 @@ class TikaFeatureTests {
 
     String OS = System.getProperty("os.name").toLowerCase();
 
-//    if (FileUtilForTesting.isWindows(OS)) {
-//      System.out.println("This is Windows");
-//    } else if (FileUtilForTesting.isMac(OS)) {
-//      System.out.println("This is Mac");
-//    } else if (FileUtilForTesting.isUnix(OS)) {
-//      System.out.println("This is Unix or Linux");
-//    } else if (FileUtilForTesting.isSolaris(OS)) {
-//      System.out.println("This is Solaris");
-//    } else {
-//      System.out.println("Your OS is not support!!");
-//    }
+    //    if (FileUtilForTesting.isWindows(OS)) {
+    //      System.out.println("This is Windows");
+    //    } else if (FileUtilForTesting.isMac(OS)) {
+    //      System.out.println("This is Mac");
+    //    } else if (FileUtilForTesting.isUnix(OS)) {
+    //      System.out.println("This is Unix or Linux");
+    //    } else if (FileUtilForTesting.isSolaris(OS)) {
+    //      System.out.println("This is Solaris");
+    //    } else {
+    //      System.out.println("Your OS is not support!!");
+    //    }
 
     Map<String, String> metaData = tikaFeature.getMetadata();
     int metaDataCount = 0;
@@ -61,20 +61,20 @@ class TikaFeatureTests {
           assertTrue(entry.getKey().equals("Content-Encoding"));
           if (FileUtilForTesting.isWindows(OS)) {
             assertTrue(entry.getValue().equals("ISO-8859-1"));
-//            System.out.println("This is Windows");
+            //            System.out.println("This is Windows");
           } else if (FileUtilForTesting.isMac(OS)) {
             assertFalse(entry.getValue().equals("windows-1252"));
-//            System.out.println("This is Mac");
+            //            System.out.println("This is Mac");
           } else if (FileUtilForTesting.isUnix(OS)) {
-          //XXX this unit test is very odd... tests for negation is not very conclusive...
+            // XXX this unit test is very odd... tests for negation is not very conclusive...
             assertFalse(entry.getValue().equals("windows-1252"));
-//            System.out.println("This is Unix or Linux");
+            //            System.out.println("This is Unix or Linux");
           } else if (FileUtilForTesting.isSolaris(OS)) {
             assertFalse(entry.getValue().equals("windows-1252"));
-//            System.out.println("This is Solaris");
+            //            System.out.println("This is Solaris");
           } else {
             assertFalse(entry.getValue().equals("windows-1252"));
-//            System.out.println("Your OS is not support!!");
+            //            System.out.println("Your OS is not support!!");
           }
 
         } else if (metaDataCount == 2) {
@@ -89,7 +89,7 @@ class TikaFeatureTests {
       }
     }
   }
-  
+
   private static class FileUtilForTesting {
 
     public static boolean isWindows(String OS) {

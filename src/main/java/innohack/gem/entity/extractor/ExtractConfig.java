@@ -7,7 +7,7 @@ public class ExtractConfig {
   private String name;
   private List<String> namesColumn;
   private List<TimestampColumn> timestampColumn;
-  
+
   public ExtractConfig() {
     namesColumn = Lists.newArrayList();
     timestampColumn = Lists.newArrayList();

@@ -106,15 +106,15 @@ public class CsvFeature extends AbstractFeature {
       Separators lSeparator = lIterator.next();
       au.com.bytecode.opencsv.CSVReader lReader =
           new au.com.bytecode.opencsv.CSVReader(pBuffered, lSeparator.getSeparator());
-        String[] lLine;
-        lLine = lReader.readNext();
-        lSeparator.setCount(lLine.length);
-  
-        if (lSeparator.getCount() > lMaxValue) {
-          lMaxValue = lSeparator.getCount();
-          lCharMax = lSeparator.getSeparator();
-        }
-        pBuffered.reset();      
+      String[] lLine;
+      lLine = lReader.readNext();
+      lSeparator.setCount(lLine.length);
+
+      if (lSeparator.getCount() > lMaxValue) {
+        lMaxValue = lSeparator.getCount();
+        lCharMax = lSeparator.getSeparator();
+      }
+      pBuffered.reset();
     }
     return lCharMax;
   }

@@ -6,6 +6,4 @@ import org.springframework.context.annotation.ComponentScan;
 
 @TestConfiguration
 @ComponentScan
-public class ControllerConfig extends SkipRockDBConfig {
-
-}
+public class ControllerConfig extends SkipRockDBConfig {}

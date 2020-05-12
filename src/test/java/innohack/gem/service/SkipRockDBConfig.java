@@ -15,25 +15,26 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 
 @TestConfiguration
-@ComponentScan(excludeFilters={
-    @ComponentScan.Filter(type=FilterType.ASSIGNABLE_TYPE, value=GEMFileRockDao.class),
-    @ComponentScan.Filter(type=FilterType.ASSIGNABLE_TYPE, value=GroupRockDao.class),
-    @ComponentScan.Filter(type=FilterType.ASSIGNABLE_TYPE, value=MatchFileRockDao.class)})
+@ComponentScan(
+    excludeFilters = {
+      @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = GEMFileRockDao.class),
+      @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = GroupRockDao.class),
+      @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = MatchFileRockDao.class)
+    })
 public class SkipRockDBConfig {
 
   @Bean
   public IGroupDao getGroupDao() {
     return new GroupDao();
   }
-  
+
   @Bean
   public IGEMFileDao getGEMFileDao() {
     return new GEMFileDao();
   }
-  
+
   @Bean
   public IMatchFileDao getMatchFileDao() {
     return new MatchFileDao();
   }
-  
 }

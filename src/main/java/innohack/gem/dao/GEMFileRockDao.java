@@ -19,7 +19,7 @@ public class GEMFileRockDao implements IGEMFileDao {
   private RocksDatabase<String, Integer> gemFileFileTypesDb;
   private RocksDatabase<String, String> gemFileState;
   private static final float SYNC_COMPLETE = 1;
-  
+
   // Get current directory path where files uploaded
   public GEMFileRockDao() {
     gemFileDb = RocksDatabase.getInstance(DB_NAME, String.class, GEMFile.class);

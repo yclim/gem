@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TikaContentRegex extends Rule {
-  
+
   private static final Logger LOGGER = LoggerFactory.getLogger(TikaContentRegex.class);
 
   private static final String LABEL = "Tika Content Regex";

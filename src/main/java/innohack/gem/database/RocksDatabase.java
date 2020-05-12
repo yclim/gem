@@ -25,7 +25,7 @@ public class RocksDatabase<K, V> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(RocksDatabase.class);
   private static final String DB_PATH = "./target/GemDB/";
-  
+
   /*
   Use to ensure singleton instance for each database file
    */
@@ -50,7 +50,8 @@ public class RocksDatabase<K, V> {
     this.dbLock = new ReentrantReadWriteLock();
   }
 
-  public static <K, V> RocksDatabase<K, V> getInstance(String dbName, Class<K> keyType, Class<V> valueType) {
+  public static <K, V> RocksDatabase<K, V> getInstance(
+      String dbName, Class<K> keyType, Class<V> valueType) {
     RocksDatabase<K, V> db = instancesMap.get(dbName);
     if (db != null) {
       return db;
@@ -228,7 +229,7 @@ public class RocksDatabase<K, V> {
   public List<Object> getKeysOrValue(Class<?> type) {
     List<Object> list = new ArrayList<Object>();
     dbLock.readLock().lock();
-    try (final Options options = new Options();) {
+    try (final Options options = new Options(); ) {
       options.setCreateIfMissing(true);
       // a factory method that returns a RocksDB instance
       File dbFile = new File(DB_PATH, dbName);
@@ -313,7 +314,7 @@ public class RocksDatabase<K, V> {
       File dbFile = new File(DB_PATH, dbName);
       // a factory method that returns a RocksDB instance
       try (final RocksDB db = RocksDB.openReadOnly(options, dbFile.getAbsolutePath());
-        ReadOptions readOptions = new ReadOptions()) {
+          ReadOptions readOptions = new ReadOptions()) {
         final byte[] prefixByte = serialize(prefixStr);
         /*
           An iterator that specifies a prefix (via ReadOptions) will use these bloom bits

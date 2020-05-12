@@ -14,24 +14,26 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ExtractService {
-  
+
   private static final Logger LOGGER = LoggerFactory.getLogger(ExtractService.class);
-  
-  @Autowired
-  private GroupService groupService;
+
+  @Autowired private GroupService groupService;
 
   public List<ExtractedFile> extract(int groupId) {
     Group group = groupService.getGroup(groupId);
     ExtractConfig config = getConfig(groupId);
     List<GEMFile> files = group.getMatchedFile();
-    return files.stream().map(f -> {
-      f.extract();
-      
-      ExtractedFile ef = new ExtractedFile();
-      ef.setFilename(f.getFileName());
-      ef.setCount(0); //TODO get this from the XXXExtractor?
-      return ef;
-    }).collect(Collectors.toList());
+    return files.stream()
+        .map(
+            f -> {
+              f.extract();
+
+              ExtractedFile ef = new ExtractedFile();
+              ef.setFilename(f.getFileName());
+              ef.setCount(0); // TODO get this from the XXXExtractor?
+              return ef;
+            })
+        .collect(Collectors.toList());
   }
 
   public ExtractConfig updateExtractConfig(int groupId, ExtractConfig config) {
@@ -41,13 +43,12 @@ public class ExtractService {
 
   public ExtractedRecords extractRecords(int groupId, String filename) {
     LOGGER.info("TODO: I am suppose to parse the files with the extractors specified by config?");
-    //TODO and then somehow I will get the XXXExtractor to perform the extraction?
+    // TODO and then somehow I will get the XXXExtractor to perform the extraction?
     return null;
   }
-  
+
   private ExtractConfig getConfig(int groupId) {
-  //XXX Hmmm somewhere we need a handle on getting the ExtractConfig...
+    // XXX Hmmm somewhere we need a handle on getting the ExtractConfig...
     return null;
   }
-  
 }

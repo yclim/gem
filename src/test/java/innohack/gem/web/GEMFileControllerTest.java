@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-//@SpringBootTest //use this for integration test with RockDB
+// @SpringBootTest //use this for integration test with RockDB
 @Import(ControllerConfig.class)
 @ExtendWith(SpringExtension.class)
 public class GEMFileControllerTest {
@@ -38,10 +38,10 @@ public class GEMFileControllerTest {
     while (gemFileDao.getSyncStatus() < 1) {
       Thread.sleep(1000);
     }
-//    System.out.println(gemFileDao.getFileTypes());
-//    for (Group g : groupDao.getGroups()) {
-//      System.out.println(g.getName() + ": " + g.getGroupId());
-//    }
+    //    System.out.println(gemFileDao.getFileTypes());
+    //    for (Group g : groupDao.getGroups()) {
+    //      System.out.println(g.getName() + ": " + g.getGroupId());
+    //    }
     for (GEMFile file : gemFileDao.getFiles()) {
       String extension = file.getExtension().toUpperCase();
       String defaultGroupName = extension;
