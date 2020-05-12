@@ -12,6 +12,7 @@ import { Group } from "./api";
 import groupRuleService from "./api/GroupRuleService";
 import GroupCard from "./GroupCard";
 import { GroupAction, GroupActions } from "./EditGroups";
+import { FileStatAction, FileStatActions } from "./FileStat";
 
 interface IProps {
   groups: Map<string, Group>;
@@ -19,6 +20,8 @@ interface IProps {
   currentGroup: Group | null;
   setCurrentGroup: (group: Group) => void;
   newGroupRuleName: string | null;
+  fileStatDispatcher: Dispatch<FileStatAction>;
+  fileStat: number[];
 }
 
 const GroupList: FunctionComponent<IProps> = ({
@@ -26,10 +29,13 @@ const GroupList: FunctionComponent<IProps> = ({
   groupDispatcher,
   currentGroup,
   setCurrentGroup,
-  newGroupRuleName
+  newGroupRuleName,
+  fileStatDispatcher,
+  fileStat
 }) => {
   function handleCreateGroup() {
     GroupActions.newGroup(groupDispatcher, groups);
+    FileStatActions.getFileStat(fileStatDispatcher);
   }
 
   function handleFileSelected(file: string) {
@@ -86,6 +92,8 @@ const GroupList: FunctionComponent<IProps> = ({
               setFocusGroup={setCurrentGroup}
               newGroupRuleName={newGroupRuleName}
               groups={groups}
+              fileStatDispatcher={fileStatDispatcher}
+              fileStat={fileStat}
             />
           ))}
         <Card
@@ -97,7 +105,7 @@ const GroupList: FunctionComponent<IProps> = ({
             <div className="label">No matches</div>
             <div className="counter">
               <Tag round={true} intent={Intent.WARNING}>
-                321
+                {fileStat[0]}
               </Tag>
             </div>
           </div>
@@ -105,7 +113,7 @@ const GroupList: FunctionComponent<IProps> = ({
             <div className="label">Conflicts</div>
             <div className="counter">
               <Tag round={true} intent={Intent.DANGER}>
-                321
+                {fileStat[1]}
               </Tag>
             </div>
           </div>

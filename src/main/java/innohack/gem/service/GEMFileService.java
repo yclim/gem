@@ -17,7 +17,7 @@ public class GEMFileService {
   @Autowired private IGEMFileDao gemFileDao;
   @Autowired private MatchService matcheService;
   @Autowired private GroupService groupService;
-  @Autowired private ExtractFileService extractFileService;
+  @Autowired private SyncFileService syncFileService;
 
   public String getCurrentDirectory() {
     return gemFileDao.getCurrentDirectory();
@@ -49,9 +49,9 @@ public class GEMFileService {
     Collections.sort(newFilelist);
     if (getSyncProgress() == 1) {
       gemFileDao.setSyncStatus(0);
-      extractFileService.setNewFilelist(newFilelist);
-      extractFileService.setOldfilelist(oldfilelist);
-      Thread syncThread = new Thread(extractFileService);
+      syncFileService.setNewFilelist(newFilelist);
+      syncFileService.setOldfilelist(oldfilelist);
+      Thread syncThread = new Thread(syncFileService);
       syncThread.start();
     }
     return newFilelist;

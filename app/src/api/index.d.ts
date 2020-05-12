@@ -2,6 +2,7 @@ export interface Group {
   name: string;
   rules: Rule[];
   matchedCount?: number;
+  matchedFile?: File[];
 }
 
 export interface Rule {

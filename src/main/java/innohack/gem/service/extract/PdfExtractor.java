@@ -1,7 +1,8 @@
-package innohack.gem.entity.extractor;
+package innohack.gem.service.extract;
 
 import innohack.gem.entity.GEMFile;
-import java.util.List;
+import innohack.gem.entity.extractor.ExtractConfig;
+import innohack.gem.entity.extractor.ExtractedRecords;
 
 public class PdfExtractor extends AbstractExtractor {
 
@@ -10,7 +11,7 @@ public class PdfExtractor extends AbstractExtractor {
   }
 
   @Override
-  public List<List<String>> extract(GEMFile f) throws Exception {
+  public ExtractedRecords extract(GEMFile f) throws Exception {
     return null;
   }
 }

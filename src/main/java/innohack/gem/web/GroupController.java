@@ -2,6 +2,7 @@ package innohack.gem.web;
 
 import innohack.gem.entity.rule.Group;
 import innohack.gem.service.GroupService;
+import innohack.gem.service.MatchService;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
@@ -11,13 +12,7 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -25,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class GroupController {
 
   @Autowired private GroupService groupService;
+  @Autowired private MatchService matchService;
 
   @PostMapping("/import")
   public List<Group> importProject(@RequestParam("file") MultipartFile file) throws IOException {
@@ -45,6 +41,12 @@ public class GroupController {
   @GetMapping("/list")
   public List<Group> getGroups() {
     return groupService.getGroups();
+  }
+
+  // get unmatched and conflict count
+  @GetMapping("/getFileStat")
+  public int[] getFileStat() {
+    return matchService.getFileStat();
   }
 
   // get group by groupName
