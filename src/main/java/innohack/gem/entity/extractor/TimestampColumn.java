@@ -39,6 +39,7 @@ public class TimestampColumn {
     DateFormat dateFormatter = new SimpleDateFormat(format);
     dateFormatter.setTimeZone(TimeZone.getTimeZone(timezone));
     DateFormat strFormatter = new SimpleDateFormat(FORMAT);
+    strFormatter.setTimeZone(TimeZone.getTimeZone(timezone));
     return strFormatter.format(dateFormatter.parse(value));
   }
 
