@@ -3,7 +3,6 @@ package innohack.gem.web;
 import innohack.gem.entity.GEMFile;
 import innohack.gem.entity.match.MatchFileGroup;
 import innohack.gem.service.GEMFileService;
-import innohack.gem.service.GroupService;
 import innohack.gem.service.MatchService;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +19,6 @@ public class GEMFileController {
 
   @Autowired private GEMFileService fileService;
   @Autowired private MatchService matchService;
-  @Autowired private GroupService groupService;
 
   /**
    * Retrieves metadata for all uploaded documents

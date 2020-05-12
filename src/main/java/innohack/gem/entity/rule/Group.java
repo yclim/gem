@@ -10,7 +10,6 @@ public class Group implements Comparable<Group> {
   private int groupId;
   private String name;
   private List<Rule> rules;
-  private int matchedCount;
   private List<GEMFile> matchedFile = new ArrayList<GEMFile>();
 
   public int getGroupId() {
@@ -39,10 +38,6 @@ public class Group implements Comparable<Group> {
 
   public int getMatchedCount() {
     return matchedFile.size();
-  }
-
-  public void setMatchedCount(int matchedCount) {
-    this.matchedCount = matchedCount;
   }
 
   public List<GEMFile> getMatchedFile() {

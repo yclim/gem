@@ -1,5 +1,7 @@
 package innohack.gem.service;
 
+import com.beust.jcommander.internal.Maps;
+import com.beust.jcommander.internal.Sets;
 import innohack.gem.dao.IGEMFileDao;
 import innohack.gem.dao.IGroupDao;
 import innohack.gem.dao.IMatchFileDao;
@@ -14,9 +16,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MatchService {
-  @Autowired IGroupDao groupDao;
-  @Autowired IGEMFileDao gemFileDao;
-  @Autowired IMatchFileDao matchFileDao;
+  @Autowired private IGroupDao groupDao;
+  @Autowired private IGEMFileDao gemFileDao;
+  @Autowired private IMatchFileDao matchFileDao;
 
   private static Map<String, MatchFileGroup> matchFileGroupTable;
   private static Map<String, MatchFileRule> matchFileRuleTable;
@@ -125,7 +127,7 @@ public class MatchService {
     }
 
     if (matchGroupIds == null) {
-      matchGroupIds = new HashSet();
+      matchGroupIds = Sets.newHashSet();
     }
     if (result) {
       // when group is not in the list and its file matched against the group. add the group to
@@ -142,7 +144,7 @@ public class MatchService {
   }
 
   private void onUpdateFile(GEMFile updatedFile) {
-    Map<String, Group> groupToSave = new HashMap();
+    Map<String, Group> groupToSave = Maps.newHashMap();
     List<Group> groupList = groupDao.getGroups();
     GEMFile fileKey = new GEMFile(updatedFile.getAbsolutePath());
     GEMFile storedFile = gemFileDao.getFileByAbsolutePath(updatedFile.getAbsolutePath());
@@ -220,7 +222,6 @@ public class MatchService {
       matchFileRuleTable.put(fileKey, matchFileRule);
     }
 
-    Map<Integer, String> groupIdsMap = groupDao.getGroupIds();
     for (String fileKey : matchFileGroupTable.keySet()) {
       MatchFileGroup matchFileGroup = matchFileGroupTable.get(fileKey);
       matchFileGroup.getMatchedGroupIds().remove(group.getGroupId());
@@ -246,11 +247,11 @@ public class MatchService {
           matchFileGroupTable = matchFileDao.getMatchGroup();
         }
         MatchFileGroup matchFileGroup = matchFileGroupTable.get(fileKey);
-        Set<String> groupNames = new HashSet();
+        Set<String> groupNames = Sets.newHashSet();
         if (matchFileGroup != null) {
           for (int grpId : matchFileGroup.getMatchedGroupIds()) {
             if (groupNames == null) {
-              groupNames = new HashSet();
+              groupNames = Sets.newHashSet();
             }
             groupNames.add(groupIdsMap.get(grpId));
           }
