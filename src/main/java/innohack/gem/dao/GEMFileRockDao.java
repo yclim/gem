@@ -63,9 +63,7 @@ public class GEMFileRockDao implements IGEMFileDao {
     gemFileDb.delete(absolutePath);
   }
 
-  /**
-   * Batch file delete to reduce Db open and close overhead
-   */
+  /** Batch file delete to reduce Db open and close overhead */
   @Override
   public void deleteFiles(Collection<String> absolutePaths) {
     gemFileDb.delete(absolutePaths);
@@ -165,9 +163,7 @@ public class GEMFileRockDao implements IGEMFileDao {
     gemFileDb.put(file.getAbsolutePath(), file);
   }
 
-  /**
-   * Batch filesave to reduce Db open and close overhead
-   */
+  /** Batch filesave to reduce Db open and close overhead */
   @Override
   public void saveFiles(Map<String, GEMFile> filesMap) {
     Map<String, Integer> fileTypesMap = new HashMap();
@@ -189,6 +185,7 @@ public class GEMFileRockDao implements IGEMFileDao {
 
   /**
    * get sync progress, 0-1 where 1 means sync complete
+   *
    * @return syncStatus
    */
   public float getSyncStatus() {
@@ -207,6 +204,7 @@ public class GEMFileRockDao implements IGEMFileDao {
 
   /**
    * set the sync progress
+   *
    * @param syncStatus: float
    */
   public void setSyncStatus(float syncStatus) {

@@ -19,4 +19,6 @@ public interface IMatchFileDao {
   abstract void saveMatchGroup(Map<String, MatchFileGroup> map);
 
   abstract void saveMatchRule(Map<String, MatchFileRule> map);
+
+  abstract void deleteAll();
 }

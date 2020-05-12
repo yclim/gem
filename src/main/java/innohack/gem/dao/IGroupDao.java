@@ -13,6 +13,8 @@ public interface IGroupDao {
 
   List<Group> getGroups();
 
+  Map<Integer, String> getGroupIds();
+
   Group getGroup(int groupId);
 
   Group getGroup(String groupName);

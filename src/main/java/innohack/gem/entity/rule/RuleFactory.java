@@ -1,11 +1,10 @@
 package innohack.gem.entity.rule;
 
 import innohack.gem.entity.rule.rules.Rule;
+import java.util.*;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.*;
 
 public class RuleFactory {
 

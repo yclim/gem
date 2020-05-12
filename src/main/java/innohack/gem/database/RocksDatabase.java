@@ -91,6 +91,10 @@ public class RocksDatabase<K, V> {
   }
 
   public boolean putHashMap(Map<K, V> map) {
+    return putHashMap(map, false);
+  }
+
+  public boolean putHashMap(Map<K, V> map, boolean dropPrevious) {
     boolean result = false;
     dbLock.writeLock().lock();
     File dbFile = new File(DB_PATH, dbName);
@@ -99,6 +103,18 @@ public class RocksDatabase<K, V> {
     try (final Options options = new Options().setCreateIfMissing(true)) {
       // a factory method that returns a RocksDB instance
       try (final RocksDB db = RocksDB.open(options, dbFile.getAbsolutePath())) {
+        if (dropPrevious) {
+          RocksIterator itr = db.newIterator(new ReadOptions());
+          itr.seekToFirst();
+          byte[] start = itr.key();
+          itr.seekToLast();
+          byte[] end = itr.key();
+          db.deleteRange(new WriteOptions(), start, end);
+          db.delete(end);
+          itr.close();
+          LOGGER.debug(dbName + ": " + "deleteAll");
+        }
+
         for (K key : map.keySet()) {
           V value = map.get(key);
           byte[] key_byte = serialize(key);

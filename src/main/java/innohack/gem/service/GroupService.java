@@ -9,16 +9,15 @@ import innohack.gem.entity.rule.Group;
 import innohack.gem.entity.rule.GroupExportMixin;
 import innohack.gem.entity.rule.rules.FileExtension;
 import innohack.gem.entity.rule.rules.Rule;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class GroupService {
@@ -47,8 +46,7 @@ public class GroupService {
   }
 
   public boolean deleteGroup(int groupId) {
-    Group group = new Group();
-    group.setGroupId(groupId);
+    Group group = groupDao.getGroup(groupId);
     List<Rule> rules = new ArrayList<>();
     group.setRules(rules);
     boolean result = groupDao.deleteGroup(groupId);
@@ -57,8 +55,7 @@ public class GroupService {
   }
 
   public boolean deleteGroup(String groupName) {
-    Group group = new Group();
-    group.setName(groupName);
+    Group group = groupDao.getGroup(groupName);
     List<Rule> rules = new ArrayList<>();
     group.setRules(rules);
     boolean result = groupDao.deleteGroup(groupName);

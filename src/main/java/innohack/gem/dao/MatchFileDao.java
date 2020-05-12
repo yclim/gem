@@ -32,13 +32,18 @@ public class MatchFileDao implements IMatchFileDao {
 
   @Override
   public void saveMatchGroup(Map<String, MatchFileGroup> map) {
-    matchFileGroupDb.deleteAll();
-    matchFileGroupDb.putHashMap(map);
+    matchFileGroupDb.putHashMap(map, true);
   }
 
   @Override
   public void saveMatchRule(Map<String, MatchFileRule> map) {
+    matchFileRuleDb.deleteAll();
+    matchFileRuleDb.putHashMap(map, true);
+  }
+
+  @Override
+  public void deleteAll() {
+    matchFileRuleDb.deleteAll();
     matchFileGroupDb.deleteAll();
-    matchFileRuleDb.putHashMap(map);
   }
 }

@@ -1,12 +1,11 @@
 package innohack.gem.entity.feature;
 
+import java.io.File;
+import java.util.*;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.util.*;
 
 /** Object to hold wrap extracted excel data */
 public class ExcelFeature extends AbstractFeature {
