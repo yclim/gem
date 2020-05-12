@@ -1,13 +1,11 @@
-package innohack.gem.entity.extractor;
+package innohack.gem.service.extract;
 
 import innohack.gem.entity.GEMFile;
-import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import innohack.gem.entity.extractor.ExtractConfig;
+import innohack.gem.entity.extractor.ExtractedRecords;
 
 public abstract class AbstractExtractor {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(AbstractExtractor.class);
   private ExtractConfig extractConfig;
 
   public ExtractConfig getExtractConfig() {
@@ -18,5 +16,5 @@ public abstract class AbstractExtractor {
     this.extractConfig = extractConfig;
   }
 
-  public abstract List<List<String>> extract(GEMFile f) throws Exception;
+  public abstract ExtractedRecords extract(GEMFile f) throws Exception;
 }
