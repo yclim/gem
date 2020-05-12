@@ -6,15 +6,17 @@ import innohack.gem.entity.feature.TikaFeature;
 import innohack.gem.entity.rule.ParamType;
 import innohack.gem.entity.rule.Parameter;
 import innohack.gem.entity.rule.RuleType;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TikaContentRegex extends Rule {
 
-  static final String LABEL = "Tika Content Regex";
-  static final RuleType RULE_TYPE = RuleType.TIKA_CONTENT;
+  private static final Logger LOGGER = LoggerFactory.getLogger(TikaContentRegex.class);
+
+  private static final String LABEL = "Tika Content Regex";
+  private static final RuleType RULE_TYPE = RuleType.TIKA_CONTENT;
 
   public TikaContentRegex() {
     this(null);
@@ -49,11 +51,9 @@ public class TikaContentRegex extends Rule {
       Pattern pattern = Pattern.compile(regexString, Pattern.CASE_INSENSITIVE);
       Matcher matcher = pattern.matcher(tikaContent);
 
-      List<String> result = new ArrayList<String>();
-
       while (matcher.find()) {
         String matchString = matcher.group(1);
-        System.out.println("The  match string is " + matchString);
+        LOGGER.info("The  match string is {}", matchString);
         return true;
       }
     }

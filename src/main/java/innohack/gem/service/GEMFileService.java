@@ -15,8 +15,6 @@ public class GEMFileService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(GEMFileService.class);
   @Autowired private IGEMFileDao gemFileDao;
-  @Autowired private MatchService matcheService;
-  @Autowired private GroupService groupService;
   @Autowired private SyncFileService syncFileService;
 
   public String getCurrentDirectory() {

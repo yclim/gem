@@ -52,8 +52,6 @@ public class CsvHeaderColumnValue extends Rule {
 
   private List<Boolean> checkCSVHeader(CsvFeature abs) {
     CsvFeature csvFeature = (CsvFeature) abs;
-    List<List<String>> dataTable = csvFeature.getTableData();
-    int rowCount = 0;
     List<String> csvHeader = csvFeature.getHeaders();
     List<Boolean> counterList = new ArrayList<Boolean>();
 

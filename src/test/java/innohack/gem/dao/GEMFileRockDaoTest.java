@@ -8,17 +8,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class GEMFileRockDaoTest {
+public class GEMFileRockDaoTest {
 
-  String filename1 = "dump.txt";
-  String filename2 = "data.dat";
-  String filename3 = "cars_0.xls";
-  String dir = "src/test/resources";
-  String dbName = "TESTDB";
-  RocksDatabase<String, GEMFile> db = new RocksDatabase<>(dbName, String.class, GEMFile.class);
+  private String filename1 = "dump.txt";
+  private String filename2 = "data.dat";
+  private String filename3 = "cars_0.xls";
+  private String dir = "src/test/resources";
+  private String dbName = "TESTDB";
+  private RocksDatabase<String, GEMFile> db =
+      RocksDatabase.getInstance(dbName, String.class, GEMFile.class);
 
   @Test
   void testSaveFile() throws Exception {
@@ -120,11 +119,11 @@ class GEMFileRockDaoTest {
       db.put(f.getAbsolutePath(), f);
     }
     int count = 0;
-    RocksDatabase.Iterator itr = db.iterator();
+    RocksDatabase<String, GEMFile>.Iterator<String, GEMFile> itr = db.iterator();
     List<String> keys = new ArrayList<>();
     while (itr.isValid()) {
-      System.out.println(itr.keyValue().key);
-      System.out.println(itr.keyValue().value);
+      //      System.out.println(itr.keyValue().key);
+      //      System.out.println(itr.keyValue().value);
       keys.add((String) itr.keyValue().key);
       itr.next();
       count++;

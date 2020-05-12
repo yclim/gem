@@ -1,8 +1,8 @@
 package innohack.gem.service;
 
+import com.beust.jcommander.internal.Maps;
 import innohack.gem.dao.IGEMFileDao;
 import innohack.gem.entity.GEMFile;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -33,9 +33,9 @@ public class SyncFileService implements Runnable {
     float totalProcesses = 0;
     float totalProcessed = 0;
     // files that does not exist in newFileList but in oldFileList
-    Map<String, GEMFile> fileToDelete = new HashMap();
+    Map<String, GEMFile> fileToDelete = Maps.newHashMap();
     // files that does not exist in oldFileList but in newFileList
-    Map<String, GEMFile> fileToSave = new HashMap();
+    Map<String, GEMFile> fileToSave = Maps.newHashMap();
 
     // gather all the newly seen file and put in fileToSave and remove files that was already in
     // database from oldFileList

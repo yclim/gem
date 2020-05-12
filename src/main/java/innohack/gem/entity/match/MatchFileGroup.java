@@ -1,5 +1,6 @@
 package innohack.gem.entity.match;
 
+import com.beust.jcommander.internal.Sets;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,7 +24,7 @@ public class MatchFileGroup {
 
   public Set<Integer> getMatchedGroupIds() {
     if (matchedGroupIds == null) {
-      matchedGroupIds = new HashSet();
+      matchedGroupIds = Sets.newHashSet();
     }
     return matchedGroupIds;
   }
@@ -38,7 +39,7 @@ public class MatchFileGroup {
 
   public Set<String> getMatchedGroupNames() {
     if (matchedGroupNames == null) {
-      matchedGroupNames = new HashSet();
+      matchedGroupNames = Sets.newHashSet();
     }
     return matchedGroupNames;
   }

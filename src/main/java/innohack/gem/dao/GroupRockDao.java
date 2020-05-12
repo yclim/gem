@@ -7,17 +7,10 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class GroupRockDao implements IGroupDao {
-  static final String DB_NAME = "Group";
-  RocksDatabase groupDb;
-  RocksDatabase groupIdDb;
+  private static final String DB_NAME = "Group";
+  private RocksDatabase<String, Group> groupDb;
+  private RocksDatabase<Integer, String> groupIdDb;
 
-  /*
-  innohack.gem.database.RocksDatabase groupDb =
-      new innohack.gem.database.RocksDatabase<String, Group>(DB_NAME, String.class, Group.class);
-  innohack.gem.database.RocksDatabase groupIdDb =
-      new RocksDatabase<Integer, String>(DB_NAME + "_ID", Integer.class, String.class);
-
-   */
   public GroupRockDao() {
     groupDb = RocksDatabase.getInstance(DB_NAME, String.class, Group.class);
     groupIdDb = RocksDatabase.getInstance(DB_NAME + "_ID", Integer.class, String.class);
@@ -87,8 +80,7 @@ public class GroupRockDao implements IGroupDao {
 
   @Override
   public boolean deleteGroupsById(List<Integer> groupIds) {
-    Map<String, Group> map = groupDb.getKeyValues();
-    Collection names = groupIdDb.getKeyValues(groupIds).values();
+    Collection<String> names = groupIdDb.getKeyValues(groupIds).values();
     if (groupDb.delete(names)) {
       groupIdDb.delete(groupIds);
       return true;

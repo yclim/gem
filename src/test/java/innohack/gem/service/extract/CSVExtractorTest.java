@@ -18,12 +18,12 @@ public class CSVExtractorTest {
     GEMFile file = new GEMFile();
     file.setDirectory("src/test/resources");
     file.setFileName("chats.csv");
-    
+
     ExtractConfig config = new ExtractConfig();
     config.addColumnNames("Id");
     config.addColumnNames("Message");
     config.addColumnTimestamp(new TimestampColumn("Time (ms)", "Time", "yyyyMMdd HHmmss"));
-    
+
     CSVExtractor extractor = new CSVExtractor(config);
     ExtractedRecords results = extractor.extract(file);
     long time = Long.parseLong(results.getRecords().get(0).get(2));
@@ -34,5 +34,4 @@ public class CSVExtractorTest {
     assertEquals(1589186723000l, time);
     assertEquals("05/11/2020 16:45:23 +0800", format.format(new Date(time)));
   }
-  
 }

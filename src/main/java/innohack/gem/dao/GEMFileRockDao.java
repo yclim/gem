@@ -14,22 +14,19 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class GEMFileRockDao implements IGEMFileDao {
 
-  static final String DB_NAME = "GEMFile";
-  // private static ConcurrentHashMap<String, GEMFile> featureStore = new ConcurrentHashMap<>();
-  // private static String directoryStore;
-  RocksDatabase gemFileDb;
-  RocksDatabase gemFileFileTypesDb;
-  RocksDatabase gemFileState;
-  static final float SYNC_COMPLETE = 1;
-  // public static Set<String> fileTypeStore = new HashSet<String>();
+  private static final String DB_NAME = "GEMFile";
+  private RocksDatabase<String, GEMFile> gemFileDb;
+  private RocksDatabase<String, Integer> gemFileFileTypesDb;
+  private RocksDatabase<String, String> gemFileState;
+  private static final float SYNC_COMPLETE = 1;
 
   // Get current directory path where files uploaded
   public GEMFileRockDao() {
     gemFileDb = RocksDatabase.getInstance(DB_NAME, String.class, GEMFile.class);
     gemFileFileTypesDb =
-        RocksDatabase.getInstance(DB_NAME + "_FileType", String.class, Boolean.class);
+        RocksDatabase.getInstance(DB_NAME + "_FileType", String.class, Integer.class);
     gemFileState = RocksDatabase.getInstance(DB_NAME + "_FileState", String.class, String.class);
-    gemFileState.put(STATE_SYNC_PROGRESS, SYNC_COMPLETE);
+    gemFileState.put(STATE_SYNC_PROGRESS, String.valueOf(SYNC_COMPLETE));
   }
 
   /**
@@ -166,7 +163,7 @@ public class GEMFileRockDao implements IGEMFileDao {
   /** Batch filesave to reduce Db open and close overhead */
   @Override
   public void saveFiles(Map<String, GEMFile> filesMap) {
-    Map<String, Integer> fileTypesMap = new HashMap();
+    Map<String, Integer> fileTypesMap = new HashMap<String, Integer>();
     if (types == null) {
       types = gemFileFileTypesDb.getKeys();
     }

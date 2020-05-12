@@ -1,67 +1,34 @@
 package innohack.gem.service;
 
-import com.google.common.collect.Lists;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import innohack.gem.dao.IGEMFileDao;
 import innohack.gem.dao.IGroupDao;
 import innohack.gem.entity.GEMFile;
-import innohack.gem.entity.rule.Group;
-import innohack.gem.filegen.GenerateMockFiles;
-import java.io.File;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@SpringBootTest
+@Import(SkipRockDBConfig.class)
+@ExtendWith(SpringExtension.class)
 public class GEMFileServiceTest {
 
-  @Autowired IGEMFileDao gemFileDao;
-  @Autowired IGroupDao groupDao;
-  @Autowired GEMFileService gemFileService;
-
-  Group csv_group;
-  Group data_group;
-  GEMFile csvFile = new GEMFile("chats.csv", "src/test/resources");
-  GEMFile txtFile = new GEMFile("dump.txt", "src/test/resources");
-  GEMFile datFile = new GEMFile("data.dat", "src/test/resources");
-
-  private List<File> getFiles(String path) {
-    File dir = new File(path);
-    List<File> resultList = Lists.newArrayList();
-    File[] fList = dir.listFiles();
-    if (fList != null) {
-      for (File file : fList) {
-        if (file.isFile()) {
-          resultList.add(file);
-        } else {
-          resultList.addAll(getFiles(file.getAbsolutePath()));
-        }
-      }
-    }
-    return resultList;
-  }
+  @Autowired private IGEMFileDao gemFileDao;
+  @Autowired private IGroupDao groupDao;
+  @Autowired private GEMFileService gemFileService;
 
   @Test
   public void testSync() throws Exception {
-
-    // gen file
-    String dir = "target/samples/";
-    String[] genMockParam = {dir, "5"};
-    GenerateMockFiles.main(genMockParam);
     // sync file, test synced file count
-    List<GEMFile> list1 = gemFileService.syncFiles("target/samples/");
-    assert (getFiles(dir).size() == list1.size());
+    List<GEMFile> list1 = gemFileService.syncFiles("src/test/resources/sync");
+    assertEquals(5, list1.size());
 
-    // delete 3 files
-    int deleteFile = 3;
-    for (File f : getFiles(dir)) {
-      f.delete();
-      deleteFile--;
-      if (deleteFile == 0) break;
-    }
     // sync file again and test file count again
-    List<GEMFile> list = gemFileService.syncFiles("target/samples/");
-    assert (list.size() == getFiles(dir).size());
+    List<GEMFile> list = gemFileService.syncFiles("src/test/resources/nonexist");
+    assertEquals(0, list.size());
     gemFileDao.deleteAll();
     groupDao.deleteAll();
   }

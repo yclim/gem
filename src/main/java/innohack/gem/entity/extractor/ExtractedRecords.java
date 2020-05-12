@@ -8,8 +8,7 @@ public class ExtractedRecords {
   private List<String> headers;
 
   private List<List<String>> records;
-  
-  
+
   public ExtractedRecords() {
     headers = Lists.newArrayList();
     records = Lists.newArrayList();
@@ -30,5 +29,4 @@ public class ExtractedRecords {
   public void setRecords(List<List<String>> records) {
     this.records = records;
   }
-
 }

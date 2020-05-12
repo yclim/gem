@@ -1,0 +1,3 @@
+####### Dump of file ABCDEF
+C:\		100		abc.txt
+C:\		200		def.txt

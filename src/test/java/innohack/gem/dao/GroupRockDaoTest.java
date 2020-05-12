@@ -9,14 +9,12 @@ import innohack.gem.entity.rule.rules.Rule;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class GroupRockDaoTest {
+public class GroupRockDaoTest {
 
-  Group ext_csv_group;
-  Group ext_dat_group;
-  Group prefix_d_group;
+  private Group ext_csv_group;
+  private Group ext_dat_group;
+  private Group prefix_d_group;
 
   public GroupRockDaoTest() {
     this.ext_csv_group = new Group();

@@ -3,7 +3,7 @@ package innohack.gem.service;
 import com.google.common.collect.Lists;
 import innohack.gem.dao.IGEMFileDao;
 import innohack.gem.dao.IGroupDao;
-import innohack.gem.dao.MatchFileDao;
+import innohack.gem.dao.IMatchFileDao;
 import innohack.gem.entity.GEMFile;
 import innohack.gem.entity.match.MatchFileGroup;
 import innohack.gem.entity.match.MatchFileRule;
@@ -11,30 +11,31 @@ import innohack.gem.entity.rule.Group;
 import innohack.gem.entity.rule.rules.FileExtension;
 import innohack.gem.entity.rule.rules.FilenamePrefix;
 import innohack.gem.entity.rule.rules.Rule;
-import innohack.gem.web.GEMFileController;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@SpringBootTest
+@Import(SkipRockDBConfig.class)
+@ExtendWith(SpringExtension.class)
 public class MatchServiceTests {
 
-  @Autowired IGEMFileDao gemFileDao;
-  @Autowired IGroupDao groupDao;
-  @Autowired MatchService matchService;
-  @Autowired MatchFileDao matchFileDao;
-  @Autowired GEMFileController gemFileController;
+  @Autowired private IGEMFileDao gemFileDao;
+  @Autowired private IGroupDao groupDao;
+  @Autowired private MatchService matchService;
+  @Autowired private IMatchFileDao matchFileDao;
 
-  Group ext_csv_group;
-  Group ext_dat_group;
-  Group prefix_d_group;
-  GEMFile csvFile = new GEMFile("chats.csv", "src/test/resources");
-  GEMFile csvcsvFile = new GEMFile("chats.csv.csv", "src/test/resources");
-  GEMFile txtFile = new GEMFile("dump.txt", "src/test/resources");
-  GEMFile datFile = new GEMFile("data.dat", "src/test/resources");
+  private Group ext_csv_group;
+  private Group ext_dat_group;
+  private Group prefix_d_group;
+  private GEMFile csvFile = new GEMFile("chats.csv", "src/test/resources");
+  private GEMFile csvcsvFile = new GEMFile("chats.csv.csv", "src/test/resources");
+  private GEMFile txtFile = new GEMFile("dump.txt", "src/test/resources");
+  private GEMFile datFile = new GEMFile("data.dat", "src/test/resources");
 
   public MatchServiceTests() {
     this.ext_csv_group = new Group();

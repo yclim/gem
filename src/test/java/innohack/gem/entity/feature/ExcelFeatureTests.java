@@ -9,22 +9,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class ExcelFeatureTests {
+public class ExcelFeatureTests {
 
-  private String ExcelFeature = "innohack.gem.entity.feature.ExcelFeature";
-  private String XLS = "xls";
-  private String XLSX = "xlsx";
-
-  static final String[] carBrands =
+  private static final String[] carBrands =
       ("Seat Renault Peugeot Dacia Citroën Opel Alfa Romeo Škoda Chevrolet Porsche Honda"
               + " Subaru Mazda Mitsubishi Lexus Toyota BMW Volkswagen Suzuki Mercedes-Benz Saab Audi Kia Land Rover "
               + "Dodge Chrysler Ford Hummer Hyundai Infiniti Jaguar Jeep Nissan Volvo Daewoo Fiat MINI Rover Smart")
           .split("\\s+");
 
-  static final String[] carModels =
+  private static final String[] carModels =
       ("Alhambra Altea Arosa Cordoba Exeo Ibiza Leon Inca Toledo Captur "
               + "Clio Espace Express Fluence Kadjar Kangoo Koleos Laguna Latitude Mascott Mégane Scénic Talisman "
               + "Thalia Twingo Wind Bipper Dokker Duster Lodgy Logan Sandero Solenza Berlingo C-Crosser C-Elissée "
@@ -56,9 +50,7 @@ class ExcelFeatureTests {
           .split("\\s+");
 
   @Test
-  void TestOneSheetExcelXlsContentParser() throws Exception {
-
-    System.out.println("Testing testExcelXlsContentParser");
+  public void testOneSheetExcelXlsContentParser() throws Exception {
     String path = "src/test/resources";
 
     String filenamePrefix = "manual_cars_";
@@ -74,21 +66,17 @@ class ExcelFeatureTests {
     assertTrue(abstractFeatureC.size() == 2); // to delete after every use case
     while (iterator.hasNext()) {
       AbstractFeature abs = iterator.next();
-      if (abs.getClass().getName().equals(ExcelFeature)) {
+      if (abs.getClass().getName().equals(ExcelFeature.class.getName())) {
         ExcelFeature excelFeature = (ExcelFeature) abs;
         Map<String, List<List<String>>> dataTable = excelFeature.getSheetTableData();
         assertTrue(dataTable.size() == 1);
-        TestExcelContent(dataTable);
+        testExcelContent(dataTable);
       }
     }
-
-    System.out.println("Deleting " + path + filename);
   }
 
   @Test
-  void TestTwoSheetExcelXlsContentParser() throws Exception {
-
-    System.out.println("Testing testExcelXlsTwoContentParser");
+  public void testTwoSheetExcelXlsContentParser() throws Exception {
     String path = "src/test/resources";
 
     String filenamePrefix = "manual2_cars_";
@@ -104,36 +92,32 @@ class ExcelFeatureTests {
     assertTrue(abstractFeatureC.size() == 2); // to delete after every use case
     while (iterator.hasNext()) {
       AbstractFeature abs = iterator.next();
-      if (abs.getClass().getName().equals(ExcelFeature)) {
+      if (abs.getClass().getName().equals(ExcelFeature.class.getName())) {
         ExcelFeature excelFeature = (ExcelFeature) abs;
         Map<String, List<List<String>>> dataTable = excelFeature.getSheetTableData();
         assertTrue(dataTable.size() == 2);
-        TestExcelContent(dataTable);
+        testExcelContent(dataTable);
       }
     }
-
-    System.out.println("Deleting " + path + filename);
   }
 
-  void TestExcelContent(Map<String, List<List<String>>> dataTable) {
+  private void testExcelContent(Map<String, List<List<String>>> dataTable) {
 
     for (Entry<String, List<List<String>>> entry : dataTable.entrySet()) {
-      System.out.println("entry: " + entry.getKey());
-
       List<List<String>> rows = entry.getValue();
 
       if (entry.getKey().equals("Cars")) {
         assertTrue(entry.getKey().equals("Cars"));
-        TestOneSheetExcelContent(rows);
+        testOneSheetExcelContent(rows);
 
       } else if (entry.getKey().equals("Cars Dealer")) {
         assertTrue(entry.getKey().equals("Cars Dealer"));
-        TestTwoSheetExcelContent(rows);
+        testTwoSheetExcelContent(rows);
       }
     }
   }
 
-  void TestOneSheetExcelContent(List<List<String>> rows) {
+  private void testOneSheetExcelContent(List<List<String>> rows) {
     int rowCount = 0;
 
     for (List<String> row : rows) {
@@ -196,7 +180,7 @@ class ExcelFeatureTests {
     }
   }
 
-  void TestTwoSheetExcelContent(List<List<String>> rows) {
+  private void testTwoSheetExcelContent(List<List<String>> rows) {
     int rowCount = 0;
 
     for (List<String> row : rows) {
@@ -222,8 +206,6 @@ class ExcelFeatureTests {
       } else {
         for (int i = 0; i < row.size(); i++) {
           int carVar = rowCount - 1;
-
-          String id = String.valueOf(i);
           String[] carDealerArray =
               ("Huat Huat Car, Best Auto, Fast Car Ptd Ltd, Dealer X, Premium Auto, "
                       + "Luxury Automobile, Prestige Auto")
@@ -252,13 +234,9 @@ class ExcelFeatureTests {
   }
 
   @Test
-  void TestOneSheetExcelXlsxContentParser() throws Exception {
-
-    System.out.println("Testing testExcelXlsxContentParser");
+  public void testOneSheetExcelXlsxContentParser() throws Exception {
     String path = "src/test/resources";
-
-    String filenamePrefix = "manual_cars_";
-    String filename = filenamePrefix + 0 + ".xlsx";
+    String filename = "manual_cars_0.xlsx";
 
     // ExcelFileGenerator.generateFixedCarsExcelFiles(
     //    XLSX, false, 100, 1, Paths.get(path), filenamePrefix);
@@ -273,23 +251,19 @@ class ExcelFeatureTests {
     assertTrue(abstractFeatureC.size() == 2); // to delete after every use case
     while (iterator.hasNext()) {
       AbstractFeature abs = iterator.next();
-      if (abs.getClass().getName().equals(ExcelFeature)) {
+      if (abs.getClass().getName().equals(ExcelFeature.class.getName())) {
         ExcelFeature excelFeature = (ExcelFeature) abs;
         Map<String, List<List<String>>> dataTable = excelFeature.getSheetTableData();
         assertTrue(dataTable.size() == 1);
-        TestExcelContent(dataTable);
+        testExcelContent(dataTable);
       }
     }
   }
 
   @Test
-  void TestTwoSheetExcelXlsxContentParser() throws Exception {
-
-    System.out.println("Testing testExcelXlsxTwoContentParser");
+  public void TestTwoSheetExcelXlsxContentParser() throws Exception {
     String path = "src/test/resources";
-
-    String filenamePrefix = "manual2_cars_";
-    String filename = filenamePrefix + 0 + ".xlsx";
+    String filename =  "manual2_cars_0.xlsx";
 
     // ExcelFileGenerator.generateFixedCarsExcelFiles(
     //    XLSX, true, 100, 1, Paths.get(path), filenamePrefix);
@@ -304,14 +278,12 @@ class ExcelFeatureTests {
     assertTrue(abstractFeatureC.size() == 2); // to delete after every use case
     while (iterator.hasNext()) {
       AbstractFeature abs = iterator.next();
-      if (abs.getClass().getName().equals(ExcelFeature)) {
+      if (abs.getClass().getName().equals(ExcelFeature.class.getName())) {
         ExcelFeature excelFeature = (ExcelFeature) abs;
         Map<String, List<List<String>>> dataTable = excelFeature.getSheetTableData();
         assertTrue(dataTable.size() == 2);
-        TestExcelContent(dataTable);
+        testExcelContent(dataTable);
       }
     }
-
-    System.out.println("Deleting " + path + filename);
   }
 }
