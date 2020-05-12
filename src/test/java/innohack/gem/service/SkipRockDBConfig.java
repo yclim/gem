@@ -1,9 +1,11 @@
 package innohack.gem.service;
 
+import innohack.gem.dao.ExtractDao;
 import innohack.gem.dao.GEMFileDao;
 import innohack.gem.dao.GEMFileRockDao;
 import innohack.gem.dao.GroupDao;
 import innohack.gem.dao.GroupRockDao;
+import innohack.gem.dao.IExtractDao;
 import innohack.gem.dao.IGEMFileDao;
 import innohack.gem.dao.IGroupDao;
 import innohack.gem.dao.IMatchFileDao;
@@ -37,4 +39,10 @@ public class SkipRockDBConfig {
   public IMatchFileDao getMatchFileDao() {
     return new MatchFileDao();
   }
+  
+  @Bean
+  public IExtractDao getExtractDao() {
+    return new ExtractDao();
+  }
+  
 }

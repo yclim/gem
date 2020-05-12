@@ -1,10 +1,8 @@
 package innohack.gem.service.extract;
 
-import innohack.gem.entity.GEMFile;
 import innohack.gem.entity.extractor.ExtractConfig;
-import innohack.gem.entity.extractor.ExtractedRecords;
 
-public abstract class AbstractExtractor {
+public abstract class AbstractExtractor implements Extractor {
 
   private ExtractConfig extractConfig;
 
@@ -12,9 +10,9 @@ public abstract class AbstractExtractor {
     return extractConfig;
   }
 
+  @Override
   public void setExtractConfig(ExtractConfig extractConfig) {
     this.extractConfig = extractConfig;
   }
 
-  public abstract ExtractedRecords extract(GEMFile f) throws Exception;
 }

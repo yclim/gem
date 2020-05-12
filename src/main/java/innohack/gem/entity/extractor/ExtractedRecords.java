@@ -29,4 +29,8 @@ public class ExtractedRecords {
   public void setRecords(List<List<String>> records) {
     this.records = records;
   }
+  
+  public int size() {
+    return records.size();
+  }
 }

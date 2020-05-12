@@ -34,6 +34,7 @@ public class GroupService {
   }
 
   public Group getGroup(int groupId) {
+    LOGGER.info("Fetching group: {}", groupId);
     return groupDao.getGroup(groupId);
   }
 

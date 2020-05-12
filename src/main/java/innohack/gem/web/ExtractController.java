@@ -6,6 +6,7 @@ import innohack.gem.entity.extractor.ExtractedRecords;
 import innohack.gem.service.ExtractService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -20,14 +21,19 @@ public class ExtractController {
   @Autowired private ExtractService extractService;
 
   @PostMapping("/{groupId}")
-  public List<ExtractedFile> extract(@PathVariable int groupId) {
+  public List<ExtractedFile> extract(@PathVariable int groupId) throws Exception {
     return extractService.extract(groupId);
   }
-
+  
+  @GetMapping("/{groupId}")
+  public List<ExtractedFile> getFilesCount(@PathVariable int groupId) {
+    return extractService.getExtractedFiles(groupId);
+  }
+  
   @PostMapping("/{groupId}/{filename}")
   public ExtractedRecords getExtractedRecords(
       @PathVariable int groupId, @PathVariable String filename) {
-    return extractService.extractRecords(groupId, filename);
+    return extractService.getExtractedRecords(groupId, filename);
   }
 
   @PutMapping("/config/{groupId}")
