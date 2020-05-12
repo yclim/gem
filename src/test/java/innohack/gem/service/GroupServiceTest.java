@@ -16,12 +16,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class GroupServiceTest {
 
-  @Autowired IGroupDao groupDao;
-  @Autowired GroupService groupService;
+  @Autowired private IGroupDao groupDao;
+  @Autowired private GroupService groupService;
 
-  Group ext_csv_group;
-  Group ext_dat_group;
-  Group prefix_d_group;
+  private Group ext_csv_group;
+  private Group ext_dat_group;
+  private Group prefix_d_group;
 
   public GroupServiceTest() {
     this.ext_csv_group = new Group();

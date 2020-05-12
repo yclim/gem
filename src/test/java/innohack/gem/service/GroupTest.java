@@ -2,7 +2,6 @@ package innohack.gem.service;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import innohack.gem.dao.IGroupDao;
 import innohack.gem.entity.rule.Group;
 import innohack.gem.entity.rule.rules.FileExtension;
 import innohack.gem.entity.rule.rules.FilenamePrefix;
@@ -16,12 +15,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class GroupTest {
 
-  @Autowired IGroupDao groupDao;
-  @Autowired GroupService groupService;
+  @Autowired private GroupService groupService;
 
-  Group ext_csv_group;
-  Group ext_dat_group;
-  Group prefix_d_group;
+  private Group ext_csv_group;
+  private Group ext_dat_group;
+  private Group prefix_d_group;
 
   public GroupTest() {
     this.ext_csv_group = new Group();
