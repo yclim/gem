@@ -14,7 +14,8 @@ import {
   Tag
 } from "@blueprintjs/core";
 import { Group, Rule } from "./api";
-import {CounterAction, CounterActions, GroupAction, GroupActions, rulenameExist} from "./EditGroups";
+import {GroupAction, GroupActions, rulenameExist} from "./EditGroups";
+import {FileStatAction, FileStatActions} from "./FileStat";
 import RuleForm from "./RuleForm";
 import groupRuleService from "./api/GroupRuleService";
 
@@ -25,7 +26,7 @@ interface IProps {
   setFocusGroup: (g: Group) => void;
   newGroupRuleName: string | null;
   groups: Map<string, Group>;
-  countDispatcher: Dispatch<CounterAction>;
+  fileStatDispatcher: Dispatch<FileStatAction>;
   fileStat: number[];
 }
 const GroupCard: FunctionComponent<IProps> = ({
@@ -35,7 +36,7 @@ const GroupCard: FunctionComponent<IProps> = ({
   setFocusGroup,
   newGroupRuleName,
   groups,
-  countDispatcher,
+  fileStatDispatcher,
   fileStat
 }) => {
   const [grp, setGrp] = useState(group);
@@ -87,12 +88,12 @@ const GroupCard: FunctionComponent<IProps> = ({
 
   function handleConfirm() {
     GroupActions.updateGroupName(groupDispatcher, group.name, grp.name);
-    CounterActions.getFileStat(countDispatcher);
+    FileStatActions.getFileStat(fileStatDispatcher);
   }
 
   function handleDeleteGroup() {
     GroupActions.removeGroup(groupDispatcher, grp.name);
-    CounterActions.getFileStat(countDispatcher);
+    FileStatActions.getFileStat(fileStatDispatcher);
   }
 
   function handleDialogOpen(r: Rule) {
@@ -114,7 +115,7 @@ const GroupCard: FunctionComponent<IProps> = ({
         selectedRule.name,
         editRule
       );
-      CounterActions.getFileStat(countDispatcher);
+      FileStatActions.getFileStat(fileStatDispatcher);
     }
 
     setIsOpen(false);
@@ -122,7 +123,7 @@ const GroupCard: FunctionComponent<IProps> = ({
 
   function handleDeleteGroupRule(curGrp: Group, rule: Rule) {
     GroupActions.removeGroupRule(groupDispatcher, group, rule.name);
-    CounterActions.getFileStat(countDispatcher);
+    FileStatActions.getFileStat(fileStatDispatcher);
   }
 
   return (

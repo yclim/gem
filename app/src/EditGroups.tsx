@@ -12,6 +12,7 @@ import groupRuleService from "./api/GroupRuleService";
 import "@blueprintjs/table/lib/css/table.css";
 import FileList from "./FileList";
 import { AxiosResponse } from "axios";
+import fileStatReducer , {FileStatActions} from "./FileStat";
 
 export interface UpdateGroupNameInput {
   oldGroupName: string;
@@ -23,18 +24,7 @@ const NEW_GROUP = "NEW_GROUP";
 const REMOVE_GROUP = "REMOVE_GROUP";
 const UPDATE_GROUP_RULE = "UPDATE_GROUP_RULE";
 const UPDATE_GROUP_NAME = "UPDATE_GROUP_NAME";
-const GET_FILE_STAT = "GET_FILE_STAT";
 
-export type CounterAction =
-  { type: typeof GET_FILE_STAT; fileStat: number[]};
-
-export abstract class CounterActions {
-  static getFileStat(dispatcher: React.Dispatch<CounterAction>) {
-    groupRuleService.getFileStat().then((resp: AxiosResponse<number[]>) => {
-      dispatcher({type: GET_FILE_STAT, fileStat: resp.data});
-    });
-  }
-}
 export type GroupAction =
   | { type: typeof INIT_GROUPS; groups: Group[] }
   | { type: typeof NEW_GROUP; group: Group }
@@ -151,16 +141,6 @@ export abstract class GroupActions {
   }
 }
 
-export function counterReducer(state: number[], action: CounterAction) {
-  switch (action.type) {
-    case GET_FILE_STAT: {
-      return action.fileStat
-    }
-    default:
-      throw new Error();
-  }
-}
-
 export function groupsReducer(state: Map<string, Group>, action: GroupAction) {
   switch (action.type) {
     case INIT_GROUPS:
@@ -233,8 +213,8 @@ const EditGroups: FunctionComponent<RouteComponentProps> = () => {
     new Map<string, Group>()
   );
 
-  const [fileStat, countDispatcher] = useReducer(
-      counterReducer,
+  const [fileStat, fileStatDispatcher] = useReducer(
+      fileStatReducer,
       []
   );
 
@@ -244,7 +224,7 @@ const EditGroups: FunctionComponent<RouteComponentProps> = () => {
 
   useEffect(() => {
     GroupActions.initGroup(dispatcher);
-    CounterActions.getFileStat(countDispatcher)
+    FileStatActions.getFileStat(fileStatDispatcher)
   }, []);
 
   useEffect(() => {
@@ -277,7 +257,7 @@ const EditGroups: FunctionComponent<RouteComponentProps> = () => {
         currentGroup={currentGroup}
         setCurrentGroup={setCurrentGroup}
         newGroupRuleName={newGroupRuleName}
-        countDispatcher={countDispatcher}
+        fileStatDispatcher={fileStatDispatcher}
         fileStat={fileStat}
       />
       <FileList files={files} setFiles={setFiles} />

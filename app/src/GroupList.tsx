@@ -11,7 +11,8 @@ import {
 import { Group } from "./api";
 import groupRuleService from "./api/GroupRuleService";
 import GroupCard from "./GroupCard";
-import { GroupAction, GroupActions, CounterActions, CounterAction } from "./EditGroups";
+import { GroupAction, GroupActions} from "./EditGroups";
+import {FileStatAction, FileStatActions} from "./FileStat";
 
 interface IProps {
   groups: Map<string, Group>;
@@ -19,7 +20,7 @@ interface IProps {
   currentGroup: Group | null;
   setCurrentGroup: (group: Group) => void;
   newGroupRuleName: string | null;
-  countDispatcher: Dispatch<CounterAction>;
+  fileStatDispatcher: Dispatch<FileStatAction>;
   fileStat: number[];
 }
 
@@ -29,12 +30,12 @@ const GroupList: FunctionComponent<IProps> = ({
   currentGroup,
   setCurrentGroup,
   newGroupRuleName,
-  countDispatcher,
+  fileStatDispatcher,
   fileStat
 }) => {
   function handleCreateGroup() {
     GroupActions.newGroup(groupDispatcher, groups);
-    CounterActions.getFileStat(countDispatcher);
+    FileStatActions.getFileStat(fileStatDispatcher);
   }
 
   function handleFileSelected(file: string) {
@@ -91,7 +92,7 @@ const GroupList: FunctionComponent<IProps> = ({
               setFocusGroup={setCurrentGroup}
               newGroupRuleName={newGroupRuleName}
               groups={groups}
-              countDispatcher={countDispatcher}
+              fileStatDispatcher={fileStatDispatcher}
               fileStat={fileStat}
             />
           ))}
