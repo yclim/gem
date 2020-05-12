@@ -7,17 +7,11 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
 class CSVFeatureTests {
-
-  private String CsvFeature = "innohack.gem.entity.feature.CsvFeature";
 
   @Test
   void TestCSVContentParser() throws Exception {
-
-    System.out.println("Testing testCSVContentParser");
     String path = "src/test/resources";
 
     String filenamePrefix = "customer_";
@@ -33,7 +27,7 @@ class CSVFeatureTests {
     assertTrue(abstractFeatureC.size() == 2);
     while (iterator.hasNext()) {
       AbstractFeature abs = iterator.next();
-      if (abs.getClass().getName().equals(CsvFeature)) {
+      if (abs.getClass().getName().equals(CsvFeature.class.getName())) {
         TestCSVContents((CsvFeature) abs);
       }
     }
