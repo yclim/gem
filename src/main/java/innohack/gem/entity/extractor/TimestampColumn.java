@@ -1,7 +1,14 @@
 package innohack.gem.entity.extractor;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
+
 public class TimestampColumn {
 
+  private static final String FORMAT = "yyyy/MM/dd HH:mm:ssZ";
+  
   public static final String DEFAULT_TIMEZONE = "GMT+8";
 
   private String name;
@@ -10,7 +17,7 @@ public class TimestampColumn {
 
   private String format;
 
-  private String timezeone; // Optional for users
+  private String timezone; // Optional for users
 
   public TimestampColumn() {
     this(null, null, null);
@@ -25,7 +32,15 @@ public class TimestampColumn {
     this.name = name;
     this.fromColumn = fromColumn;
     this.format = format;
-    this.timezeone = timezone;
+    this.timezone = timezone;
+  }
+  
+  public String format(String value) throws ParseException {
+    DateFormat dateFormatter = new SimpleDateFormat(format);
+    dateFormatter.setTimeZone(TimeZone.getTimeZone(timezone));
+    DateFormat strFormatter = new SimpleDateFormat(FORMAT);
+    strFormatter.setTimeZone(TimeZone.getTimeZone(DEFAULT_TIMEZONE));
+    return strFormatter.format(dateFormatter.parse(value));
   }
 
   public String getName() {
@@ -52,12 +67,12 @@ public class TimestampColumn {
     this.format = format;
   }
 
-  public String getTimezeone() {
-    return timezeone;
+  public String getTimezone() {
+    return timezone;
   }
 
-  public void setTimezeone(String timezeone) {
-    this.timezeone = timezeone;
+  public void setTimezeone(String timezone) {
+    this.timezone = timezone;
   }
 
   @Override
