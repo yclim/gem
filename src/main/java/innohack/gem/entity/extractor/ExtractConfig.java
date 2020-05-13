@@ -57,9 +57,12 @@ public class ExtractConfig {
     this.extractor = extractor;
   }
 
-
   public void addSheetNames(String value) {
     sheetNames.add(value);
+  }
+
+  public List<String> getsheetNames() {
+    return this.sheetNames;
   }
 
   public void removeSheetNames(String value) {

@@ -6,7 +6,6 @@ import innohack.gem.entity.extractor.ExtractConfig;
 import innohack.gem.entity.extractor.ExtractedRecords;
 import innohack.gem.entity.extractor.TimestampColumn;
 import innohack.gem.entity.feature.AbstractFeature;
-import innohack.gem.entity.feature.CsvFeature;
 import innohack.gem.entity.feature.ExcelFeature;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -30,7 +29,7 @@ public class ExcelExtractor extends AbstractExtractor {
       if (feature instanceof ExcelFeature) {
         ExtractedRecords results = new ExtractedRecords();
 
-        List<String> excelSheetNames = getExtractConfig().getSheetNames();
+        List<String> excelSheetNames = getExtractConfig().getsheetNames();
         List<String> extractColumns = getExtractConfig().getNamesColumn();
         List<TimestampColumn> extractTSColumns = getExtractConfig().getTimestampColumn();
 
@@ -57,7 +56,7 @@ public class ExcelExtractor extends AbstractExtractor {
                       j,
                       extractTSColumn.getName(),
                       extractTSColumn.getFormat(),
-                      extractTSColumn.getTimezeone());
+                      extractTSColumn.getTimezone());
                 }
               }
             }

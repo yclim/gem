@@ -60,7 +60,7 @@ class TikaFeatureTests {
         } else if (metaDataCount == 1) {
           assertTrue(entry.getKey().equals("Content-Encoding"));
           if (FileUtilForTesting.isWindows(OS)) {
-            assertTrue(entry.getValue().equals("ISO-8859-1"));
+            assertTrue(entry.getValue().equals("windows-1252"));
             //            System.out.println("This is Windows");
           } else if (FileUtilForTesting.isMac(OS)) {
             assertFalse(entry.getValue().equals("windows-1252"));
