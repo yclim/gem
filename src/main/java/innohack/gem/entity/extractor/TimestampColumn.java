@@ -8,7 +8,7 @@ import java.util.TimeZone;
 public class TimestampColumn {
 
   private static final String FORMAT = "yyyy/MM/dd HH:mm:ssZ";
-  
+
   public static final String DEFAULT_TIMEZONE = "GMT+8";
 
   private String name;
@@ -34,7 +34,7 @@ public class TimestampColumn {
     this.format = format;
     this.timezone = timezone;
   }
-  
+
   public String format(String value) throws ParseException {
     DateFormat dateFormatter = new SimpleDateFormat(format);
     dateFormatter.setTimeZone(TimeZone.getTimeZone(timezone));
@@ -71,7 +71,7 @@ public class TimestampColumn {
     return timezone;
   }
 
-  public void setTimezeone(String timezone) {
+  public void setTimezone(String timezone) {
     this.timezone = timezone;
   }
 
