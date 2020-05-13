@@ -1,18 +1,22 @@
 package innohack.gem.service.extract;
 
+import innohack.gem.entity.GEMFile;
 import innohack.gem.entity.extractor.ExtractConfig;
+import innohack.gem.entity.extractor.ExtractedRecords;
+import innohack.gem.entity.rule.Parameter;
+import java.util.List;
 
-public abstract class AbstractExtractor implements Extractor {
+public abstract class AbstractExtractor {
 
-  private ExtractConfig extractConfig;
+  private List<Parameter> params;
 
-  public ExtractConfig getExtractConfig() {
-    return extractConfig;
+  public List<Parameter> getParams() {
+    return params;
   }
 
-  @Override
-  public void setExtractConfig(ExtractConfig extractConfig) {
-    this.extractConfig = extractConfig;
+  public void setParams(List<Parameter> params) {
+    this.params = params;
   }
 
+  public abstract ExtractedRecords extract(GEMFile f, ExtractConfig extractConfig) throws Exception;
 }

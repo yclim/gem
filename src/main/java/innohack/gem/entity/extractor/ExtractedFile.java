@@ -5,11 +5,8 @@ public class ExtractedFile {
   private String filename;
 
   private int count;
-  
-  
-  public ExtractedFile() {
-    
-  }
+
+  public ExtractedFile() {}
 
   public ExtractedFile(String filename, int count) {
     super();
