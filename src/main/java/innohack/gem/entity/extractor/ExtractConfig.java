@@ -24,7 +24,7 @@ public class ExtractConfig {
 
   public void setGroupId(int groupId) {
     this.groupId = groupId;
-   }
+  }
 
   public String getTableName() {
     return tableName;

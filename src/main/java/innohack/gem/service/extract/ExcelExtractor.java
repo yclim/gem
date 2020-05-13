@@ -30,8 +30,8 @@ public class ExcelExtractor extends AbstractExtractor {
         ExtractedRecords results = new ExtractedRecords();
 
         List<String> excelSheetNames = getExtractConfig().getsheetNames();
-        List<String> extractColumns = getExtractConfig().getNamesColumn();
-        List<TimestampColumn> extractTSColumns = getExtractConfig().getTimestampColumn();
+        List<String> extractColumns = getExtractConfig().getColumnNames();
+        List<TimestampColumn> extractTSColumns = getExtractConfig().getTimestampColumns();
 
         Map<String, List<List<String>>> sheetTables = ((ExcelFeature) feature).getSheetTableData();
 
