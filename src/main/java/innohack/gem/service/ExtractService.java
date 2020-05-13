@@ -82,4 +82,13 @@ public class ExtractService {
         .collect(Collectors.toList());
   }
 
+  /**
+   * Get config by group id
+   *
+   * @param groupId
+   * @return
+   */
+  public ExtractConfig getExtractConfig(int groupId) {
+    return extractDao.getConfig(groupId);
+  }
 }
