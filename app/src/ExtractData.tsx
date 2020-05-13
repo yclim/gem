@@ -331,6 +331,7 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
                     onChange={(e: ChangeEvent<HTMLInputElement>) =>
                       handleTableNameChange(e.target.value)
                     }
+                    onBlur={() => saveExtractConfigChange(config)}
                   />
                 </FormGroup>
                 <FormGroup
@@ -479,6 +480,12 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
 
   return render();
 
+  function saveExtractConfigChange(config: ExtractConfig) {
+    if (config) {
+      extractConfigService.saveExtractConfig(config).then();
+    }
+  }
+
   function handleTableNameChange(value: string) {
     const config = extractConfig;
     if (config) {
@@ -487,12 +494,14 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
   }
 
   function handleColumnNamesChange(values: React.ReactNode[]) {
-    const config = extractConfig;
-    if (config) {
-      setExtractConfig({
-        ...config,
+    if (extractConfig) {
+      const config: ExtractConfig = {
+        ...extractConfig,
         columnNames: values.map(node => (node ? node.toString() : ""))
-      });
+      };
+
+      setExtractConfig(config);
+      saveExtractConfigChange(config);
     }
   }
 
