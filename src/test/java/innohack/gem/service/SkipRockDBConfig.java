@@ -39,10 +39,9 @@ public class SkipRockDBConfig {
   public IMatchFileDao getMatchFileDao() {
     return new MatchFileDao();
   }
-  
+
   @Bean
   public IExtractDao getExtractDao() {
     return new ExtractDao();
   }
-  
 }

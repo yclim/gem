@@ -7,40 +7,48 @@ import innohack.gem.entity.extractor.ExtractedRecords;
 import innohack.gem.entity.extractor.TimestampColumn;
 import innohack.gem.entity.feature.AbstractFeature;
 import innohack.gem.entity.feature.CsvFeature;
+import innohack.gem.entity.rule.ParamType;
+import innohack.gem.entity.rule.Parameter;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CSVExtractor extends AbstractExtractor {
 
-  public CSVExtractor(ExtractConfig extractConfig) {
-    this.setExtractConfig(extractConfig);
+  public CSVExtractor() {
+    this(null);
+  }
+
+  public CSVExtractor(String headers) {
+    setParams(
+        Lists.newArrayList(new Parameter("Column Names", "", ParamType.STRING_LIST, headers)));
   }
 
   @Override
-  public ExtractedRecords extract(GEMFile f) throws Exception {
+  public ExtractedRecords extract(GEMFile f, ExtractConfig extractConfig) throws Exception {
     f.extract();
     for (AbstractFeature feature : f.getData()) {
       if (feature instanceof CsvFeature) {
-        List<String> extractColumns = getExtractConfig().getColumnNames();
-        List<TimestampColumn> extractTSColumns = getExtractConfig().getTimestampColumns();
+        String[] paramValues = getParams().get(0).getValue().split(",");
+        List<String> extractColumns = Arrays.stream(paramValues).collect(Collectors.toList());
 
         ExtractedRecords results = new ExtractedRecords();
         List<List<String>> rows = ((CsvFeature) feature).getTableData();
         for (int i = 1; i < rows.size(); i++) results.getRecords().add(Lists.newArrayList());
-        List<String> columns = ((CsvFeature) feature).getHeaders();
-        for (int i = 0; i < columns.size(); i++) {
-          String column = columns.get(i);
-          if (extractColumns.contains(column)) {
-            populate(results, rows, i, column);
-          }
-          for (TimestampColumn extractTSColumn : extractTSColumns) {
-            if (extractTSColumn.getFromColumn().equals(column)) {
-              populate(
-                  results,
-                  rows,
-                  i,
-                  extractTSColumn.getName(),
-                  extractTSColumn);
+        List<String> featureColumns = ((CsvFeature) feature).getHeaders();
+        for (int i = 0; i < featureColumns.size(); i++) {
+          String featureColumn = featureColumns.get(i);
+
+          int foundIndex = extractColumns.indexOf(featureColumn);
+          if (foundIndex > -1) {
+            String columnName = extractConfig.getColumnNames().get(foundIndex);
+            populate(results, rows, i, columnName);
+
+            for (TimestampColumn extractTSColumn : extractConfig.getTimestampColumns()) {
+              if (extractTSColumn.getFromColumn().equals(columnName)) {
+                populate(results, rows, i, extractTSColumn.getName(), extractTSColumn);
+              }
             }
           }
         }

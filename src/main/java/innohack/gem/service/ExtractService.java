@@ -7,7 +7,7 @@ import innohack.gem.entity.extractor.ExtractConfig;
 import innohack.gem.entity.extractor.ExtractedFile;
 import innohack.gem.entity.extractor.ExtractedRecords;
 import innohack.gem.entity.rule.Group;
-import innohack.gem.service.extract.Extractor;
+import innohack.gem.service.extract.AbstractExtractor;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -36,12 +36,11 @@ public class ExtractService {
     Group group = groupService.getGroup(groupId);
     ExtractConfig config = extractDao.getConfig(groupId);
     List<GEMFile> files = group.getMatchedFile();
-    Extractor extractor = config.getExtractor();
-    extractor.setExtractConfig(config);
+    AbstractExtractor extractor = config.getExtractor();
 
     List<ExtractedFile> results = Lists.newArrayList();
     for (GEMFile file : files) {
-      ExtractedRecords records = extractor.extract(file);
+      ExtractedRecords records = extractor.extract(file, config);
       extractDao.saveExtractedRecords(groupId, file.getFileName(), records);
       results.add(new ExtractedFile(file.getFileName(), records.size()));
     }
