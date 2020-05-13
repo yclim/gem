@@ -5,6 +5,17 @@ public class ExtractedFile {
   private String filename;
 
   private int count;
+  
+  
+  public ExtractedFile() {
+    
+  }
+
+  public ExtractedFile(String filename, int count) {
+    super();
+    this.filename = filename;
+    this.count = count;
+  }
 
   public String getFilename() {
     return filename;

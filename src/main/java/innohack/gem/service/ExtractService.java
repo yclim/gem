@@ -1,10 +1,13 @@
 package innohack.gem.service;
 
+import com.beust.jcommander.internal.Lists;
+import innohack.gem.dao.IExtractDao;
 import innohack.gem.entity.GEMFile;
 import innohack.gem.entity.extractor.ExtractConfig;
 import innohack.gem.entity.extractor.ExtractedFile;
 import innohack.gem.entity.extractor.ExtractedRecords;
 import innohack.gem.entity.rule.Group;
+import innohack.gem.service.extract.Extractor;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -17,38 +20,61 @@ public class ExtractService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ExtractService.class);
 
-  @Autowired private GroupService groupService;
+  @Autowired 
+  private GroupService groupService;
+  
+  @Autowired
+  private IExtractDao extractDao;
 
-  public List<ExtractedFile> extract(int groupId) {
+  /**
+   * Perform an extraction
+   * @param groupId
+   * @return
+   * @throws Exception
+   */
+  public List<ExtractedFile> extract(int groupId) throws Exception {
+    LOGGER.info("Performing extraction of group {}...", groupId);
     Group group = groupService.getGroup(groupId);
-    ExtractConfig config = getConfig(groupId);
+    ExtractConfig config = extractDao.getConfig(groupId);
     List<GEMFile> files = group.getMatchedFile();
-    return files.stream()
-        .map(
-            f -> {
-              f.extract();
-
-              ExtractedFile ef = new ExtractedFile();
-              ef.setFilename(f.getFileName());
-              ef.setCount(0); // TODO get this from the XXXExtractor?
-              return ef;
-            })
-        .collect(Collectors.toList());
+    Extractor extractor = config.getExtractor();
+    extractor.setExtractConfig(config);
+    
+    List<ExtractedFile> results = Lists.newArrayList();
+    for(GEMFile file: files) {
+      ExtractedRecords records = extractor.extract(file);
+      extractDao.saveExtractedRecords(groupId, file.getFileName(), records);
+      results.add(new ExtractedFile(file.getFileName(), records.size()));
+    }
+    LOGGER.info("Completed extraction of group {}", groupId);
+    return results;
   }
 
   public ExtractConfig updateExtractConfig(int groupId, ExtractConfig config) {
-    // TODO Auto-generated method stub
-    return null;
+    return extractDao.saveConfig(groupId, config);
   }
 
-  public ExtractedRecords extractRecords(int groupId, String filename) {
-    LOGGER.info("TODO: I am suppose to parse the files with the extractors specified by config?");
-    // TODO and then somehow I will get the XXXExtractor to perform the extraction?
-    return null;
+  /**
+   * Obtain the results of the previous extraction
+   * @param groupId
+   * @param filename
+   * @return
+   */
+  public ExtractedRecords getExtractedRecords(int groupId, String filename) {
+    return extractDao.getExtractedRecords(groupId, filename);
   }
 
-  private ExtractConfig getConfig(int groupId) {
-    // XXX Hmmm somewhere we need a handle on getting the ExtractConfig...
-    return null;
+  /**
+   * Obtain the aggregated results (by file) of the previous extraction
+   * @param groupId
+   * @return
+   */
+  public List<ExtractedFile> getExtractedFiles(int groupId) {
+    Group group = groupService.getGroup(groupId);
+    return group.getMatchedFile().stream().map(file -> {
+      ExtractedRecords records = extractDao.getExtractedRecords(groupId, file.getFileName());
+      return new ExtractedFile(file.getFileName(), records.size());
+    }).collect(Collectors.toList());
   }
+
 }

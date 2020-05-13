@@ -1,12 +1,14 @@
 package innohack.gem.entity.extractor;
 
 import com.beust.jcommander.internal.Lists;
+import innohack.gem.service.extract.Extractor;
 import java.util.List;
 
 public class ExtractConfig {
   private String name;
   private List<String> namesColumn;
   private List<TimestampColumn> timestampColumn;
+  private Extractor extractor;
   private List<String> sheetNames;
 
   public ExtractConfig() {
@@ -31,10 +33,6 @@ public class ExtractConfig {
     return timestampColumn;
   }
 
-  public List<String> getSheetNames() {
-    return sheetNames;
-  }
-
   public void addColumnNames(String value) {
     namesColumn.add(value);
   }
@@ -50,6 +48,15 @@ public class ExtractConfig {
   public void removeColumnTimestamp(TimestampColumn value) {
     timestampColumn.remove(value);
   }
+
+  public Extractor getExtractor() {
+    return extractor;
+  }
+
+  public void setExtractor(Extractor extractor) {
+    this.extractor = extractor;
+  }
+
 
   public void addSheetNames(String value) {
     sheetNames.add(value);
