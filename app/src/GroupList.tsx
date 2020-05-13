@@ -11,8 +11,8 @@ import {
 import { Group } from "./api";
 import groupRuleService from "./api/GroupRuleService";
 import GroupCard from "./GroupCard";
-import { GroupAction, GroupActions } from "./EditGroups";
-import { FileStatAction, FileStatActions } from "./FileStat";
+import { FileStatAction, FileStatActions } from "./FileStatReducer";
+import { GroupAction, GroupActions } from "./GroupReducer";
 
 interface IProps {
   groups: Map<string, Group>;
