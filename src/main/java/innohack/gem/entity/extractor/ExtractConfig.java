@@ -5,48 +5,57 @@ import innohack.gem.service.extract.Extractor;
 import java.util.List;
 
 public class ExtractConfig {
-  private String name;
-  private List<String> namesColumn;
-  private List<TimestampColumn> timestampColumn;
+  private String tableName;
+  private List<String> columnNames;
+  private List<TimestampColumn> timestampColumns;
+  private int groupId;
   private Extractor extractor;
   private List<String> sheetNames;
 
   public ExtractConfig() {
-    namesColumn = Lists.newArrayList();
-    timestampColumn = Lists.newArrayList();
+    columnNames = Lists.newArrayList();
+    timestampColumns = Lists.newArrayList();
     sheetNames = Lists.newArrayList();
   }
 
-  public String getName() {
-    return name;
+  public int getGroupId() {
+    return groupId;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setGroupId(int groupId) {
+    this.groupId = groupId;
+   }
+
+  public String getTableName() {
+    return tableName;
   }
 
-  public List<String> getNamesColumn() {
-    return namesColumn;
+  public void setTableName(String tableName) {
+    this.tableName = tableName;
   }
 
-  public List<TimestampColumn> getTimestampColumn() {
-    return timestampColumn;
+  public List<String> getColumnNames() {
+    return columnNames;
+  }
+
+  public List<TimestampColumn> getTimestampColumns() {
+    return timestampColumns;
   }
 
   public void addColumnNames(String value) {
-    namesColumn.add(value);
+    columnNames.add(value);
   }
 
   public void removeColumnName(String value) {
-    namesColumn.remove(value);
+    columnNames.remove(value);
   }
 
   public void addColumnTimestamp(TimestampColumn value) {
-    timestampColumn.add(value);
+    timestampColumns.add(value);
   }
 
   public void removeColumnTimestamp(TimestampColumn value) {
-    timestampColumn.remove(value);
+    timestampColumns.remove(value);
   }
 
   public Extractor getExtractor() {

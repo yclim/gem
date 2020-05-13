@@ -13,8 +13,8 @@ import {
   Popover,
   Position
 } from "@blueprintjs/core";
-import { GroupAction, GroupActions, rulenameExist } from "./EditGroups";
 import RuleForm from "./RuleForm";
+import { GroupAction, GroupActions, rulenameExist } from "./GroupReducer";
 
 interface IProps {
   groups: Map<string, Group>;

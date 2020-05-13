@@ -21,8 +21,8 @@ public class CSVExtractor extends AbstractExtractor {
     f.extract();
     for (AbstractFeature feature : f.getData()) {
       if (feature instanceof CsvFeature) {
-        List<String> extractColumns = getExtractConfig().getNamesColumn();
-        List<TimestampColumn> extractTSColumns = getExtractConfig().getTimestampColumn();
+        List<String> extractColumns = getExtractConfig().getColumnNames();
+        List<TimestampColumn> extractTSColumns = getExtractConfig().getTimestampColumns();
 
         ExtractedRecords results = new ExtractedRecords();
         List<List<String>> rows = ((CsvFeature) feature).getTableData();

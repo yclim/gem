@@ -20,14 +20,13 @@ public class ExtractService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ExtractService.class);
 
-  @Autowired 
-  private GroupService groupService;
-  
-  @Autowired
-  private IExtractDao extractDao;
+  @Autowired private GroupService groupService;
+
+  @Autowired private IExtractDao extractDao;
 
   /**
    * Perform an extraction
+   *
    * @param groupId
    * @return
    * @throws Exception
@@ -39,9 +38,9 @@ public class ExtractService {
     List<GEMFile> files = group.getMatchedFile();
     Extractor extractor = config.getExtractor();
     extractor.setExtractConfig(config);
-    
+
     List<ExtractedFile> results = Lists.newArrayList();
-    for(GEMFile file: files) {
+    for (GEMFile file : files) {
       ExtractedRecords records = extractor.extract(file);
       extractDao.saveExtractedRecords(groupId, file.getFileName(), records);
       results.add(new ExtractedFile(file.getFileName(), records.size()));
@@ -56,6 +55,7 @@ public class ExtractService {
 
   /**
    * Obtain the results of the previous extraction
+   *
    * @param groupId
    * @param filename
    * @return
@@ -66,15 +66,29 @@ public class ExtractService {
 
   /**
    * Obtain the aggregated results (by file) of the previous extraction
+   *
    * @param groupId
    * @return
    */
   public List<ExtractedFile> getExtractedFiles(int groupId) {
     Group group = groupService.getGroup(groupId);
-    return group.getMatchedFile().stream().map(file -> {
-      ExtractedRecords records = extractDao.getExtractedRecords(groupId, file.getFileName());
-      return new ExtractedFile(file.getFileName(), records.size());
-    }).collect(Collectors.toList());
+    return group.getMatchedFile().stream()
+        .map(
+            file -> {
+              ExtractedRecords records =
+                  extractDao.getExtractedRecords(groupId, file.getFileName());
+              return new ExtractedFile(file.getFileName(), records.size());
+            })
+        .collect(Collectors.toList());
   }
 
+  /**
+   * Get config by group id
+   *
+   * @param groupId
+   * @return
+   */
+  public ExtractConfig getExtractConfig(int groupId) {
+    return extractDao.getConfig(groupId);
+  }
 }

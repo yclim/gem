@@ -1,4 +1,5 @@
 export interface Group {
+  groupId: number;
   name: string;
   rules: Rule[];
   matchedCount?: number;
@@ -43,4 +44,18 @@ export interface File {
   directory: string;
   mimeType: string;
   data: (ExcelFeature | CsvFeature | TikaFeature)[] | null;
+}
+
+export interface ExtractConfig {
+  tableName: string;
+  columnNames: string[];
+  timestampColumns: TimestampColumn[];
+  groupId: number;
+}
+
+export interface TimestampColumn {
+  name: string;
+  fromColumn: string;
+  format: string;
+  timezone?: string;
 }
