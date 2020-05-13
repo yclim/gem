@@ -7,12 +7,9 @@ import innohack.gem.entity.extractor.ExtractedRecords;
 import innohack.gem.entity.extractor.TimestampColumn;
 import innohack.gem.entity.feature.AbstractFeature;
 import innohack.gem.entity.feature.ExcelFeature;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 
 public class ExcelExtractor extends AbstractExtractor {
 
@@ -50,13 +47,7 @@ public class ExcelExtractor extends AbstractExtractor {
               }
               for (TimestampColumn extractTSColumn : extractTSColumns) {
                 if (extractTSColumn.getFromColumn().equals(column)) {
-                  populate(
-                      results,
-                      rows,
-                      j,
-                      extractTSColumn.getName(),
-                      extractTSColumn.getFormat(),
-                      extractTSColumn.getTimezone());
+                  populate(results, rows, j, extractTSColumn.getName(), extractTSColumn);
                 }
               }
             }
@@ -71,7 +62,7 @@ public class ExcelExtractor extends AbstractExtractor {
   private void populate(
       ExtractedRecords results, List<List<String>> rows, int columnIdx, String name)
       throws ParseException {
-    populate(results, rows, columnIdx, name, null, null);
+    populate(results, rows, columnIdx, name, null);
   }
 
   private void populate(
@@ -79,20 +70,14 @@ public class ExcelExtractor extends AbstractExtractor {
       List<List<String>> rows,
       int columnIdx,
       String name,
-      String dateFormat,
-      String timezone)
+      TimestampColumn tsColumn)
       throws ParseException {
-    DateFormat formatter = null;
-    if (dateFormat != null) {
-      formatter = new SimpleDateFormat(dateFormat);
-      formatter.setTimeZone(TimeZone.getTimeZone(timezone));
-    }
 
     results.getHeaders().add(name);
     for (int i = 1; i < rows.size(); i++) {
       String value = rows.get(i).get(columnIdx);
-      if (formatter != null) {
-        value = String.valueOf(formatter.parse(value).getTime());
+      if (tsColumn != null) {
+        value = tsColumn.format(value);
       }
       results.getRecords().get(i - 1).add(value);
     }
