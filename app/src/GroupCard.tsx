@@ -14,10 +14,10 @@ import {
   Tag
 } from "@blueprintjs/core";
 import { Group, Rule } from "./api";
-import { GroupAction, GroupActions, rulenameExist } from "./EditGroups";
-import { FileStatAction, FileStatActions } from "./FileStat";
+import { FileStatAction, FileStatActions } from "./FileStatReducer";
 import RuleForm from "./RuleForm";
 import groupRuleService from "./api/GroupRuleService";
+import { GroupAction, GroupActions } from "./GroupReducer";
 
 interface IProps {
   group: Group;
@@ -82,8 +82,7 @@ const GroupCard: FunctionComponent<IProps> = ({
   }
 
   function handleChangeGroupName(e: string) {
-    const g = { name: e, rules: grp.rules };
-    setGrp(g);
+    setGrp({ ...grp, name: e });
   }
 
   function handleConfirm() {
