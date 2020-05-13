@@ -263,7 +263,7 @@ public class ExcelFeatureTests {
   @Test
   public void TestTwoSheetExcelXlsxContentParser() throws Exception {
     String path = "src/test/resources";
-    String filename =  "manual2_cars_0.xlsx";
+    String filename = "manual2_cars_0.xlsx";
 
     // ExcelFileGenerator.generateFixedCarsExcelFiles(
     //    XLSX, true, 100, 1, Paths.get(path), filenamePrefix);

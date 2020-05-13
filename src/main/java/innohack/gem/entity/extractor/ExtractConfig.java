@@ -1,7 +1,7 @@
 package innohack.gem.entity.extractor;
 
 import com.beust.jcommander.internal.Lists;
-import innohack.gem.service.extract.Extractor;
+import innohack.gem.service.extract.AbstractExtractor;
 import java.util.List;
 
 public class ExtractConfig {
@@ -9,7 +9,7 @@ public class ExtractConfig {
   private List<String> columnNames;
   private List<TimestampColumn> timestampColumns;
   private int groupId;
-  private Extractor extractor;
+  private AbstractExtractor extractor;
 
   public ExtractConfig() {
     columnNames = Lists.newArrayList();
@@ -56,11 +56,11 @@ public class ExtractConfig {
     timestampColumns.remove(value);
   }
 
-  public Extractor getExtractor() {
+  public AbstractExtractor getExtractor() {
     return extractor;
   }
 
-  public void setExtractor(Extractor extractor) {
+  public void setExtractor(AbstractExtractor extractor) {
     this.extractor = extractor;
   }
 }

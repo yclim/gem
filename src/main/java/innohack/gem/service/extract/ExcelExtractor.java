@@ -6,12 +6,8 @@ import innohack.gem.entity.extractor.ExtractedRecords;
 
 public class ExcelExtractor extends AbstractExtractor {
 
-  public ExcelExtractor(ExtractConfig extractConfig) {
-    this.setExtractConfig(extractConfig);
-  }
-
   @Override
-  public ExtractedRecords extract(GEMFile f) throws Exception {
+  public ExtractedRecords extract(GEMFile f, ExtractConfig extractConfig) throws Exception {
     return null;
   }
 }
