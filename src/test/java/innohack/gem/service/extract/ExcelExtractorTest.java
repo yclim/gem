@@ -9,24 +9,22 @@ import innohack.gem.entity.extractor.TimestampColumn;
 import org.junit.jupiter.api.Test;
 
 public class ExcelExtractorTest {
-
   @Test
   public void extractTest() throws Exception {
-    GEMFile file = new GEMFile();
-    file.setDirectory("src/test/resources");
-    file.setFileName("chats.xlsx");
+    GEMFile file = new GEMFile("chats.xlsx", "src/test/resources");
 
     ExtractConfig config = new ExtractConfig();
-
+    ExcelExtractor excelExtractor = new ExcelExtractor("chats", "Id,Message,Time");
+    config.setExtractor(excelExtractor);
     config.addSheetNames("chats");
     config.addColumnNames("Id");
     config.addColumnNames("Message");
+    config.addColumnNames("Time");
     config.addColumnTimestamp(new TimestampColumn("Time (ms)", "Time", "yyyyMMdd HHmmss"));
 
-    ExcelExtractor extractor = new ExcelExtractor(config);
-    ExtractedRecords results = extractor.extract(file);
+    ExtractedRecords results = excelExtractor.extract(file, config);
     assertEquals(5, results.getRecords().size());
     assertEquals("Yes, you looking for me?", results.getRecords().get(2).get(1));
-    assertEquals("2020/05/11 16:45:23+0800", results.getRecords().get(0).get(2));
+    assertEquals("2020/05/11 16:45:23+0800", results.getRecords().get(0).get(3));
   }
 }

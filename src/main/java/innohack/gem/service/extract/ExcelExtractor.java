@@ -7,18 +7,29 @@ import innohack.gem.entity.extractor.ExtractedRecords;
 import innohack.gem.entity.extractor.TimestampColumn;
 import innohack.gem.entity.feature.AbstractFeature;
 import innohack.gem.entity.feature.ExcelFeature;
+import innohack.gem.entity.rule.ParamType;
+import innohack.gem.entity.rule.Parameter;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ExcelExtractor extends AbstractExtractor {
 
-  public ExcelExtractor(ExtractConfig extractConfig) {
-    this.setExtractConfig(extractConfig);
+  public ExcelExtractor() {
+    this(null, null);
+  }
+
+  public ExcelExtractor(String sheetName, String columnNames) {
+    Parameter param1 = new Parameter("Sheet Name", "", ParamType.STRING_LIST, sheetName);
+    Parameter param2 = new Parameter("Column Names", "", ParamType.STRING_LIST, columnNames);
+
+    setParams(Lists.newArrayList(param1, param2));
   }
 
   @Override
-  public ExtractedRecords extract(GEMFile f) throws Exception {
+  public ExtractedRecords extract(GEMFile f, ExtractConfig extractConfig) throws Exception {
     f.extract();
 
     for (AbstractFeature feature : f.getData()) {
@@ -26,9 +37,12 @@ public class ExcelExtractor extends AbstractExtractor {
       if (feature instanceof ExcelFeature) {
         ExtractedRecords results = new ExtractedRecords();
 
-        List<String> excelSheetNames = getExtractConfig().getsheetNames();
-        List<String> extractColumns = getExtractConfig().getColumnNames();
-        List<TimestampColumn> extractTSColumns = getExtractConfig().getTimestampColumns();
+        String[] paramHeaders = getParams().get(0).getValue().split(",");
+        String[] paramValues = getParams().get(1).getValue().split(",");
+        List<String> excelSheetNames = Arrays.stream(paramHeaders).collect(Collectors.toList());
+        List<String> extractColumns = Arrays.stream(paramValues).collect(Collectors.toList());
+
+        List<TimestampColumn> extractTSColumns = extractConfig.getTimestampColumns();
 
         Map<String, List<List<String>>> sheetTables = ((ExcelFeature) feature).getSheetTableData();
 
