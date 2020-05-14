@@ -16,7 +16,7 @@ public class ExcelExtractorTest {
     ExtractConfig config = new ExtractConfig();
     ExcelExtractor excelExtractor = new ExcelExtractor("chats", "Id,Message,Time");
     config.setExtractor(excelExtractor);
-    config.addSheetNames("chats");
+
     config.addColumnNames("Id");
     config.addColumnNames("Message");
     config.addColumnNames("Time");

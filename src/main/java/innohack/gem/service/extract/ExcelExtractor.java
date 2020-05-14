@@ -22,7 +22,7 @@ public class ExcelExtractor extends AbstractExtractor {
   }
 
   public ExcelExtractor(String sheetName, String columnNames) {
-    Parameter param1 = new Parameter("Sheet Name", "", ParamType.STRING_LIST, sheetName);
+    Parameter param1 = new Parameter("Sheet Name", "", ParamType.STRING, sheetName);
     Parameter param2 = new Parameter("Column Names", "", ParamType.STRING_LIST, columnNames);
 
     setParams(Lists.newArrayList(param1, param2));
@@ -37,36 +37,39 @@ public class ExcelExtractor extends AbstractExtractor {
       if (feature instanceof ExcelFeature) {
         ExtractedRecords results = new ExtractedRecords();
 
-        String[] paramHeaders = getParams().get(0).getValue().split(",");
+        String excelSheetName = getParams().get(0).getValue();
         String[] paramValues = getParams().get(1).getValue().split(",");
-        List<String> excelSheetNames = Arrays.stream(paramHeaders).collect(Collectors.toList());
         List<String> extractColumns = Arrays.stream(paramValues).collect(Collectors.toList());
+
+        results.setSheetName(excelSheetName);
 
         List<TimestampColumn> extractTSColumns = extractConfig.getTimestampColumns();
 
         Map<String, List<List<String>>> sheetTables = ((ExcelFeature) feature).getSheetTableData();
 
-        for (String excelSheetName : excelSheetNames) {
-          if (sheetTables.containsKey(excelSheetName)) {
-            List<List<String>> rows = sheetTables.get(excelSheetName);
+        if (sheetTables.containsKey(excelSheetName)) {
+          List<List<String>> rows = sheetTables.get(excelSheetName);
 
-            for (int i = 1; i < rows.size(); i++) results.getRecords().add(Lists.newArrayList());
-            // for getting the header for each sheet
-            List<String> columns = rows.get(0);
+          for (int i = 1; i < rows.size(); i++) results.getRecords().add(Lists.newArrayList());
+          // for getting the header for each sheet
+          List<String> columns = rows.get(0);
 
-            for (int j = 0; j < columns.size(); j++) {
-              String column = columns.get(j);
-              if (extractColumns.contains(column)) {
-                populate(results, rows, j, column);
-              }
-              for (TimestampColumn extractTSColumn : extractTSColumns) {
-                if (extractTSColumn.getFromColumn().equals(column)) {
+          for (int j = 0; j < columns.size(); j++) {
+            String column = columns.get(j);
+            int foundIndex = extractColumns.indexOf(column);
+            if (foundIndex > -1) {
+              String columnName = extractConfig.getColumnNames().get(foundIndex);
+              populate(results, rows, j, columnName);
+
+              for (TimestampColumn extractTSColumn : extractConfig.getTimestampColumns()) {
+                if (extractTSColumn.getFromColumn().equals(columnName)) {
                   populate(results, rows, j, extractTSColumn.getName(), extractTSColumn);
                 }
               }
             }
           }
         }
+
         return results;
       }
     }

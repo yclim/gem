@@ -10,12 +10,10 @@ public class ExtractConfig {
   private List<TimestampColumn> timestampColumns;
   private int groupId;
   private AbstractExtractor extractor;
-  private List<String> sheetNames;
 
   public ExtractConfig() {
     columnNames = Lists.newArrayList();
     timestampColumns = Lists.newArrayList();
-    sheetNames = Lists.newArrayList();
   }
 
   public int getGroupId() {
@@ -64,17 +62,5 @@ public class ExtractConfig {
 
   public void setExtractor(AbstractExtractor extractor) {
     this.extractor = extractor;
-  }
-
-  public void addSheetNames(String value) {
-    sheetNames.add(value);
-  }
-
-  public List<String> getsheetNames() {
-    return this.sheetNames;
-  }
-
-  public void removeSheetNames(String value) {
-    sheetNames.remove(value);
   }
 }
