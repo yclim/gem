@@ -8,9 +8,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class ExtractDao implements IExtractDao {
-  
+
   private Map<Integer, ExtractConfig> configs = Maps.newConcurrentMap();
-  
+
   private Map<String, ExtractedRecords> records = Maps.newConcurrentMap();
 
   @Override
@@ -33,9 +33,8 @@ public class ExtractDao implements IExtractDao {
   public ExtractedRecords getExtractedRecords(int groupId, String filename) {
     return records.get(toKey(groupId, filename));
   }
-  
+
   private String toKey(int groupId, String filename) {
     return groupId + "-" + filename;
   }
-
 }
