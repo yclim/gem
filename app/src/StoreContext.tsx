@@ -1,15 +1,12 @@
 import { Group } from "./api";
-import React, {
-  createContext,
-  FunctionComponent,
-  useContext,
-  useReducer
-} from "react";
-import groupsReducer, { GroupAction, initialState } from "./GroupReducer";
+import React, { createContext, FunctionComponent, useReducer } from "react";
+import groupsReducer, { GroupDispatchType, initialState } from "./GroupReducer";
+import { GroupAction, useGroupActions } from "./GroupActions";
 
 interface ContextProps {
   state: Map<string, Group>;
-  dispatch?: React.Dispatch<GroupAction>;
+  actions?: GroupAction;
+  dispatch?: React.Dispatch<GroupDispatchType>;
 }
 
 const StoreContext = createContext<ContextProps>({
@@ -19,8 +16,10 @@ const StoreContext = createContext<ContextProps>({
 const StoreProvider: FunctionComponent = ({ children }) => {
   const [state, dispatch] = useReducer(groupsReducer, initialState);
 
+  const actions = useGroupActions(state, dispatch);
+
   return (
-    <StoreContext.Provider value={{ state, dispatch }}>
+    <StoreContext.Provider value={{ state, actions, dispatch }}>
       {children}
     </StoreContext.Provider>
   );

@@ -21,7 +21,6 @@ import {
 import { Group, Rule } from "./api";
 import { FileStatAction, FileStatActions } from "./FileStatReducer";
 import RuleForm from "./RuleForm";
-import { GroupActions } from "./GroupReducer";
 import { StoreContext } from "./StoreContext";
 
 interface IProps {
@@ -41,9 +40,8 @@ const GroupCard: FunctionComponent<IProps> = ({
   fileStat
 }) => {
   const context = useContext(StoreContext);
-  const groups = context.state;
-  const dispatcher = context.dispatch;
-  if (!dispatcher) throw new Error("illegal dispatcher state");
+  const actions = context.actions;
+  if (!actions) throw new Error("illegal dispatcher state");
 
   const [grp, setGrp] = useState(group);
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -92,13 +90,12 @@ const GroupCard: FunctionComponent<IProps> = ({
   }
 
   function handleConfirm() {
-    if (dispatcher)
-      GroupActions.updateGroupName(dispatcher, group.name, grp.name);
+    if (actions) actions.updateGroupName(group.name, grp.name);
     FileStatActions.getFileStat(fileStatDispatcher);
   }
 
   function handleDeleteGroup() {
-    if (dispatcher) GroupActions.removeGroup(dispatcher, grp.name);
+    if (actions) actions.removeGroup(grp.name);
     FileStatActions.getFileStat(fileStatDispatcher);
   }
 
@@ -113,22 +110,15 @@ const GroupCard: FunctionComponent<IProps> = ({
   }
 
   function handleDialogSubmit() {
-    if (editRule && selectedRule && dispatcher) {
-      GroupActions.updateGroupRule(
-        dispatcher,
-        groups,
-        group,
-        selectedRule.name,
-        editRule
-      );
+    if (editRule && selectedRule && actions) {
+      actions.updateGroupRule(group, selectedRule.name, editRule);
       FileStatActions.getFileStat(fileStatDispatcher);
     }
-
     setIsOpen(false);
   }
 
   function handleDeleteGroupRule(curGrp: Group, rule: Rule) {
-    if (dispatcher) GroupActions.removeGroupRule(dispatcher, group, rule.name);
+    if (actions) actions.removeGroupRule(group, rule.name);
     FileStatActions.getFileStat(fileStatDispatcher);
   }
 

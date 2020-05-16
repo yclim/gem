@@ -12,7 +12,6 @@ import { Group } from "./api";
 import groupRuleService from "./api/GroupRuleService";
 import GroupCard from "./GroupCard";
 import { FileStatAction, FileStatActions } from "./FileStatReducer";
-import { GroupActions } from "./GroupReducer";
 import { StoreContext } from "./StoreContext";
 
 interface IProps {
@@ -32,12 +31,12 @@ const GroupList: FunctionComponent<IProps> = ({
 }) => {
   const context = useContext(StoreContext);
   const groups = context.state;
-  const dispatcher = context.dispatch;
-  if (!dispatcher) throw new Error("illegal dispatcher state");
+  const actions = context.actions;
+  if (!actions) throw new Error("illegal dispatcher state");
 
   function handleCreateGroup() {
-    if (dispatcher) {
-      GroupActions.newGroup(dispatcher, groups);
+    if (actions) {
+      actions.newGroup();
       FileStatActions.getFileStat(fileStatDispatcher);
     }
   }
@@ -47,7 +46,7 @@ const GroupList: FunctionComponent<IProps> = ({
     const data = new FormData();
     data.append("file", selectedFile);
     groupRuleService.importGroupsFile(data).then(results => {
-      GroupActions.initGroup(results.data);
+      actions?.initGroup();
     });
   }
 

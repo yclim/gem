@@ -19,7 +19,6 @@ import {
   Position
 } from "@blueprintjs/core";
 import RuleForm from "./RuleForm";
-import { GroupActions, rulenameExist } from "./GroupReducer";
 import { StoreContext } from "./StoreContext";
 
 interface IProps {
@@ -29,7 +28,7 @@ interface IProps {
 const RuleList: FunctionComponent<IProps> = ({ setNewGroupRuleName }) => {
   const context = useContext(StoreContext);
   const groups = context.state;
-  const dispatcher = context.dispatch;
+  const actions = context.actions;
 
   const [rules, setRules] = useState([] as Rule[]);
   const [isOpen, setIsOpen] = useState(false);
@@ -43,13 +42,8 @@ const RuleList: FunctionComponent<IProps> = ({ setNewGroupRuleName }) => {
   }, []);
 
   function addRuleToGroup() {
-    if (currentRule && currentGroup && dispatcher) {
-      GroupActions.addGroupRule(
-        dispatcher,
-        groups,
-        currentGroup.name,
-        currentRule
-      );
+    if (currentRule && currentGroup && actions) {
+      actions.addGroupRule(currentGroup.name, currentRule);
       setNewGroupRuleName(currentRule.name);
       setCurrentRule(null);
     }
@@ -94,7 +88,7 @@ const RuleList: FunctionComponent<IProps> = ({ setNewGroupRuleName }) => {
         .join("");
       while (true) {
         const finalName = alias + "-" + counter;
-        if (!rulenameExist(groups, finalName)) {
+        if (!actions.isRuleNameUsed(finalName)) {
           return finalName;
         } else {
           counter++;

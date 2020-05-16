@@ -13,7 +13,6 @@ import groupRuleService from "./api/GroupRuleService";
 import "@blueprintjs/table/lib/css/table.css";
 import FileList from "./FileList";
 import fileStatReducer, { FileStatActions } from "./FileStatReducer";
-import { GroupActions } from "./GroupReducer";
 import { StoreContext } from "./StoreContext";
 
 export interface UpdateGroupNameInput {
@@ -24,8 +23,9 @@ export interface UpdateGroupNameInput {
 const EditGroups: FunctionComponent<RouteComponentProps> = () => {
   const context = useContext(StoreContext);
   const groups = context.state;
+  const actions = context.actions;
   const dispatcher = context.dispatch;
-  if (!dispatcher) throw new Error("illegal dispatcher state");
+  if (!dispatcher || !actions) throw new Error("illegal context state");
 
   const [fileStat, fileStatDispatcher] = useReducer(fileStatReducer, []);
 
@@ -34,7 +34,7 @@ const EditGroups: FunctionComponent<RouteComponentProps> = () => {
   const [files, setFiles] = useState<File[]>([]);
 
   useEffect(() => {
-    GroupActions.initGroup(dispatcher);
+    actions.initGroup();
 
     FileStatActions.getFileStat(fileStatDispatcher);
   }, []);
