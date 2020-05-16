@@ -1,9 +1,4 @@
-import React, {
-  ChangeEvent,
-  FunctionComponent,
-  useEffect,
-  useState
-} from "react";
+import React, { ChangeEvent, FunctionComponent, useState } from "react";
 import { Parameter, Rule } from "./api";
 import { FormGroup, InputGroup } from "@blueprintjs/core";
 import { Intent } from "@blueprintjs/core/lib/esm/common/intent";

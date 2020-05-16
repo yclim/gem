@@ -5,7 +5,6 @@ import {
   Card,
   Elevation,
   FormGroup,
-  HTMLSelect,
   InputGroup
 } from "@blueprintjs/core";
 

@@ -2,7 +2,6 @@ import React, {
   FunctionComponent,
   useContext,
   useEffect,
-  useReducer,
   useState
 } from "react";
 import RuleList from "./RuleList";
@@ -12,7 +11,6 @@ import { File, Group } from "./api";
 import groupRuleService from "./api/GroupRuleService";
 import "@blueprintjs/table/lib/css/table.css";
 import FileList from "./FileList";
-import fileStatReducer, { FileStatActions } from "./FileStatReducer";
 import { StoreContext } from "./StoreContext";
 
 export interface UpdateGroupNameInput {
@@ -22,21 +20,13 @@ export interface UpdateGroupNameInput {
 
 const EditGroups: FunctionComponent<RouteComponentProps> = () => {
   const context = useContext(StoreContext);
-  const groups = context.state;
-  const actions = context.actions;
-  const dispatcher = context.dispatch;
-  if (!dispatcher || !actions) throw new Error("illegal context state");
-
-  const [fileStat, fileStatDispatcher] = useReducer(fileStatReducer, []);
-
   const [newGroupRuleName, setNewGroupRuleName] = useState<string | null>(null);
   const [currentGroup, setCurrentGroup] = useState<Group | null>(null);
   const [files, setFiles] = useState<File[]>([]);
 
   useEffect(() => {
-    actions.initGroup();
-
-    FileStatActions.getFileStat(fileStatDispatcher);
+    context.groupsAction?.initGroup();
+    context.fileStatAction?.initFileStat();
   }, []);
 
   useEffect(() => {
@@ -52,7 +42,7 @@ const EditGroups: FunctionComponent<RouteComponentProps> = () => {
     } else {
       setFiles([]);
     }
-  }, [currentGroup, groups]);
+  }, [currentGroup, context.groupsState]);
 
   return (
     <div className="grid3">
@@ -61,8 +51,6 @@ const EditGroups: FunctionComponent<RouteComponentProps> = () => {
         currentGroup={currentGroup}
         setCurrentGroup={setCurrentGroup}
         newGroupRuleName={newGroupRuleName}
-        fileStatDispatcher={fileStatDispatcher}
-        fileStat={fileStat}
       />
       <FileList files={files} setFiles={setFiles} />
     </div>

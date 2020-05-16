@@ -2,24 +2,39 @@ import { Group } from "./api";
 import React, { createContext, FunctionComponent, useReducer } from "react";
 import groupsReducer, { GroupDispatchType, initialState } from "./GroupReducer";
 import { GroupAction, useGroupActions } from "./GroupActions";
+import fileStatReducer from "./fileStatReducer";
+import { FileStatAction, useFileStatActions } from "./fileStatActions";
 
 interface ContextProps {
-  state: Map<string, Group>;
-  actions?: GroupAction;
-  dispatch?: React.Dispatch<GroupDispatchType>;
+  groupsState: Map<string, Group>;
+  groupsAction?: GroupAction;
+  groupDispatch?: React.Dispatch<GroupDispatchType>;
+  fileStatState: number[];
+  fileStatAction?: FileStatAction;
 }
 
 const StoreContext = createContext<ContextProps>({
-  state: initialState
+  groupsState: initialState,
+  fileStatState: []
 });
 
 const StoreProvider: FunctionComponent = ({ children }) => {
-  const [state, dispatch] = useReducer(groupsReducer, initialState);
+  const [groupsState, groupDispatch] = useReducer(groupsReducer, initialState);
+  const [fileStatState, fileStatDispatch] = useReducer(fileStatReducer, []);
 
-  const actions = useGroupActions(state, dispatch);
+  const groupsAction = useGroupActions(groupsState, groupDispatch);
+  const fileStatAction = useFileStatActions(fileStatState, fileStatDispatch);
 
   return (
-    <StoreContext.Provider value={{ state, actions, dispatch }}>
+    <StoreContext.Provider
+      value={{
+        groupsState,
+        groupsAction,
+        groupDispatch,
+        fileStatState,
+        fileStatAction
+      }}
+    >
       {children}
     </StoreContext.Provider>
   );

@@ -27,8 +27,6 @@ interface IProps {
 
 const RuleList: FunctionComponent<IProps> = ({ setNewGroupRuleName }) => {
   const context = useContext(StoreContext);
-  const groups = context.state;
-  const actions = context.actions;
 
   const [rules, setRules] = useState([] as Rule[]);
   const [isOpen, setIsOpen] = useState(false);
@@ -42,16 +40,16 @@ const RuleList: FunctionComponent<IProps> = ({ setNewGroupRuleName }) => {
   }, []);
 
   function addRuleToGroup() {
-    if (currentRule && currentGroup && actions) {
-      actions.addGroupRule(currentGroup.name, currentRule);
+    if (currentRule && currentGroup) {
+      context.groupsAction?.addGroupRule(currentGroup.name, currentRule);
       setNewGroupRuleName(currentRule.name);
       setCurrentRule(null);
     }
   }
 
   function handleOpen(gname: string, rid: string) {
-    if (groups) {
-      const grp = groups.get(gname);
+    if (context.groupsState) {
+      const grp = context.groupsState.get(gname);
       if (typeof grp !== "undefined") {
         const rule = rules.find(r => r.ruleId === rid);
         if (typeof rule !== "undefined") {
@@ -88,7 +86,7 @@ const RuleList: FunctionComponent<IProps> = ({ setNewGroupRuleName }) => {
         .join("");
       while (true) {
         const finalName = alias + "-" + counter;
-        if (!actions.isRuleNameUsed(finalName)) {
+        if (!context.groupsAction?.isRuleNameUsed(finalName)) {
           return finalName;
         } else {
           counter++;
@@ -104,7 +102,7 @@ const RuleList: FunctionComponent<IProps> = ({ setNewGroupRuleName }) => {
     return (
       <Menu>
         <MenuDivider title="Add to Group" />
-        {Array.from(groups, ([k, v]) => v).map(g => (
+        {Array.from(context.groupsState, ([k, v]) => v).map(g => (
           <MenuItem
             key={g.name}
             text={g.name}

@@ -1,4 +1,4 @@
-import React, { Dispatch, FunctionComponent, useContext } from "react";
+import React, { FunctionComponent, useContext } from "react";
 import {
   AnchorButton,
   Button,
@@ -11,34 +11,24 @@ import {
 import { Group } from "./api";
 import groupRuleService from "./api/GroupRuleService";
 import GroupCard from "./GroupCard";
-import { FileStatAction, FileStatActions } from "./FileStatReducer";
 import { StoreContext } from "./StoreContext";
 
 interface IProps {
   currentGroup: Group | null;
   setCurrentGroup: (group: Group) => void;
   newGroupRuleName: string | null;
-  fileStatDispatcher: Dispatch<FileStatAction>;
-  fileStat: number[];
 }
 
 const GroupList: FunctionComponent<IProps> = ({
   currentGroup,
   setCurrentGroup,
-  newGroupRuleName,
-  fileStatDispatcher,
-  fileStat
+  newGroupRuleName
 }) => {
   const context = useContext(StoreContext);
-  const groups = context.state;
-  const actions = context.actions;
-  if (!actions) throw new Error("illegal dispatcher state");
 
   function handleCreateGroup() {
-    if (actions) {
-      actions.newGroup();
-      FileStatActions.getFileStat(fileStatDispatcher);
-    }
+    context.groupsAction?.newGroup();
+    context.fileStatAction?.initFileStat();
   }
 
   function handleFileSelected(file: string) {
@@ -46,7 +36,7 @@ const GroupList: FunctionComponent<IProps> = ({
     const data = new FormData();
     data.append("file", selectedFile);
     groupRuleService.importGroupsFile(data).then(results => {
-      actions?.initGroup();
+      context.fileStatAction?.initFileStat();
     });
   }
 
@@ -76,7 +66,7 @@ const GroupList: FunctionComponent<IProps> = ({
         />
       </div>
       <div className="stack">
-        {Array.from(groups, ([k, v]) => v)
+        {Array.from(context.groupsState, ([k, v]) => v)
           .sort((n1, n2) => {
             if (n1.name > n2.name) {
               return 1;
@@ -93,8 +83,6 @@ const GroupList: FunctionComponent<IProps> = ({
               focusGroup={currentGroup}
               setFocusGroup={setCurrentGroup}
               newGroupRuleName={newGroupRuleName}
-              fileStatDispatcher={fileStatDispatcher}
-              fileStat={fileStat}
             />
           ))}
         <Card
@@ -106,7 +94,7 @@ const GroupList: FunctionComponent<IProps> = ({
             <div className="label">No matches</div>
             <div className="counter">
               <Tag round={true} intent={Intent.WARNING}>
-                {fileStat[0]}
+                {context.fileStatState[0]}
               </Tag>
             </div>
           </div>
@@ -114,7 +102,7 @@ const GroupList: FunctionComponent<IProps> = ({
             <div className="label">Conflicts</div>
             <div className="counter">
               <Tag round={true} intent={Intent.DANGER}>
-                {fileStat[1]}
+                {context.fileStatState[1]}
               </Tag>
             </div>
           </div>
