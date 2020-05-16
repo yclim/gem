@@ -10,10 +10,10 @@ const UPDATE_GROUP_RULE = "UPDATE_GROUP_RULE";
 const UPDATE_GROUP_NAME = "UPDATE_GROUP_NAME";
 
 export type GroupAction =
-  | { type: typeof INIT_GROUPS; groups: Group[] }
-  | { type: typeof NEW_GROUP; group: Group }
-  | { type: typeof REMOVE_GROUP; groupName: string }
-  | { type: typeof UPDATE_GROUP_RULE; group: Group }
+  | { type: typeof INIT_GROUPS; payload: { groups: Group[] } }
+  | { type: typeof NEW_GROUP; payload: { group: Group } }
+  | { type: typeof REMOVE_GROUP; payload: { groupName: string } }
+  | { type: typeof UPDATE_GROUP_RULE; payload: { group: Group } }
   | {
       type: typeof UPDATE_GROUP_NAME;
       updateGroupNameInput: UpdateGroupNameInput;
@@ -22,7 +22,7 @@ export type GroupAction =
 export abstract class GroupActions {
   static initGroup(dispatcher: React.Dispatch<GroupAction>) {
     groupRuleService.getGroups().then((resp: AxiosResponse<Group[]>) => {
-      dispatcher({ type: INIT_GROUPS, groups: resp.data });
+      dispatcher({ type: INIT_GROUPS, payload: { groups: resp.data } });
     });
   }
   static newGroup(
@@ -41,7 +41,7 @@ export abstract class GroupActions {
           rules: []
         };
         groupRuleService.saveGroup(newGroup).then(response => {
-          dispatcher({ type: NEW_GROUP, group: response.data });
+          dispatcher({ type: NEW_GROUP, payload: { group: response.data } });
         });
         break;
       } else {
@@ -58,7 +58,7 @@ export abstract class GroupActions {
     groupName: string
   ) {
     groupRuleService.deleteGroup(groupName).then(response => {
-      dispatcher({ type: REMOVE_GROUP, groupName });
+      dispatcher({ type: REMOVE_GROUP, payload: { groupName } });
     });
   }
 
@@ -72,7 +72,10 @@ export abstract class GroupActions {
     if (group) {
       group.rules = [...group.rules, rule];
       groupRuleService.saveGroup(group).then(response => {
-        dispatcher({ type: UPDATE_GROUP_RULE, group: response.data });
+        dispatcher({
+          type: UPDATE_GROUP_RULE,
+          payload: { group: response.data }
+        });
       });
     }
   }
@@ -92,7 +95,10 @@ export abstract class GroupActions {
       oldRule.name = rule.name;
       oldRule.params = rule.params;
       groupRuleService.saveGroup(group).then(response => {
-        dispatcher({ type: UPDATE_GROUP_RULE, group: response.data });
+        dispatcher({
+          type: UPDATE_GROUP_RULE,
+          payload: { group: response.data }
+        });
       });
     }
   }
@@ -106,7 +112,7 @@ export abstract class GroupActions {
       return r.name !== ruleName;
     });
     groupRuleService.saveGroup(group).then(response => {
-      dispatcher({ type: UPDATE_GROUP_RULE, group });
+      dispatcher({ type: UPDATE_GROUP_RULE, payload: { group } });
     });
   }
 
@@ -132,13 +138,13 @@ export default function groupsReducer(
 ) {
   switch (action.type) {
     case INIT_GROUPS:
-      return new Map(action.groups.map(g => [g.name, g]));
+      return new Map(action.payload.groups.map(g => [g.name, g]));
     case NEW_GROUP:
-      return handleNewGroup(state, action.group);
+      return handleNewGroup(state, action.payload.group);
     case REMOVE_GROUP:
-      return handleRemoveGroup(state, action.groupName);
+      return handleRemoveGroup(state, action.payload.groupName);
     case UPDATE_GROUP_RULE:
-      return handleUpdateGroupRule(state, action.group);
+      return handleUpdateGroupRule(state, action.payload.group);
     case UPDATE_GROUP_NAME:
       return handleUpdateGroupName(state, action.updateGroupNameInput);
     default:
