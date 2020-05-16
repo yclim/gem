@@ -1,4 +1,9 @@
-import React, { Dispatch, FunctionComponent, useEffect, useState } from "react";
+import React, {
+  FunctionComponent,
+  useContext,
+  useEffect,
+  useState
+} from "react";
 import { Group, Rule } from "./api";
 import groupRuleService from "./api/GroupRuleService";
 import {
@@ -14,19 +19,18 @@ import {
   Position
 } from "@blueprintjs/core";
 import RuleForm from "./RuleForm";
-import { GroupAction, GroupActions, rulenameExist } from "./GroupReducer";
+import { GroupActions, rulenameExist } from "./GroupReducer";
+import { StoreContext } from "./StoreContext";
 
 interface IProps {
-  groups: Map<string, Group>;
-  groupDispatcher: Dispatch<GroupAction>;
   setNewGroupRuleName: (g: string | null) => void;
 }
 
-const RuleList: FunctionComponent<IProps> = ({
-  groups,
-  groupDispatcher,
-  setNewGroupRuleName
-}) => {
+const RuleList: FunctionComponent<IProps> = ({ setNewGroupRuleName }) => {
+  const context = useContext(StoreContext);
+  const groups = context.state;
+  const dispatcher = context.dispatch;
+
   const [rules, setRules] = useState([] as Rule[]);
   const [isOpen, setIsOpen] = useState(false);
   const [currentRule, setCurrentRule] = useState<Rule | null>(null);
@@ -39,9 +43,9 @@ const RuleList: FunctionComponent<IProps> = ({
   }, []);
 
   function addRuleToGroup() {
-    if (currentRule && currentGroup) {
+    if (currentRule && currentGroup && dispatcher) {
       GroupActions.addGroupRule(
-        groupDispatcher,
+        dispatcher,
         groups,
         currentGroup.name,
         currentRule
@@ -52,15 +56,17 @@ const RuleList: FunctionComponent<IProps> = ({
   }
 
   function handleOpen(gname: string, rid: string) {
-    const grp = groups.get(gname);
-    if (typeof grp !== "undefined") {
-      const rule = rules.find(r => r.ruleId === rid);
-      if (typeof rule !== "undefined") {
-        rule.name = generateLabel(rule);
-        // clone the currentRule so that it will not modify parameters value in rules
-        setCurrentRule(JSON.parse(JSON.stringify(rule)));
-        setIsOpen(true);
-        setCurrentGroup(grp);
+    if (groups) {
+      const grp = groups.get(gname);
+      if (typeof grp !== "undefined") {
+        const rule = rules.find(r => r.ruleId === rid);
+        if (typeof rule !== "undefined") {
+          rule.name = generateLabel(rule);
+          // clone the currentRule so that it will not modify parameters value in rules
+          setCurrentRule(JSON.parse(JSON.stringify(rule)));
+          setIsOpen(true);
+          setCurrentGroup(grp);
+        }
       }
     }
   }

@@ -3,7 +3,7 @@ import { render } from "react-dom";
 import "@blueprintjs/icons/lib/css/blueprint-icons.css";
 import "@blueprintjs/core/lib/css/blueprint.css";
 
-import { Link, Router } from "@reach/router";
+import { Link, RouteComponentProps, Router } from "@reach/router";
 import {
   Alignment,
   Button,
@@ -18,6 +18,7 @@ import EditGroups from "./EditGroups";
 import BrowseFiles from "./BrowseFiles";
 import ExtractData from "./ExtractData";
 import ExportSpec from "./ExportSpec";
+import { StoreProvider } from "./StoreContext";
 
 const App = () => {
   return (
@@ -51,7 +52,15 @@ const App = () => {
         </Navbar>
       </div>
       <Router>
-        <EditGroups path="/groups" />
+        <RouterPage
+          path="/groups"
+          pageComponent={
+            <StoreProvider>
+              <EditGroups />
+            </StoreProvider>
+          }
+        />
+
         <BrowseFiles path="/" />
         <ExtractData path="/extract" />
         <ExportSpec path="/export" />
@@ -59,5 +68,9 @@ const App = () => {
     </div>
   );
 };
+
+const RouterPage = (
+  props: { pageComponent: JSX.Element } & RouteComponentProps
+) => props.pageComponent;
 
 render(<App />, document.getElementById("root"));

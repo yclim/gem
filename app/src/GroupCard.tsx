@@ -1,4 +1,9 @@
-import React, { Dispatch, FunctionComponent, useState } from "react";
+import React, {
+  Dispatch,
+  FunctionComponent,
+  useContext,
+  useState
+} from "react";
 import {
   Alignment,
   Button,
@@ -16,29 +21,30 @@ import {
 import { Group, Rule } from "./api";
 import { FileStatAction, FileStatActions } from "./FileStatReducer";
 import RuleForm from "./RuleForm";
-import groupRuleService from "./api/GroupRuleService";
-import { GroupAction, GroupActions } from "./GroupReducer";
+import { GroupActions } from "./GroupReducer";
+import { StoreContext } from "./StoreContext";
 
 interface IProps {
   group: Group;
-  groupDispatcher: Dispatch<GroupAction>;
   focusGroup: Group | null;
   setFocusGroup: (g: Group) => void;
   newGroupRuleName: string | null;
-  groups: Map<string, Group>;
   fileStatDispatcher: Dispatch<FileStatAction>;
   fileStat: number[];
 }
 const GroupCard: FunctionComponent<IProps> = ({
   group,
-  groupDispatcher,
   focusGroup,
   setFocusGroup,
   newGroupRuleName,
-  groups,
   fileStatDispatcher,
   fileStat
 }) => {
+  const context = useContext(StoreContext);
+  const groups = context.state;
+  const dispatcher = context.dispatch;
+  if (!dispatcher) throw new Error("illegal dispatcher state");
+
   const [grp, setGrp] = useState(group);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedRule, setSelectedRule] = useState<Rule | null>(null);
@@ -86,12 +92,13 @@ const GroupCard: FunctionComponent<IProps> = ({
   }
 
   function handleConfirm() {
-    GroupActions.updateGroupName(groupDispatcher, group.name, grp.name);
+    if (dispatcher)
+      GroupActions.updateGroupName(dispatcher, group.name, grp.name);
     FileStatActions.getFileStat(fileStatDispatcher);
   }
 
   function handleDeleteGroup() {
-    GroupActions.removeGroup(groupDispatcher, grp.name);
+    if (dispatcher) GroupActions.removeGroup(dispatcher, grp.name);
     FileStatActions.getFileStat(fileStatDispatcher);
   }
 
@@ -106,9 +113,9 @@ const GroupCard: FunctionComponent<IProps> = ({
   }
 
   function handleDialogSubmit() {
-    if (editRule && selectedRule) {
+    if (editRule && selectedRule && dispatcher) {
       GroupActions.updateGroupRule(
-        groupDispatcher,
+        dispatcher,
         groups,
         group,
         selectedRule.name,
@@ -121,7 +128,7 @@ const GroupCard: FunctionComponent<IProps> = ({
   }
 
   function handleDeleteGroupRule(curGrp: Group, rule: Rule) {
-    GroupActions.removeGroupRule(groupDispatcher, group, rule.name);
+    if (dispatcher) GroupActions.removeGroupRule(dispatcher, group, rule.name);
     FileStatActions.getFileStat(fileStatDispatcher);
   }
 

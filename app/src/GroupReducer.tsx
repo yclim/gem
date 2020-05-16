@@ -132,6 +132,8 @@ export abstract class GroupActions {
   }
 }
 
+export const initialState: Map<string, Group> = new Map();
+
 export default function groupsReducer(
   state: Map<string, Group>,
   action: GroupAction

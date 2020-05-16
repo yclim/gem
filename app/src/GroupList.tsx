@@ -1,7 +1,7 @@
-import React, { Dispatch, FunctionComponent } from "react";
+import React, { Dispatch, FunctionComponent, useContext } from "react";
 import {
-  Button,
   AnchorButton,
+  Button,
   Card,
   Elevation,
   FileInput,
@@ -12,11 +12,10 @@ import { Group } from "./api";
 import groupRuleService from "./api/GroupRuleService";
 import GroupCard from "./GroupCard";
 import { FileStatAction, FileStatActions } from "./FileStatReducer";
-import { GroupAction, GroupActions } from "./GroupReducer";
+import { GroupActions } from "./GroupReducer";
+import { StoreContext } from "./StoreContext";
 
 interface IProps {
-  groups: Map<string, Group>;
-  groupDispatcher: Dispatch<GroupAction>;
   currentGroup: Group | null;
   setCurrentGroup: (group: Group) => void;
   newGroupRuleName: string | null;
@@ -25,17 +24,22 @@ interface IProps {
 }
 
 const GroupList: FunctionComponent<IProps> = ({
-  groups,
-  groupDispatcher,
   currentGroup,
   setCurrentGroup,
   newGroupRuleName,
   fileStatDispatcher,
   fileStat
 }) => {
+  const context = useContext(StoreContext);
+  const groups = context.state;
+  const dispatcher = context.dispatch;
+  if (!dispatcher) throw new Error("illegal dispatcher state");
+
   function handleCreateGroup() {
-    GroupActions.newGroup(groupDispatcher, groups);
-    FileStatActions.getFileStat(fileStatDispatcher);
+    if (dispatcher) {
+      GroupActions.newGroup(dispatcher, groups);
+      FileStatActions.getFileStat(fileStatDispatcher);
+    }
   }
 
   function handleFileSelected(file: string) {
@@ -87,11 +91,9 @@ const GroupList: FunctionComponent<IProps> = ({
             <GroupCard
               key={g.name}
               group={g}
-              groupDispatcher={groupDispatcher}
               focusGroup={currentGroup}
               setFocusGroup={setCurrentGroup}
               newGroupRuleName={newGroupRuleName}
-              groups={groups}
               fileStatDispatcher={fileStatDispatcher}
               fileStat={fileStat}
             />

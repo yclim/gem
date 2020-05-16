@@ -1,5 +1,6 @@
 import React, {
   FunctionComponent,
+  useContext,
   useEffect,
   useReducer,
   useState
@@ -7,13 +8,13 @@ import React, {
 import RuleList from "./RuleList";
 import GroupList from "./GroupList";
 import { RouteComponentProps } from "@reach/router";
-import { File, Group, Rule } from "./api";
+import { File, Group } from "./api";
 import groupRuleService from "./api/GroupRuleService";
 import "@blueprintjs/table/lib/css/table.css";
 import FileList from "./FileList";
-import { AxiosResponse } from "axios";
 import fileStatReducer, { FileStatActions } from "./FileStatReducer";
-import groupsReducer, { GroupActions } from "./GroupReducer";
+import { GroupActions } from "./GroupReducer";
+import { StoreContext } from "./StoreContext";
 
 export interface UpdateGroupNameInput {
   oldGroupName: string;
@@ -21,10 +22,10 @@ export interface UpdateGroupNameInput {
 }
 
 const EditGroups: FunctionComponent<RouteComponentProps> = () => {
-  const [groups, dispatcher] = useReducer(
-    groupsReducer,
-    new Map<string, Group>()
-  );
+  const context = useContext(StoreContext);
+  const groups = context.state;
+  const dispatcher = context.dispatch;
+  if (!dispatcher) throw new Error("illegal dispatcher state");
 
   const [fileStat, fileStatDispatcher] = useReducer(fileStatReducer, []);
 
@@ -34,6 +35,7 @@ const EditGroups: FunctionComponent<RouteComponentProps> = () => {
 
   useEffect(() => {
     GroupActions.initGroup(dispatcher);
+
     FileStatActions.getFileStat(fileStatDispatcher);
   }, []);
 
@@ -54,14 +56,8 @@ const EditGroups: FunctionComponent<RouteComponentProps> = () => {
 
   return (
     <div className="grid3">
-      <RuleList
-        groups={groups}
-        groupDispatcher={dispatcher}
-        setNewGroupRuleName={setNewGroupRuleName}
-      />
+      <RuleList setNewGroupRuleName={setNewGroupRuleName} />
       <GroupList
-        groups={groups}
-        groupDispatcher={dispatcher}
         currentGroup={currentGroup}
         setCurrentGroup={setCurrentGroup}
         newGroupRuleName={newGroupRuleName}
