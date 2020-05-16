@@ -1,7 +1,7 @@
 import { Group } from "./api";
 import React, { createContext, FunctionComponent, useReducer } from "react";
-import groupsReducer, { GroupDispatchType, initialState } from "./GroupReducer";
-import { GroupAction, useGroupActions } from "./GroupActions";
+import groupsReducer, { GroupDispatchType, initialState } from "./groupReducer";
+import { GroupAction, useGroupActions } from "./groupActions";
 import fileStatReducer from "./fileStatReducer";
 import { FileStatAction, useFileStatActions } from "./fileStatActions";
 

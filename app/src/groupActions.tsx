@@ -9,7 +9,7 @@ import {
   REMOVE_GROUP,
   UPDATE_GROUP_NAME,
   UPDATE_GROUP_RULE
-} from "./GroupReducer";
+} from "./groupReducer";
 
 export interface GroupAction {
   initGroup: () => void;
