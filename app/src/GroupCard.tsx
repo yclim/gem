@@ -1,4 +1,4 @@
-import React, { Dispatch, FunctionComponent, useState } from "react";
+import React, { FunctionComponent, useContext, useState } from "react";
 import {
   Alignment,
   Button,
@@ -14,31 +14,23 @@ import {
   Tag
 } from "@blueprintjs/core";
 import { Group, Rule } from "./api";
-import { FileStatAction, FileStatActions } from "./FileStatReducer";
 import RuleForm from "./RuleForm";
-import groupRuleService from "./api/GroupRuleService";
-import { GroupAction, GroupActions } from "./GroupReducer";
+import { StoreContext } from "./StoreContext";
 
 interface IProps {
   group: Group;
-  groupDispatcher: Dispatch<GroupAction>;
   focusGroup: Group | null;
   setFocusGroup: (g: Group) => void;
   newGroupRuleName: string | null;
-  groups: Map<string, Group>;
-  fileStatDispatcher: Dispatch<FileStatAction>;
-  fileStat: number[];
 }
 const GroupCard: FunctionComponent<IProps> = ({
   group,
-  groupDispatcher,
   focusGroup,
   setFocusGroup,
-  newGroupRuleName,
-  groups,
-  fileStatDispatcher,
-  fileStat
+  newGroupRuleName
 }) => {
+  const context = useContext(StoreContext);
+
   const [grp, setGrp] = useState(group);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedRule, setSelectedRule] = useState<Rule | null>(null);
@@ -86,13 +78,13 @@ const GroupCard: FunctionComponent<IProps> = ({
   }
 
   function handleConfirm() {
-    GroupActions.updateGroupName(groupDispatcher, group.name, grp.name);
-    FileStatActions.getFileStat(fileStatDispatcher);
+    context.groupsAction?.updateGroupName(group.name, grp.name);
+    context.fileStatAction?.initFileStat();
   }
 
   function handleDeleteGroup() {
-    GroupActions.removeGroup(groupDispatcher, grp.name);
-    FileStatActions.getFileStat(fileStatDispatcher);
+    context.groupsAction?.removeGroup(grp.name);
+    context.fileStatAction?.initFileStat();
   }
 
   function handleDialogOpen(r: Rule) {
@@ -107,22 +99,15 @@ const GroupCard: FunctionComponent<IProps> = ({
 
   function handleDialogSubmit() {
     if (editRule && selectedRule) {
-      GroupActions.updateGroupRule(
-        groupDispatcher,
-        groups,
-        group,
-        selectedRule.name,
-        editRule
-      );
-      FileStatActions.getFileStat(fileStatDispatcher);
+      context.groupsAction?.updateGroupRule(group, selectedRule.name, editRule);
+      context.fileStatAction?.initFileStat();
     }
-
     setIsOpen(false);
   }
 
   function handleDeleteGroupRule(curGrp: Group, rule: Rule) {
-    GroupActions.removeGroupRule(groupDispatcher, group, rule.name);
-    FileStatActions.getFileStat(fileStatDispatcher);
+    context.groupsAction?.removeGroupRule(group, rule.name);
+    context.fileStatAction?.initFileStat();
   }
 
   return (

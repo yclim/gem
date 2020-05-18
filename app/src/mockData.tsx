@@ -1,5 +1,3 @@
-import FileExtractCount from "./ExtractData";
-
 const fileExt = ["pdf", "xls", "docx", "txt"];
 
 const eightyNames = [
