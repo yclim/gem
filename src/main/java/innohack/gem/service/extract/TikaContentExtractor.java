@@ -54,17 +54,4 @@ public class TikaContentExtractor extends AbstractExtractor {
     }
     throw new IllegalStateException("No Tika Feature found");
   }
-
-  private void populate(ExtractedRecords results, String matchedString, int rowIdx, String name)
-      throws ParseException {
-    populate(results, matchedString, rowIdx, name, null);
-  }
-
-  private void populate(
-      ExtractedRecords results, String rows, int rowIdx, String name, TimestampColumn tsColumn)
-      throws ParseException {
-
-    results.getHeaders().add(name);
-    results.getRecords().get(rowIdx).add(rows);
-  }
 }
