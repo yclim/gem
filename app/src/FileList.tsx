@@ -128,6 +128,14 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
                 <td>Mime Type</td>
                 <td>{currentFile?.mimeType}</td>
               </tr>
+              <tr>
+                <td>Matched Group(s)</td>
+                <td>
+                    <ul>
+                    {currentFile?.matchedGroupNames?.map((object, i) => <li>{object}</li>)}
+                    </ul>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>

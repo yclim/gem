@@ -1,21 +1,13 @@
 package innohack.gem.entity.match;
 
+import innohack.gem.entity.GEMFile;
 import java.util.HashMap;
 
-public class MatchFileRule {
-  private String filePath;
+public class MatchFileRule extends GEMFile {
   private HashMap<Integer, Boolean> matchRuleHashcode;
 
   public MatchFileRule() {
     matchRuleHashcode = new HashMap<Integer, Boolean>();
-  }
-
-  public String getFilePath() {
-    return filePath;
-  }
-
-  public void setFilePath(String filePath) {
-    this.filePath = filePath;
   }
 
   public HashMap<Integer, Boolean> getMatchRuleHashcode() {

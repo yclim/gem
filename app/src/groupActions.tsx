@@ -112,7 +112,10 @@ export function useGroupActions(
         return r.name !== ruleName;
       });
       groupRuleService.saveGroup(group).then(response => {
-        dispatch({ type: UPDATE_GROUP_RULE, payload: { group } });
+        dispatch({
+          type: UPDATE_GROUP_RULE,
+          payload: { group: response.data }
+        });
       });
     },
 

@@ -46,6 +46,18 @@ export interface File {
   data: (ExcelFeature | CsvFeature | TikaFeature)[] | null;
 }
 
+export interface FileGroup extends File {
+  filePath: string;
+  matchedGroupNames: string[];
+  matchedGroupIds: number[];
+  groupMatchedCount: number;
+}
+
+export interface FileGroupStat {
+  noMatch: FileGroup[];
+  conflict: FileGroup[];
+}
+
 export interface ExtractConfig {
   tableName: string;
   columnNames: string[];

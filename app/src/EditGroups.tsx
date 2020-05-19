@@ -26,23 +26,7 @@ const EditGroups: FunctionComponent<RouteComponentProps> = () => {
 
   useEffect(() => {
     context.groupsAction?.initGroup();
-    context.fileStatAction?.initFileStat();
   }, []);
-
-  useEffect(() => {
-    if (currentGroup != null) {
-      groupRuleService.getGroup(currentGroup.name).then(response => {
-        // Check for undefined to takecare of deleted group
-        if (typeof response.data.matchedFile !== "undefined") {
-          setFiles(response.data.matchedFile);
-        } else {
-          setFiles([]);
-        }
-      });
-    } else {
-      setFiles([]);
-    }
-  }, [currentGroup, context.groupsState]);
 
   return (
     <div className="grid3">
@@ -51,6 +35,7 @@ const EditGroups: FunctionComponent<RouteComponentProps> = () => {
         currentGroup={currentGroup}
         setCurrentGroup={setCurrentGroup}
         newGroupRuleName={newGroupRuleName}
+        setFiles={setFiles}
       />
       <FileList files={files} setFiles={setFiles} />
     </div>

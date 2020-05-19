@@ -125,8 +125,8 @@ public class MatchServiceTests {
     Map<String, List<MatchFileGroup>> countResult = matchService.getMatchCount();
     System.out.println("matchService.getFilesWithoutMatch: ");
     for (MatchFileGroup mfg : countResult.get(MatchService.NO_MATCH_TAG)) {
-      System.out.println(mfg.getFilePath());
-      if (mfg.getFilePath().equals(txtFile.getAbsolutePath())) {
+      System.out.println(mfg.getAbsolutePath());
+      if (mfg.getAbsolutePath().equals(txtFile.getAbsolutePath())) {
         exist = true;
         break;
       }
@@ -137,8 +137,8 @@ public class MatchServiceTests {
     exist = false;
     System.out.println("matchService.getFilesWithConflictMatch: ");
     for (MatchFileGroup mfg : countResult.get(MatchService.CONFLICT_TAG)) {
-      System.out.println(mfg.getFilePath());
-      if (mfg.getFilePath().equals(datFile.getAbsolutePath())) {
+      System.out.println(mfg.getAbsolutePath());
+      if (mfg.getAbsolutePath().equals(datFile.getAbsolutePath())) {
         exist = true;
         break;
       }

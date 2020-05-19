@@ -43,7 +43,10 @@ public class GroupService {
   }
 
   public boolean updateGroupName(String oldGroupName, String newGroupName) {
-    return groupDao.updateGroupName(oldGroupName, newGroupName);
+    boolean result = groupDao.updateGroupName(oldGroupName, newGroupName);
+    Group group = groupDao.getGroup(newGroupName);
+    matchService.onUpdateEvent(group);
+    return result;
   }
 
   public boolean deleteGroup(int groupId) {

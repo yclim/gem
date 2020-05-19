@@ -2,7 +2,7 @@ import { Group } from "./api";
 import React, { createContext, FunctionComponent, useReducer } from "react";
 import groupsReducer, { GroupDispatchType, initialState } from "./groupReducer";
 import { GroupAction, useGroupActions } from "./groupActions";
-import fileStatReducer from "./fileStatReducer";
+import fileStatReducer, {fileGroupInitialState} from "./fileStatReducer";
 import { FileStatAction, useFileStatActions } from "./fileStatActions";
 
 interface ContextProps {
@@ -15,12 +15,12 @@ interface ContextProps {
 
 const StoreContext = createContext<ContextProps>({
   groupsState: initialState,
-  fileStatState: []
+  fileStatState: fileGroupInitialState
 });
 
 const StoreProvider: FunctionComponent = ({ children }) => {
   const [groupsState, groupDispatch] = useReducer(groupsReducer, initialState);
-  const [fileStatState, fileStatDispatch] = useReducer(fileStatReducer, []);
+  const [fileStatState, fileStatDispatch] = useReducer(fileStatReducer, fileGroupInitialState);
 
   const groupsAction = useGroupActions(groupsState, groupDispatch);
   const fileStatAction = useFileStatActions(fileStatState, fileStatDispatch);

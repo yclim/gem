@@ -83,7 +83,8 @@ public class MatchService {
     HashMap<Integer, Boolean> ruleMatch = null;
     if (o != null) {
       matchFileRule = (MatchFileRule) o;
-      matchFileRule.setFilePath(fileKey);
+      matchFileRule.setDirectory(file.getDirectory());
+      matchFileRule.setFileName(file.getFileName());
       ruleMatch = matchFileRule.getMatchRuleHashcode();
     }
     if (ruleMatch == null) {
@@ -122,7 +123,8 @@ public class MatchService {
     Set<Integer> matchGroupIds = null;
     if (o != null) {
       matchFileGroup = (MatchFileGroup) o;
-      matchFileGroup.setFilePath(fileKey);
+      matchFileGroup.setDirectory(file.getDirectory());
+      matchFileGroup.setFileName(file.getFileName());
       matchGroupIds = matchFileGroup.getMatchedGroupIds();
     }
 
@@ -205,6 +207,7 @@ public class MatchService {
       }
       if (groupUpdated) {
         groupDao.saveGroup(storedGroupRule);
+        updatedGroupRule.setMatchedFile(storedGroupRule.getMatchedFile());
       }
     } else {
       // on grouprule removed
@@ -232,8 +235,8 @@ public class MatchService {
 
   // This method calculate all the files with no match or more than 1 group match and update
   // filesWithoutMatch and filesWithConflictMatch
-  public static final String NO_MATCH_TAG = "No matches";
-  public static final String CONFLICT_TAG = "Conflicts";
+  public static final String NO_MATCH_TAG = "noMatch";
+  public static final String CONFLICT_TAG = "conflict";
 
   public synchronized Map<String, List<MatchFileGroup>> getMatchCount() {
     if (filesWithConflictMatch == null || filesWithoutMatch == null) {

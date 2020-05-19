@@ -1,25 +1,17 @@
 package innohack.gem.entity.match;
 
 import com.beust.jcommander.internal.Sets;
+import innohack.gem.entity.GEMFile;
 import java.util.HashSet;
 import java.util.Set;
 
-public class MatchFileGroup {
-  private String filePath;
+public class MatchFileGroup extends GEMFile {
   private Set<Integer> matchedGroupIds;
 
   private Set<String> matchedGroupNames;
 
   public MatchFileGroup() {
     matchedGroupIds = new HashSet<>();
-  }
-
-  public String getFilePath() {
-    return filePath;
-  }
-
-  public void setFilePath(String filePath) {
-    this.filePath = filePath;
   }
 
   public Set<Integer> getMatchedGroupIds() {
