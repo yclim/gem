@@ -1,5 +1,4 @@
 import React from "react";
-import { FileGroupStat } from "./api";
 
 export const GET_FILE_STAT = "GET_FILE_STAT";
 
@@ -8,12 +7,9 @@ export type FileStatDispatchType = {
   fileStat: FileGroupStat;
 };
 
-export const fileGroupInitialState: FileGroupStat = {} as FileGroupStat;
+export const fileGroupInitialState: Map<string, FileGroup[]> = new Map();
 
-export function fileStatReducer(
-  state: FileGroupStat,
-  action: FileStatDispatchType
-) {
+export function fileStatReducer(state: FileGroupStat, action: FileStatDispatchType) {
   switch (action.type) {
     case GET_FILE_STAT: {
       return action.fileStat;

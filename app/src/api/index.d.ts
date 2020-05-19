@@ -44,15 +44,18 @@ export interface File {
   directory: string;
   mimeType: string;
   data: (ExcelFeature | CsvFeature | TikaFeature)[] | null;
+}
+
+export interface FileGroup extends File {
   filePath: string;
-  matchedGroupNames?: string[];
-  matchedGroupIds?: number[];
-  groupMatchedCount?: number;
+  matchedGroupNames: string[];
+  matchedGroupIds: number[];
+  groupMatchedCount: number;
 }
 
 export interface FileGroupStat {
-  noMatch: File[];
-  conflict: File[];
+  noMatch: FileGroup[];
+  conflict: FileGroup[];
 }
 
 export interface ExtractConfig {
