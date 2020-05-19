@@ -1,4 +1,4 @@
-import { FileGroup, FileGroupStat, Group } from "./api";
+import { FileGroupStat, Group } from "./api";
 import React, { createContext, FunctionComponent, useReducer } from "react";
 import groupsReducer, { GroupDispatchType, initialState } from "./groupReducer";
 import { GroupAction, useGroupActions } from "./groupActions";
