@@ -132,7 +132,7 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
                 <td>Matched Group(s)</td>
                 <td>
                     <ul>
-                    {currentFile?.matchedGroupNames?.map((object, i) => <li>{object}</li>)}
+                    {currentFile?.matchedGroupNames?.map((object, i) => <li key={i} >{object}</li>)}
                     </ul>
                 </td>
               </tr>

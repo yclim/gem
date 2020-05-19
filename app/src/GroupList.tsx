@@ -36,8 +36,6 @@ const GroupList: FunctionComponent<IProps> = ({
     const selectedFile = file;
     const data = new FormData();
     data.append("file", selectedFile);
-    groupRuleService.importGroupsFile(data).then(results => {
-    });
   }
 
   function handleNoMatchGroupSelected() {
