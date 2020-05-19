@@ -1,4 +1,5 @@
 import React from "react";
+import { FileGroup, FileGroupStat } from "./api";
 
 export const GET_FILE_STAT = "GET_FILE_STAT";
 

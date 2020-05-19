@@ -2,6 +2,7 @@ import { Dispatch } from "react";
 import groupRuleService from "./api/GroupRuleService";
 import { AxiosResponse } from "axios";
 import { FileStatDispatchType, GET_FILE_STAT } from "./fileStatReducer";
+import { FileGroupStat } from "./api";
 
 export interface FileStatAction {
   initFileStat: () => void;

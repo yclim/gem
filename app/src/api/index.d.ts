@@ -44,6 +44,7 @@ export interface File {
   directory: string;
   mimeType: string;
   data: (ExcelFeature | CsvFeature | TikaFeature)[] | null;
+  matchedGroupNames?: string[];
 }
 
 export interface FileGroup extends File {
