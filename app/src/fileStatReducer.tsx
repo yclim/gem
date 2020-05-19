@@ -11,8 +11,8 @@ export type FileStatDispatchType = {
 export const fileGroupInitialState: FileGroupStat = {} as FileGroupStat;
 
 export function fileStatReducer(
-    state: FileGroupStat,
-    action: FileStatDispatchType
+  state: FileGroupStat,
+  action: FileStatDispatchType
 ) {
   switch (action.type) {
     case GET_FILE_STAT: {
