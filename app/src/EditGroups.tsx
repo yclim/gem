@@ -8,7 +8,6 @@ import RuleList from "./RuleList";
 import GroupList from "./GroupList";
 import { RouteComponentProps } from "@reach/router";
 import { File, Group } from "./api";
-import groupRuleService from "./api/GroupRuleService";
 import "@blueprintjs/table/lib/css/table.css";
 import FileList from "./FileList";
 import { StoreContext } from "./StoreContext";

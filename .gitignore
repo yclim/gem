@@ -13,3 +13,4 @@ yarn-error.log
 /.classpath
 /.settings
 .env
+package-lock.json

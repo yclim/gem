@@ -8,14 +8,14 @@ import {
   Intent,
   Tag
 } from "@blueprintjs/core";
-import { Group } from "./api";
+import { Group, File } from "./api";
 import groupRuleService from "./api/GroupRuleService";
 import GroupCard from "./GroupCard";
 import { StoreContext } from "./StoreContext";
 
 interface IProps {
   currentGroup: Group | null;
-  setCurrentGroup: (group: Group) => void;
+  setCurrentGroup: (group: Group | null) => void;
   newGroupRuleName: string | null;
   setFiles: (fs: File[]) => void;
 }
@@ -60,7 +60,6 @@ const GroupList: FunctionComponent<IProps> = ({
       });
     }
   }, [currentGroup, context.groupsState]);
-
 
   return (
     <div className="stack">
@@ -108,8 +107,10 @@ const GroupList: FunctionComponent<IProps> = ({
             />
           ))}
         <div>
-        { typeof context.fileStatState.noMatch !== "undefined" && context.fileStatState.noMatch.length>0  ?
-            <Card interactive={true}
+          {typeof context.fileStatState.noMatch !== "undefined" &&
+          context.fileStatState.noMatch.length > 0 ? (
+            <Card
+              interactive={true}
               elevation={Elevation.ZERO}
               onClick={handleNoMatchGroupSelected}
               className="no-group-card "
@@ -122,27 +123,28 @@ const GroupList: FunctionComponent<IProps> = ({
                   </Tag>
                 </div>
               </div>
-            </Card>: null
-           }
+            </Card>
+          ) : null}
         </div>
         <div>
-        { typeof context.fileStatState.conflict !== "undefined" && context.fileStatState.conflict.length>0  ?
-        <Card
-          interactive={true}
-          elevation={Elevation.ZERO}
-          onClick={handleConflictGroupSelected}
-          className="conflict-group-card"
-        >
-          <div className="group-card-header">
-            <div className="label">Conflicts</div>
-            <div className="counter">
-              <Tag round={true} intent={Intent.DANGER}>
-                {context.fileStatState.conflict.length}
-              </Tag>
-            </div>
-          </div>
-        </Card>: null
-           }
+          {typeof context.fileStatState.conflict !== "undefined" &&
+          context.fileStatState.conflict.length > 0 ? (
+            <Card
+              interactive={true}
+              elevation={Elevation.ZERO}
+              onClick={handleConflictGroupSelected}
+              className="conflict-group-card"
+            >
+              <div className="group-card-header">
+                <div className="label">Conflicts</div>
+                <div className="counter">
+                  <Tag round={true} intent={Intent.DANGER}>
+                    {context.fileStatState.conflict.length}
+                  </Tag>
+                </div>
+              </div>
+            </Card>
+          ) : null}
         </div>
       </div>
     </div>
