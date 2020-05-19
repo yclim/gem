@@ -4,10 +4,12 @@ export const GET_FILE_STAT = "GET_FILE_STAT";
 
 export type FileStatDispatchType = {
   type: typeof GET_FILE_STAT;
-  fileStat: number[];
+  fileStat: FileGroupStat;
 };
 
-export function fileStatReducer(state: number[], action: FileStatDispatchType) {
+export const fileGroupInitialState: Map<string, FileGroup[]> = new Map();
+
+export function fileStatReducer(state: FileGroupStat, action: FileStatDispatchType) {
   switch (action.type) {
     case GET_FILE_STAT: {
       return action.fileStat;

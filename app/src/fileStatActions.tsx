@@ -8,13 +8,12 @@ export interface FileStatAction {
 }
 
 export function useFileStatActions(
-  state: number[],
+  state: FileGroupStat,
   dispatch: Dispatch<FileStatDispatchType>
 ): FileStatAction {
   return {
     initFileStat: () => {
-      console.log("initFileStat");
-      groupRuleService.getFileStat().then((resp: AxiosResponse<number[]>) => {
+      groupRuleService.getFileStatMatches().then((resp: AxiosResponse<FileGroupStat>) => {
         console.log(resp.data);
         dispatch({ type: GET_FILE_STAT, fileStat: resp.data });
       });

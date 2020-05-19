@@ -4,18 +4,13 @@ import com.beust.jcommander.internal.Lists;
 import innohack.gem.entity.GEMFile;
 import innohack.gem.entity.extractor.ExtractConfig;
 import innohack.gem.entity.extractor.ExtractedRecords;
-import innohack.gem.entity.extractor.TimestampColumn;
 import innohack.gem.entity.feature.AbstractFeature;
-import innohack.gem.entity.feature.CsvFeature;
 import innohack.gem.entity.feature.TikaFeature;
 import innohack.gem.entity.rule.ParamType;
 import innohack.gem.entity.rule.Parameter;
-import java.text.ParseException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class TikaContentExtractor extends AbstractExtractor {
 

@@ -1,14 +1,10 @@
 package innohack.gem.service.extract;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import innohack.gem.entity.GEMFile;
 import innohack.gem.entity.extractor.ExtractConfig;
 import innohack.gem.entity.extractor.ExtractedRecords;
-import innohack.gem.entity.extractor.TimestampColumn;
-import innohack.gem.entity.rule.rules.TikaContentRegex;
-import innohack.gem.example.TikaExtractor;
 import org.junit.jupiter.api.Test;
 
 public class TikaContentExtractorTest {

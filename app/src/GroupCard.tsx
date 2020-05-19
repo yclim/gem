@@ -79,12 +79,10 @@ const GroupCard: FunctionComponent<IProps> = ({
 
   function handleConfirm() {
     context.groupsAction?.updateGroupName(group.name, grp.name);
-    context.fileStatAction?.initFileStat();
   }
 
   function handleDeleteGroup() {
     context.groupsAction?.removeGroup(grp.name);
-    context.fileStatAction?.initFileStat();
   }
 
   function handleDialogOpen(r: Rule) {
@@ -100,14 +98,12 @@ const GroupCard: FunctionComponent<IProps> = ({
   function handleDialogSubmit() {
     if (editRule && selectedRule) {
       context.groupsAction?.updateGroupRule(group, selectedRule.name, editRule);
-      context.fileStatAction?.initFileStat();
     }
     setIsOpen(false);
   }
 
   function handleDeleteGroupRule(curGrp: Group, rule: Rule) {
     context.groupsAction?.removeGroupRule(group, rule.name);
-    context.fileStatAction?.initFileStat();
   }
 
   return (

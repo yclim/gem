@@ -6,6 +6,7 @@ import innohack.gem.service.GEMFileService;
 import innohack.gem.service.MatchService;
 import java.util.List;
 import java.util.Map;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,12 +37,32 @@ public class GEMFileController {
   public GEMFile getFile(
       @RequestParam(name = "filename") String filename,
       @RequestParam(name = "directory") String directory) {
-    return fileService.getFile(filename, directory);
+    MatchFileGroup file = new MatchFileGroup();
+    GEMFile gemfile = fileService.getFile(filename, directory);
+    Map<String, MatchFileGroup> matchedFileGroups = MatchService.getMatchFileGroupTable();
+    if (matchedFileGroups != null) {
+      MatchFileGroup matchFileGroup = matchedFileGroups.get(gemfile.getAbsolutePath());
+      if (matchFileGroup != null) {
+        BeanUtils.copyProperties(matchFileGroup, file);
+      }
+    }
+    BeanUtils.copyProperties(gemfile, file);
+    return file;
   }
   // get file by absolute path
   @GetMapping("/findByAbsolutePath")
   public GEMFile getFileByAbsolutePath(@RequestParam(name = "absolutePath") String absolutePath) {
-    return fileService.getFileByAbsolutePath(absolutePath);
+    MatchFileGroup file = new MatchFileGroup();
+    GEMFile gemfile = fileService.getFileByAbsolutePath(absolutePath);
+    Map<String, MatchFileGroup> matchedFileGroups = MatchService.getMatchFileGroupTable();
+    if (matchedFileGroups != null) {
+      MatchFileGroup matchFileGroup = matchedFileGroups.get(gemfile.getAbsolutePath());
+      if (matchFileGroup != null) {
+        BeanUtils.copyProperties(matchFileGroup, file);
+      }
+    }
+    BeanUtils.copyProperties(gemfile, file);
+    return file;
   }
 
   /**
