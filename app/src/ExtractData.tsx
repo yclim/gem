@@ -7,6 +7,8 @@ import React, {
   useState
 } from "react";
 import { RouteComponentProps } from "@reach/router";
+import * as moment from 'moment-timezone';
+
 import {
   Button,
   Card,
@@ -41,6 +43,7 @@ interface DateFormatMapping {
   columnName: string;
   dateFormat: string;
   newColumnName: string;
+  timezone?: string;
 }
 
 interface FileExtractCount {
@@ -62,7 +65,8 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
   const [dateFormat, setDateFormat] = useState<DateFormatMapping>({
     columnName: "",
     dateFormat: "",
-    newColumnName: ""
+    newColumnName: "",
+    timezone: ""
   });
   const [dateFormats, setDateFormats] = useState<DateFormatMapping[]>([]);
   const [extractDataTable, setExtractDataTable] = useState<string[][]>([]);
@@ -240,6 +244,22 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
             disabled={!dateFormat.columnName}
           />
         </FormGroup>
+
+        <FormGroup label="Timezone">
+          <HTMLSelect
+              options={["", ...moment.tz.names().map(c => (c ? c.toString() : ""))]}
+              value={dateFormat.timezone}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                  setDateFormat({
+                    ...dateFormat,
+                    timezone: e.target.value
+                  })
+              }
+              disabled={!dateFormat.columnName}
+          />
+
+        </FormGroup>
+
         <FormGroup label="Date Format">
           <ControlGroup>
             <InputGroup
@@ -265,6 +285,7 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
             <tr>
               <th>Column</th>
               <th>New Name</th>
+              <th>Timezone</th>
               <th>Date Pattern</th>
               <th>&nbsp;</th>
             </tr>
@@ -280,6 +301,7 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
                   <tr key={index}>
                     <td>{df.columnName}</td>
                     <td>{df.newColumnName}</td>
+                    <td>{df.timezone}</td>
                     <td>{df.dateFormat}</td>
                     <td>
                       <Button
@@ -531,13 +553,15 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
       {
         columnName: dateFormat.columnName,
         dateFormat: dateFormat.dateFormat,
-        newColumnName: dateFormat.newColumnName
+        newColumnName: dateFormat.newColumnName,
+        timezone: dateFormat.timezone
       }
     ]);
     setDateFormat({
       columnName: "",
       dateFormat: "",
-      newColumnName: ""
+      newColumnName: "",
+      timezone: ""
     });
   }
 
@@ -550,7 +574,8 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
     setDateFormat({
       columnName: str,
       newColumnName: str + "_ts",
-      dateFormat: dateFormat.dateFormat
+      dateFormat: dateFormat.dateFormat,
+      timezone: dateFormat.timezone
     });
   }
 
