@@ -13,10 +13,12 @@ export function useFileStatActions(
 ): FileStatAction {
   return {
     initFileStat: () => {
-      groupRuleService.getFileStatMatches().then((resp: AxiosResponse<FileGroupStat>) => {
-        console.log(resp.data);
-        dispatch({ type: GET_FILE_STAT, fileStat: resp.data });
-      });
+      groupRuleService
+        .getFileStatMatches()
+        .then((resp: AxiosResponse<FileGroupStat>) => {
+          console.log(resp.data);
+          dispatch({ type: GET_FILE_STAT, fileStat: resp.data });
+        });
     }
   };
 }

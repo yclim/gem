@@ -61,7 +61,6 @@ const GroupList: FunctionComponent<IProps> = ({
     }
   }, [currentGroup, context.groupsState]);
 
-
   return (
     <div className="stack">
       <div>
@@ -108,8 +107,10 @@ const GroupList: FunctionComponent<IProps> = ({
             />
           ))}
         <div>
-        { typeof context.fileStatState.noMatch !== "undefined" && context.fileStatState.noMatch.length>0  ?
-            <Card interactive={true}
+          {typeof context.fileStatState.noMatch !== "undefined" &&
+          context.fileStatState.noMatch.length > 0 ? (
+            <Card
+              interactive={true}
               elevation={Elevation.ZERO}
               onClick={handleNoMatchGroupSelected}
               className="no-group-card "
@@ -122,27 +123,28 @@ const GroupList: FunctionComponent<IProps> = ({
                   </Tag>
                 </div>
               </div>
-            </Card>: null
-           }
+            </Card>
+          ) : null}
         </div>
         <div>
-        { typeof context.fileStatState.conflict !== "undefined" && context.fileStatState.conflict.length>0  ?
-        <Card
-          interactive={true}
-          elevation={Elevation.ZERO}
-          onClick={handleConflictGroupSelected}
-          className="conflict-group-card"
-        >
-          <div className="group-card-header">
-            <div className="label">Conflicts</div>
-            <div className="counter">
-              <Tag round={true} intent={Intent.DANGER}>
-                {context.fileStatState.conflict.length}
-              </Tag>
-            </div>
-          </div>
-        </Card>: null
-           }
+          {typeof context.fileStatState.conflict !== "undefined" &&
+          context.fileStatState.conflict.length > 0 ? (
+            <Card
+              interactive={true}
+              elevation={Elevation.ZERO}
+              onClick={handleConflictGroupSelected}
+              className="conflict-group-card"
+            >
+              <div className="group-card-header">
+                <div className="label">Conflicts</div>
+                <div className="counter">
+                  <Tag round={true} intent={Intent.DANGER}>
+                    {context.fileStatState.conflict.length}
+                  </Tag>
+                </div>
+              </div>
+            </Card>
+          ) : null}
         </div>
       </div>
     </div>
