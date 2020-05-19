@@ -1,4 +1,4 @@
-import { Group } from "./api";
+import { FileGroupStat, Group } from "./api";
 import React, { createContext, FunctionComponent, useReducer } from "react";
 import groupsReducer, { GroupDispatchType, initialState } from "./groupReducer";
 import { GroupAction, useGroupActions } from "./groupActions";
@@ -9,7 +9,7 @@ interface ContextProps {
   groupsState: Map<string, Group>;
   groupsAction?: GroupAction;
   groupDispatch?: React.Dispatch<GroupDispatchType>;
-  fileStatState: number[];
+  fileStatState: FileGroupStat;
   fileStatAction?: FileStatAction;
 }
 
