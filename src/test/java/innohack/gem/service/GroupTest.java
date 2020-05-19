@@ -28,7 +28,7 @@ public class GroupTest {
     this.ext_csv_group = new Group();
     ext_csv_group.setName("extension_csv_grouprule");
     Rule rule1 = new FileExtension("csv");
-    Rule rule2 = new FilenamePrefix("chats");
+    Rule rule2 = new FilenamePrefix("reviews");
     List<Rule> csv_group_rules = new ArrayList<Rule>();
     csv_group_rules.add(rule1);
     csv_group_rules.add(rule2);

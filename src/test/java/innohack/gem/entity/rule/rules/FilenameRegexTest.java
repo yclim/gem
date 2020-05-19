@@ -10,17 +10,17 @@ public class FilenameRegexTest {
 
   @Test
   public void testCheck() throws Exception {
-    FilenameRegex chatsRegex = new FilenameRegex("chat");
+    FilenameRegex reviewsRegex = new FilenameRegex("review");
     FilenameRegex dataRegex = new FilenameRegex(".*data.*");
     FilenameRegex addressRegex = new FilenameRegex("address");
 
-    GEMFile chatsFile = new GEMFile("chats.csv", "src/test/resources");
+    GEMFile reviewsFile = new GEMFile("reviews.csv", "src/test/resources");
     GEMFile dataFile = new GEMFile("data.data", "src/test/resources");
 
-    assertTrue(chatsRegex.check(chatsFile));
+    assertTrue(reviewsRegex.check(reviewsFile));
     assertTrue(dataRegex.check(dataFile));
 
-    assertFalse(addressRegex.check(chatsFile));
+    assertFalse(addressRegex.check(reviewsFile));
     assertFalse(addressRegex.check(dataFile));
   }
 }
