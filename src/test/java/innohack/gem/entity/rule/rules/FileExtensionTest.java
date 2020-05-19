@@ -13,8 +13,8 @@ public class FileExtensionTest {
     FileExtension csvRule = new FileExtension("csv");
     FileExtension datRule = new FileExtension("dat");
 
-    GEMFile csvFile = new GEMFile("reviews.csv", "src/test/resources");
-    GEMFile csvDblFile = new GEMFile("reviews.csv.csv", "src/test/resources");
+    GEMFile csvFile = new GEMFile("chats.csv", "src/test/resources");
+    GEMFile csvDblFile = new GEMFile("chats.csv.csv", "src/test/resources");
     GEMFile datFile = new GEMFile("data.dat", "src/test/resources");
 
     assertTrue(csvRule.check(csvFile));

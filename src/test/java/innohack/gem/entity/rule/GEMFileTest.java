@@ -11,8 +11,8 @@ public class GEMFileTest {
 
   @Test
   public void testFileComparable() throws Exception {
-    GEMFile csvFile1 = new GEMFile("reviews.csv", "src/test/resources");
-    GEMFile csvFile2 = new GEMFile("reviews.csv", "src/test/resources");
+    GEMFile csvFile1 = new GEMFile("chats.csv", "src/test/resources");
+    GEMFile csvFile2 = new GEMFile("chats.csv", "src/test/resources");
     GEMFile datFile = new GEMFile("data.dat", "src/test/resources");
     List<GEMFile> list = new ArrayList<GEMFile>();
     list.add(csvFile2);

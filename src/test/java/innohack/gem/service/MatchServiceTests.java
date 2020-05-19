@@ -32,8 +32,8 @@ public class MatchServiceTests {
   private Group ext_csv_group;
   private Group ext_dat_group;
   private Group prefix_d_group;
-  private GEMFile csvFile = new GEMFile("reviews.csv", "src/test/resources");
-  private GEMFile csvcsvFile = new GEMFile("reviews.csv.csv", "src/test/resources");
+  private GEMFile csvFile = new GEMFile("chats.csv", "src/test/resources");
+  private GEMFile csvcsvFile = new GEMFile("chats.csv.csv", "src/test/resources");
   private GEMFile txtFile = new GEMFile("dump.txt", "src/test/resources");
   private GEMFile datFile = new GEMFile("data.dat", "src/test/resources");
 
@@ -41,7 +41,7 @@ public class MatchServiceTests {
     this.ext_csv_group = new Group();
     ext_csv_group.setName("extension_csv_grouprule");
     Rule rule1 = new FileExtension("csv");
-    Rule rule2 = new FilenamePrefix("reviews");
+    Rule rule2 = new FilenamePrefix("chats");
     List<Rule> csv_group_rules = new ArrayList<Rule>();
     csv_group_rules.add(rule1);
     csv_group_rules.add(rule2);

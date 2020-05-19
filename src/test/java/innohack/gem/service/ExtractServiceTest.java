@@ -27,7 +27,7 @@ public class ExtractServiceTest {
 
   private static final int GROUP_ID = 1;
 
-  private static final String FILENAME = "reviews.csv";
+  private static final String FILENAME = "chats.csv";
 
   @MockBean private GroupService groupService;
 
