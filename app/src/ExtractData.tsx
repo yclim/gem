@@ -7,7 +7,7 @@ import React, {
   useState
 } from "react";
 import { RouteComponentProps } from "@reach/router";
-import * as moment from "moment-timezone";
+import * as moment from 'moment-timezone';
 
 import {
   Button,
@@ -247,19 +247,17 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
 
         <FormGroup label="Timezone">
           <HTMLSelect
-            options={[
-              "",
-              ...moment.tz.names().map(c => (c ? c.toString() : ""))
-            ]}
-            value={dateFormat.timezone}
-            onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-              setDateFormat({
-                ...dateFormat,
-                timezone: e.target.value
-              })
-            }
-            disabled={!dateFormat.columnName}
+              options={["", ...moment.tz.names().map(c => (c ? c.toString() : ""))]}
+              value={dateFormat.timezone}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                  setDateFormat({
+                    ...dateFormat,
+                    timezone: e.target.value
+                  })
+              }
+              disabled={!dateFormat.columnName}
           />
+
         </FormGroup>
 
         <FormGroup label="Date Format">
