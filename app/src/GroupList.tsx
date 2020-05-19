@@ -8,14 +8,14 @@ import {
   Intent,
   Tag
 } from "@blueprintjs/core";
-import { Group } from "./api";
+import { Group, File } from "./api";
 import groupRuleService from "./api/GroupRuleService";
 import GroupCard from "./GroupCard";
 import { StoreContext } from "./StoreContext";
 
 interface IProps {
   currentGroup: Group | null;
-  setCurrentGroup: (group: Group) => void;
+  setCurrentGroup: (group: Group | null) => void;
   newGroupRuleName: string | null;
   setFiles: (fs: File[]) => void;
 }
