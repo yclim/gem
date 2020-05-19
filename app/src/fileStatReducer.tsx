@@ -9,7 +9,10 @@ export type FileStatDispatchType = {
 
 export const fileGroupInitialState: Map<string, FileGroup[]> = new Map();
 
-export function fileStatReducer(state: FileGroupStat, action: FileStatDispatchType) {
+export function fileStatReducer(
+  state: FileGroupStat,
+  action: FileStatDispatchType
+) {
   switch (action.type) {
     case GET_FILE_STAT: {
       return action.fileStat;

@@ -24,7 +24,7 @@ public class CSVExtractorTest {
 
     ExtractedRecords results = csvExtractor.extract(file, config);
     assertEquals(5, results.getRecords().size());
-    assertEquals("Super Good", results.getRecords().get(3).get(1));
+    assertEquals("Maybe", results.getRecords().get(3).get(1));
     assertEquals("2020/05/11 16:45:23+0800", results.getRecords().get(0).get(3));
   }
 }
