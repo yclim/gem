@@ -11,9 +11,7 @@ public class TikaContentExtractorTest {
 
   @Test
   public void testExtract() throws Exception {
-    GEMFile pdfFile =
-        new GEMFile(
-            "story_0.pdf", "src/test/resources/extract");
+    GEMFile pdfFile = new GEMFile("story_0.pdf", "src/test/resources/extract");
 
     ExtractConfig config = new ExtractConfig();
     TikaContentExtractor tikaContentExtractor = new TikaContentExtractor("(white|black)");
@@ -30,22 +28,28 @@ public class TikaContentExtractorTest {
   }
   
   @Test
-  public void testExtractTable() throws Exception {
-    GEMFile pdfFile =
-        new GEMFile(
-            "reviews.pdf", "src/test/resources/extract");
+  public void testExtractEmpty() throws Exception {
+    GEMFile pdfFile = new GEMFile("story_0.pdf", "src/test/resources/extract");
+    ExtractConfig config = new ExtractConfig();
+    TikaContentExtractor tikaContentExtractor = new TikaContentExtractor("(Nada)");
+    config.setExtractor(tikaContentExtractor);
 
+    ExtractedRecords results = tikaContentExtractor.extract(pdfFile, config);
+    assertEquals(0, results.getRecords().size());
+  }
+
+  @Test
+  public void testExtractTable() throws Exception {
+    GEMFile pdfFile = new GEMFile("reviews.pdf", "src/test/resources/extract");
     ExtractConfig config = new ExtractConfig();
     TikaContentExtractor tikaContentExtractor = new TikaContentExtractor("(.*?),(.*?),(.*?),(.*)");
     config.setExtractor(tikaContentExtractor);
 
     ExtractedRecords results = tikaContentExtractor.extract(pdfFile, config);
-
-    assertEquals(6, results.getRecords().size()); //rows
-    assertEquals(4, results.getRecords().get(0).size()); //columns
-    assertEquals("Sender", results.getRecords().get(0).get(1)); //header
-    assertEquals("Good", results.getRecords().get(1).get(2)); //value
-    assertEquals("20200511 164635", results.getRecords().get(5).get(3)); //value
+    assertEquals(6, results.getRecords().size()); // rows
+    assertEquals(4, results.getRecords().get(0).size()); // columns
+    assertEquals("Sender", results.getRecords().get(0).get(1)); // header
+    assertEquals("Good", results.getRecords().get(1).get(2)); // value
+    assertEquals("20200511 164635", results.getRecords().get(5).get(3)); // value
   }
-  
 }

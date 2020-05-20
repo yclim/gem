@@ -15,16 +15,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Supports both BLOB and Tabular extraction.
- * Example of tabular extraction:
- * Data: Id,Sender,Review,Time 
- * Regex: (.*?),(.*?),(.*?),(.*)
- * 
- * @author TC
+ * Supports both BLOB and Tabular extraction. Example of tabular extraction: Data:
+ * Id,Sender,Review,Time Regex: (.*?),(.*?),(.*?),(.*)
  *
+ * @author TC
  */
 public class TikaContentExtractor extends AbstractExtractor {
-  
+
   private static final Logger LOGGER = LoggerFactory.getLogger(TikaContentExtractor.class);
 
   public TikaContentExtractor() {
@@ -52,7 +49,7 @@ public class TikaContentExtractor extends AbstractExtractor {
         while (matcher.find()) {
           LOGGER.trace("Group count: {}", matcher.groupCount());
           List<String> foundResults = Lists.newArrayList();
-          for(int i=1; i<=matcher.groupCount(); i++) { //skip 0 which is entire match string
+          for (int i = 1; i <= matcher.groupCount(); i++) { // skip 0 which is entire match string
             String matchText = matcher.group(i);
             LOGGER.trace("Text: {}", matchText);
             foundResults.add(matchText);
@@ -64,5 +61,4 @@ public class TikaContentExtractor extends AbstractExtractor {
     }
     throw new IllegalStateException("No Tika Feature found");
   }
-  
 }
