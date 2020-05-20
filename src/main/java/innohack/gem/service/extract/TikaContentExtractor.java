@@ -11,8 +11,21 @@ import innohack.gem.entity.rule.Parameter;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * Supports both BLOB and Tabular extraction.
+ * Example of tabular extraction:
+ * Data: Id,Sender,Review,Time 
+ * Regex: (.*?),(.*?),(.*?),(.*)
+ * 
+ * @author TC
+ *
+ */
 public class TikaContentExtractor extends AbstractExtractor {
+  
+  private static final Logger LOGGER = LoggerFactory.getLogger(TikaContentExtractor.class);
 
   public TikaContentExtractor() {
     this(null);
@@ -31,22 +44,25 @@ public class TikaContentExtractor extends AbstractExtractor {
 
         ExtractedRecords results = new ExtractedRecords();
         String tikaContent = ((TikaFeature) feature).getContent();
+        LOGGER.trace("tikaContent: {}", tikaContent);
 
         Pattern pattern = Pattern.compile(regexString, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(tikaContent);
-        int count = 0;
 
-        List<String> foundResults = Lists.newArrayList();
         while (matcher.find()) {
-          count++;
-          String matchText = tikaContent.substring(matcher.start(), matcher.end());
-          foundResults.add(matchText);
+          LOGGER.trace("Group count: {}", matcher.groupCount());
+          List<String> foundResults = Lists.newArrayList();
+          for(int i=1; i<=matcher.groupCount(); i++) { //skip 0 which is entire match string
+            String matchText = matcher.group(i);
+            LOGGER.trace("Text: {}", matchText);
+            foundResults.add(matchText);
+          }
           results.getRecords().add(foundResults);
         }
-
         return results;
       }
     }
     throw new IllegalStateException("No Tika Feature found");
   }
+  
 }
