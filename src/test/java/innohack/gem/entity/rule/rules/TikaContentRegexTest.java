@@ -11,9 +11,7 @@ public class TikaContentRegexTest {
   @Test
   public void testValidCheckTikaContent() throws Exception {
 
-    GEMFile pdfFile =
-        new GEMFile(
-            "story_0.pdf", "src/test/resources/innohack/gem/entity/rule/rules/TikaMetadataValue");
+    GEMFile pdfFile = new GEMFile("story_0.pdf", "src/test/resources/extract");
     pdfFile.extract();
     TikaContentRegex contentRegexCheck = new TikaContentRegex(".*(white|black).*");
     assertTrue(contentRegexCheck.check(pdfFile));
@@ -22,9 +20,7 @@ public class TikaContentRegexTest {
   @Test
   public void testInvalidCheckTikaContent() throws Exception {
 
-    GEMFile pdfFile =
-        new GEMFile(
-            "story_0.pdf", "src/test/resources/innohack/gem/entity/rule/rules/TikaMetadataValue");
+    GEMFile pdfFile = new GEMFile("story_0.pdf", "src/test/resources/extract");
     pdfFile.extract();
     TikaContentRegex contentRegexCheck = new TikaContentRegex(".*(orange|brown).*");
     pdfFile.extract();

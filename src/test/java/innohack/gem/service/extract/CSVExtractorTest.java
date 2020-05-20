@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 public class CSVExtractorTest {
 
   @Test
-  public void extractTest() throws Exception {
+  public void testExtract() throws Exception {
     GEMFile file = new GEMFile("reviews.csv", "src/test/resources");
 
     ExtractConfig config = new ExtractConfig();
