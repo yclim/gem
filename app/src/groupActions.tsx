@@ -123,7 +123,7 @@ export function useGroupActions(
       return (
         Array.from(state).findIndex(
           // mapEntry[0] give key, [1] gives value
-          mapEntry => mapEntry[1].rules.findIndex(r => r.name === name) > -1
+          mapEntry => mapEntry[1].rules.findIndex(r => r.name === ruleName) > -1
         ) > -1
       );
     }

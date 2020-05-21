@@ -1,4 +1,9 @@
-import React, { FunctionComponent, useContext, useEffect } from "react";
+import React, {
+  FunctionComponent,
+  useContext,
+  useEffect,
+  useState
+} from "react";
 import {
   AnchorButton,
   Button,
@@ -26,6 +31,7 @@ const GroupList: FunctionComponent<IProps> = ({
   newGroupRuleName,
   setFiles
 }) => {
+  const [selectedCard, setSelectedCard] = useState<string>("");
   const context = useContext(StoreContext);
 
   function handleCreateGroup() {
@@ -39,12 +45,30 @@ const GroupList: FunctionComponent<IProps> = ({
   }
 
   function handleNoMatchGroupSelected() {
+    setSelectedCard("no_match");
     setCurrentGroup(null);
     setFiles(context.fileStatState.noMatch);
   }
   function handleConflictGroupSelected() {
+    setSelectedCard("conflict_match");
     setCurrentGroup(null);
     setFiles(context.fileStatState.conflict);
+  }
+
+  function isNoMatchGroup() {
+    if (selectedCard === "no_match" && !currentGroup) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  function isConflictGroup() {
+    if (selectedCard === "conflict_match" && !currentGroup) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   useEffect(() => {
@@ -106,45 +130,57 @@ const GroupList: FunctionComponent<IProps> = ({
               newGroupRuleName={newGroupRuleName}
             />
           ))}
+
         <div>
-          {typeof context.fileStatState.noMatch !== "undefined" &&
-          context.fileStatState.noMatch.length > 0 ? (
-            <Card
-              interactive={true}
-              elevation={Elevation.ZERO}
-              onClick={handleNoMatchGroupSelected}
-              className="no-group-card "
-            >
-              <div className="group-card-header">
-                <div className="label">No matches</div>
-                <div className="counter">
-                  <Tag round={true} intent={Intent.WARNING}>
-                    {context.fileStatState.noMatch.length}
-                  </Tag>
-                </div>
+          <Card
+            elevation={isNoMatchGroup() ? Elevation.FOUR : Elevation.ONE}
+            className={`group-card ${
+              isNoMatchGroup() ? "group-card-focus" : ""
+            }`}
+            onClick={handleNoMatchGroupSelected}
+          >
+            <div className="group-card-header">
+              <div className="label">No matches</div>
+              <div className="counter">
+                <Tag
+                  round={true}
+                  intent={
+                    context.fileStatState.noMatch.length > 0
+                      ? Intent.WARNING
+                      : Intent.SUCCESS
+                  }
+                >
+                  {context.fileStatState.noMatch.length}
+                </Tag>
               </div>
-            </Card>
-          ) : null}
+            </div>
+          </Card>
         </div>
+
         <div>
-          {typeof context.fileStatState.conflict !== "undefined" &&
-          context.fileStatState.conflict.length > 0 ? (
-            <Card
-              interactive={true}
-              elevation={Elevation.ZERO}
-              onClick={handleConflictGroupSelected}
-              className="conflict-group-card"
-            >
-              <div className="group-card-header">
-                <div className="label">Conflicts</div>
-                <div className="counter">
-                  <Tag round={true} intent={Intent.DANGER}>
-                    {context.fileStatState.conflict.length}
-                  </Tag>
-                </div>
+          <Card
+            elevation={isConflictGroup() ? Elevation.FOUR : Elevation.ONE}
+            className={`group-card ${
+              isConflictGroup() ? "group-card-focus" : ""
+            }`}
+            onClick={handleConflictGroupSelected}
+          >
+            <div className="group-card-header">
+              <div className="label">Conflicts</div>
+              <div className="counter">
+                <Tag
+                  round={true}
+                  intent={
+                    context.fileStatState.conflict.length > 0
+                      ? Intent.WARNING
+                      : Intent.SUCCESS
+                  }
+                >
+                  {context.fileStatState.conflict.length}
+                </Tag>
               </div>
-            </Card>
-          ) : null}
+            </div>
+          </Card>
         </div>
       </div>
     </div>

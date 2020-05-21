@@ -113,6 +113,7 @@ const GroupCard: FunctionComponent<IProps> = ({
       elevation={focusGroup === group ? Elevation.FOUR : Elevation.ONE}
       className={`group-card ${focusGroup === group ? "group-card-focus" : ""}`}
       onClick={handleClick}
+      style={{ paddingTop: "0px" }}
     >
       <div className="group-card-topbar">
         <Icon icon="cross" onClick={() => handleDeleteGroup()} />
