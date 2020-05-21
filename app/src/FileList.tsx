@@ -11,7 +11,8 @@ import {
   Elevation,
   Tab,
   TabId,
-  Tabs
+  Tabs,
+  Tag
 } from "@blueprintjs/core";
 import React, { FunctionComponent, useState } from "react";
 import { CsvFeature, ExcelFeature, File, TikaFeature } from "./api";
@@ -131,11 +132,11 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
               <tr>
                 <td>Matched Group(s)</td>
                 <td>
-                  <ul>
-                    {currentFile?.matchedGroupNames?.map((object, i) => (
-                      <li key={i}>{object}</li>
-                    ))}
-                  </ul>
+                  {currentFile?.matchedGroupNames?.map((object, i) => (
+                    <Tag key={i} style={{ marginRight: "5px" }}>
+                      {object}
+                    </Tag>
+                  ))}
                 </td>
               </tr>
             </tbody>
