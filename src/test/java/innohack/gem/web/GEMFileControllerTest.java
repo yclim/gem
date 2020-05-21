@@ -10,6 +10,7 @@ import innohack.gem.entity.rule.rules.FileExtension;
 import innohack.gem.entity.rule.rules.Rule;
 import innohack.gem.service.GroupService;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,15 +40,15 @@ public class GEMFileControllerTest {
       Thread.sleep(1000);
     }
 
-    List<String> uppercaseExtensions =
+    List<String> extensions =
         gemFileDao.getFiles().stream()
-            .map(f -> f.getExtension().toUpperCase())
+            .map(f -> f.getExtension())
             .distinct()
             .collect(Collectors.toList());
 
     int counter = 1;
-    for (String extension : uppercaseExtensions) {
-      String defaultGroupName = extension;
+    for (String extension : extensions) {
+      String defaultGroupName = extension + "-" + "group";
       String defaultRuleName = GroupService.DEFAULT_FILEEXT_RULENAME_PREFIX + "-" + counter;
       Group group = groupDao.getGroup(defaultGroupName);
       assertTrue(group != null);

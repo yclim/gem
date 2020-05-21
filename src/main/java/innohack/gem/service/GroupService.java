@@ -78,8 +78,8 @@ public class GroupService {
   public void createDefaultGroup(Collection<GEMFile> files) {
     int counter = 1;
     for (GEMFile file : files) {
-      String extension = file.getExtension().toUpperCase();
-      String defaultGroupName = extension;
+      String extension = file.getExtension();
+      String defaultGroupName = extension + "-" + "group";
       String defaultRuleName = GroupService.DEFAULT_FILEEXT_RULENAME_PREFIX + "-" + counter;
       Group default_extension_group = groupDao.getGroup(defaultGroupName);
       if (default_extension_group == null) {
