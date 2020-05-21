@@ -43,8 +43,6 @@ public class ExcelExtractor extends AbstractExtractor {
 
         results.setSheetName(excelSheetName);
 
-        List<TimestampColumn> extractTSColumns = extractConfig.getTimestampColumns();
-
         Map<String, List<List<String>>> sheetTables = ((ExcelFeature) feature).getSheetTableData();
 
         if (sheetTables.containsKey(excelSheetName)) {
