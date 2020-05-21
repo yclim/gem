@@ -51,9 +51,9 @@ public class TikaContentRegex extends Rule {
       Pattern pattern = Pattern.compile(regexString, Pattern.CASE_INSENSITIVE);
       Matcher matcher = pattern.matcher(tikaContent);
 
-      while (matcher.find()) {
-        String matchString = matcher.group(1);
-        LOGGER.info("The  match string is {}", matchString);
+      if (matcher.find()) {
+        LOGGER.info(
+            "The match string is {}", tikaContent.substring(matcher.start(), matcher.end()));
         return true;
       }
     }
