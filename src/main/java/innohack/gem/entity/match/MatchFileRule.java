@@ -4,17 +4,19 @@ import innohack.gem.entity.GEMFile;
 import java.util.HashMap;
 
 public class MatchFileRule extends GEMFile {
-  private HashMap<Integer, Boolean> matchRuleHashcode;
+
+  // map rule's hashcode to boolean (check() result)
+  private HashMap<Integer, Boolean> ruleResultMap;
 
   public MatchFileRule() {
-    matchRuleHashcode = new HashMap<Integer, Boolean>();
+    ruleResultMap = new HashMap<Integer, Boolean>();
   }
 
-  public HashMap<Integer, Boolean> getMatchRuleHashcode() {
-    return matchRuleHashcode;
+  public HashMap<Integer, Boolean> getRuleResultMap() {
+    return ruleResultMap;
   }
 
-  public void setMatchRuleHashcode(HashMap<Integer, Boolean> matchRuleHashcode) {
-    this.matchRuleHashcode = matchRuleHashcode;
+  public void setRuleResultMap(HashMap<Integer, Boolean> ruleResultMap) {
+    this.ruleResultMap = ruleResultMap;
   }
 }
