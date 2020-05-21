@@ -25,7 +25,7 @@ public class ExcelFeature extends AbstractFeature {
   public void extract(File f) throws Exception {
 
     File file = new File(String.valueOf(f.toPath().toAbsolutePath()));
-    try (Workbook workbook = WorkbookFactory.create(file)) {
+    try (Workbook workbook = WorkbookFactory.create(file, null, true)) {
 
       if (workbook.getNumberOfSheets() > 0) {
         sheetTableData = new HashMap<>();
