@@ -91,16 +91,18 @@ public class MatchService {
       ruleMatch = new HashMap<Integer, Boolean>();
     }
     // for each rule in the group, check against the rule hashmap for previously checked result
+    // when no result of previously checked file and rule, do a check now and store into rule
     List<Rule> rules = group.getRules();
     if (rules != null && rules.size() > 0) {
       for (Rule r : rules) {
         if (ruleMatch.get(r.hashCode()) == null) {
-          // when no result of previously checked file and rule, do a check now and store into rule
-          // hashmap
-          result = r.check(file);
+          // file from parameter only provides filename and path.
+          // We need the full GEMFile with features
+          GEMFile completeGemFile = gemFileDao.getFileByAbsolutePath(file.getAbsolutePath());
+          result = r.check(completeGemFile);
           ruleMatch.put(r.hashCode(), result);
         } else {
-          // when there is a result of rule checked previously inside rule hashmap,
+
           result = ruleMatch.get(r.hashCode());
         }
         // break when one of the rule check against the file is false.
