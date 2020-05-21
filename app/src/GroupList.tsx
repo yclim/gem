@@ -142,7 +142,14 @@ const GroupList: FunctionComponent<IProps> = ({
             <div className="group-card-header">
               <div className="label">No matches</div>
               <div className="counter">
-                <Tag round={true} intent={Intent.WARNING}>
+                <Tag
+                  round={true}
+                  intent={
+                    context.fileStatState.noMatch.length > 0
+                      ? Intent.WARNING
+                      : Intent.SUCCESS
+                  }
+                >
                   {context.fileStatState.noMatch.length}
                 </Tag>
               </div>
@@ -161,7 +168,14 @@ const GroupList: FunctionComponent<IProps> = ({
             <div className="group-card-header">
               <div className="label">Conflicts</div>
               <div className="counter">
-                <Tag round={true} intent={Intent.WARNING}>
+                <Tag
+                  round={true}
+                  intent={
+                    context.fileStatState.conflict.length > 0
+                      ? Intent.WARNING
+                      : Intent.SUCCESS
+                  }
+                >
                   {context.fileStatState.conflict.length}
                 </Tag>
               </div>
