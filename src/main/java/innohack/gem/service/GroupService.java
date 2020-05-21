@@ -73,13 +73,14 @@ public class GroupService {
     return group;
   }
 
-  public static final String DEFAULT_FILEEXT_RULENAME_PREFIX = "File Extension";
+  public static final String DEFAULT_FILEEXT_RULENAME_PREFIX = "FE";
 
   public void createDefaultGroup(Collection<GEMFile> files) {
+    int counter = 1;
     for (GEMFile file : files) {
       String extension = file.getExtension().toUpperCase();
       String defaultGroupName = extension;
-      String defaultRuleName = extension + " " + GroupService.DEFAULT_FILEEXT_RULENAME_PREFIX;
+      String defaultRuleName = GroupService.DEFAULT_FILEEXT_RULENAME_PREFIX + "-" + counter;
       Group default_extension_group = groupDao.getGroup(defaultGroupName);
       if (default_extension_group == null) {
         default_extension_group = new Group();
@@ -89,6 +90,7 @@ public class GroupService {
         default_extension_group.setRules(Lists.newArrayList(rule));
         groupDao.saveGroup(default_extension_group);
         matchService.onUpdateEvent(default_extension_group);
+        counter++;
       }
     }
   }
