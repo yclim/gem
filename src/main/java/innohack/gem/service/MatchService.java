@@ -78,32 +78,33 @@ public class MatchService {
     boolean result = true;
     String fileKey = file.getAbsolutePath();
     // get rule hashmap of the file. rule hash map contains the result of rule checks on the file
-    Object o = matchFileRuleTable.get(fileKey);
-    MatchFileRule matchFileRule = new MatchFileRule();
-    HashMap<Integer, Boolean> ruleMatch = null;
-    if (o != null) {
-      matchFileRule = (MatchFileRule) o;
-      matchFileRule.setDirectory(file.getDirectory());
-      matchFileRule.setFileName(file.getFileName());
-      ruleMatch = matchFileRule.getMatchRuleHashcode();
-    }
-    if (ruleMatch == null) {
-      ruleMatch = new HashMap<Integer, Boolean>();
-    }
+
+    MatchFileRule matchFileRule =
+        matchFileRuleTable.computeIfAbsent(
+            fileKey,
+            k -> {
+              MatchFileRule f = new MatchFileRule();
+              f.setDirectory(file.getDirectory());
+              f.setFileName(file.getFileName());
+              return f;
+            });
+
+    HashMap<Integer, Boolean> ruleResultMap = matchFileRule.getRuleResultMap();
+
     // for each rule in the group, check against the rule hashmap for previously checked result
+    // when no result of previously checked file and rule, do a check now and store into rule
     List<Rule> rules = group.getRules();
-    if (rules != null && rules.size() > 0) {
+    if (rules != null) {
       for (Rule r : rules) {
-        if (ruleMatch.get(r.hashCode()) == null) {
-          // when no result of previously checked file and rule, do a check now and store into rule
-          // hashmap
-          result = r.check(file);
-          ruleMatch.put(r.hashCode(), result);
+        if (!ruleResultMap.containsKey(r.hashCode())) {
+          // file from parameter only provides filename and path.
+          // We need the full GEMFile with features
+          GEMFile completeGemFile = gemFileDao.getFileByAbsolutePath(file.getAbsolutePath());
+          result = r.check(completeGemFile);
+          ruleResultMap.put(r.hashCode(), result);
         } else {
-          // when there is a result of rule checked previously inside rule hashmap,
-          result = ruleMatch.get(r.hashCode());
+          result = ruleResultMap.get(r.hashCode());
         }
-        // break when one of the rule check against the file is false.
         if (result == false) {
           break;
         }
@@ -111,35 +112,28 @@ public class MatchService {
     } else {
       result = false;
     }
-    matchFileRule.setMatchRuleHashcode(ruleMatch);
+    matchFileRule.setRuleResultMap(ruleResultMap);
     // save the rule hashmap
     matchFileRuleTable.put(fileKey, matchFileRule);
 
+    MatchFileGroup matchFileGroup =
+        matchFileGroupTable.computeIfAbsent(
+            fileKey,
+            k -> {
+              MatchFileGroup f = new MatchFileGroup();
+              f.setDirectory(file.getDirectory());
+              f.setFileName(file.getFileName());
+              return f;
+            });
+
     // FileGroupHashMap that contains all the file and its matched group
     // get the list of groups that match the file and update it
-
-    o = matchFileGroupTable.get(fileKey);
-    MatchFileGroup matchFileGroup = new MatchFileGroup();
-    Set<Integer> matchGroupIds = null;
-    if (o != null) {
-      matchFileGroup = (MatchFileGroup) o;
-      matchFileGroup.setDirectory(file.getDirectory());
-      matchFileGroup.setFileName(file.getFileName());
-      matchGroupIds = matchFileGroup.getMatchedGroupIds();
-    }
-
-    if (matchGroupIds == null) {
-      matchGroupIds = Sets.newHashSet();
-    }
+    Set<Integer> matchGroupIds = matchFileGroup.getMatchedGroupIds();
     if (result) {
-      // when group is not in the list and its file matched against the group. add the group to
-      // the list
       matchGroupIds.add(group.getGroupId());
     } else {
-      // when file does not match the group, remove the file from the list.
       matchGroupIds.remove(group.getGroupId());
     }
-    // save the matched group
     matchFileGroup.setMatchedGroupIds(matchGroupIds);
     matchFileGroupTable.put(fileKey, matchFileGroup);
     return result;
@@ -220,7 +214,7 @@ public class MatchService {
     for (String fileKey : matchFileRuleTable.keySet()) {
       MatchFileRule matchFileRule = matchFileRuleTable.get(fileKey);
       for (Rule r : group.getRules()) {
-        matchFileRule.getMatchRuleHashcode().remove(r.hashCode());
+        matchFileRule.getRuleResultMap().remove(r.hashCode());
       }
       matchFileRuleTable.put(fileKey, matchFileRule);
     }

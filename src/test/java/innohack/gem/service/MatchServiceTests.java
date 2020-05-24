@@ -151,7 +151,7 @@ public class MatchServiceTests {
         MatchService.getMatchFileRuleTable().get(datFile.getAbsolutePath());
     MatchFileGroup matchFileGroup =
         MatchService.getMatchFileGroupTable().get(datFile.getAbsolutePath());
-    assert (matchFileRule.getMatchRuleHashcode().get(prefix_d_group.getRules().get(0).hashCode())
+    assert (matchFileRule.getRuleResultMap().get(prefix_d_group.getRules().get(0).hashCode())
         == true);
     assert (matchFileGroup.getMatchedGroupIds().contains(prefix_d_group.getGroupId()) == true);
     groupDao.deleteGroup(prefix_d_group.getName());
@@ -162,7 +162,7 @@ public class MatchServiceTests {
 
     matchFileRule = MatchService.getMatchFileRuleTable().get(datFile.getAbsolutePath());
     matchFileGroup = MatchService.getMatchFileGroupTable().get(datFile.getAbsolutePath());
-    assert (matchFileRule.getMatchRuleHashcode().get(prefix_d_group.getRules().get(0).hashCode())
+    assert (matchFileRule.getRuleResultMap().get(prefix_d_group.getRules().get(0).hashCode())
         == null);
     assert (matchFileGroup.getMatchedGroupIds().contains(prefix_d_group.getGroupId()) == false);
 

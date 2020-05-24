@@ -47,14 +47,17 @@ public class TikaContentExtractor extends AbstractExtractor {
         Matcher matcher = pattern.matcher(tikaContent);
 
         while (matcher.find()) {
-          LOGGER.trace("Group count: {}", matcher.groupCount());
+          LOGGER.trace("Group count: {}, {}", matcher.groupCount(), matcher.group(0));
           List<String> foundResults = Lists.newArrayList();
           for (int i = 1; i <= matcher.groupCount(); i++) { // skip 0 which is entire match string
             String matchText = matcher.group(i);
             LOGGER.trace("Text: {}", matchText);
             foundResults.add(matchText);
           }
-          results.getRecords().add(foundResults);
+          if(matcher.groupCount()==0)
+            foundResults.add(matcher.group(0));
+          if(!foundResults.isEmpty())
+            results.getRecords().add(foundResults);
         }
         return results;
       }
