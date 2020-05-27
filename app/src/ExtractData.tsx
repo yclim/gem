@@ -34,7 +34,7 @@ import {
   Table
 } from "@blueprintjs/table";
 import { fileExtractCounts } from "./mockData";
-import { ExtractConfig, Group } from "./api";
+import { ExtractConfig, Extractor, Group } from "./api";
 import groupRuleService from "./api/GroupRuleService";
 import extractConfigService from "./api/ExtractConfigService";
 import { AxiosResponse } from "axios";
@@ -53,15 +53,22 @@ interface FileExtractCount {
   extractedData: string[][];
 }
 
+// hardcoded list the extractors
+const CSV_EXTRACTOR = "innohack.gem.service.extract.CSVExtractor";
+const EXCEL_EXTRACTOR = "innohack.gem.service.extract.ExcelExtractor";
+const TIKA_CONTENT_EXTRACTOR =
+  "innohack.gem.service.extract.TikaContentExtractor";
+
 const ExtractData: FunctionComponent<RouteComponentProps> = () => {
   const [activeGroup, setActiveGroup] = useState<Group>();
-  const [columns, setColumns] = useState<string[]>(["CustomerName", "Address"]);
+  const [columns, setColumns] = useState<string[]>([]);
+  const [extractorTemplate, setExtractorTemplate] = useState<Extractor[]>([]);
+  const [extractor, setExtractor] = useState<Extractor>();
+
   const [regexExpression, setRegexExpression] = useState("");
-  const [extractor, setExtractor] = useState<string>("Regex Content Body");
-  const [csvColumns, setCsvColumns] = useState<ReactNode[]>(["Customer ID"]);
-  const [excelColumns, setExcelColumns] = useState<ReactNode[]>([
-    "Customer ID"
-  ]);
+  const [csvColumns, setCsvColumns] = useState<ReactNode[]>([]);
+  const [excelSheet, setExcelSheet] = useState("");
+  const [excelColumns, setExcelColumns] = useState<ReactNode[]>([""]);
   const [dateFormat, setDateFormat] = useState<DateFormatMapping>({
     columnName: "",
     dateFormat: "",
@@ -78,15 +85,28 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
   const [extractConfig, setExtractConfig] = useState<ExtractConfig>();
 
   useEffect(() => {
-    groupRuleService.getGroups().then((resp: AxiosResponse<Group[]>) => {
-      const grps = resp.data;
-      setGroups(grps);
-      setActiveGroup(grps[0]);
-    });
+    const extractorTemplatePromise = extractConfigService
+      .getExtractorTemplates()
+      .then((resp: AxiosResponse<Extractor[]>) => {
+        setExtractorTemplate(resp.data);
+      });
+    const groupsPromise = groupRuleService
+      .getGroups()
+      .then((resp: AxiosResponse<Group[]>) => {
+        const grps = resp.data;
+        setGroups(grps);
+        return grps;
+      });
+
+    Promise.all<void, Group[]>([extractorTemplatePromise, groupsPromise]).then(
+      ([nothing, grps]) => {
+        setActiveGroup(grps[0]);
+      }
+    );
   }, []);
 
   useEffect(() => {
-    if (activeGroup)
+    if (activeGroup) {
       extractConfigService.getExtractConfig(activeGroup.groupId).then(resp => {
         const config: ExtractConfig = resp.data
           ? resp.data
@@ -94,13 +114,67 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
               columnNames: [],
               groupId: activeGroup.groupId,
               tableName: activeGroup.name,
-              timestampColumns: []
+              timestampColumns: [],
+              extractor: null
             };
 
+        setColumns(config.columnNames);
         setExtractConfig(config);
       });
+    }
   }, [activeGroup]);
 
+  // when we loaded a extractConfig, we should set extractor
+  useEffect(() => {
+    if (extractConfig) {
+      if (extractConfig.extractor) {
+        setExtractor(extractConfig.extractor);
+      } else {
+        // Use tika content extractor by default
+        setExtractor(
+          extractorTemplate.find(
+            ex => ex.extractorId === TIKA_CONTENT_EXTRACTOR
+          )
+        );
+        setRegexExpression("");
+      }
+    }
+  }, [extractConfig]);
+
+  // when we set extractor, either onload or selection, we should populate the forms
+  useEffect(() => {
+    if (extractor) {
+      switch (extractor.extractorId) {
+        case TIKA_CONTENT_EXTRACTOR: {
+          const value = extractor.params[0].value;
+          if (value) setRegexExpression(value);
+          else setRegexExpression("");
+          break;
+        }
+        case CSV_EXTRACTOR: {
+          const columnValue = extractor.params[0].value;
+          if (columnValue) setCsvColumns(columnValue.split(","));
+          else setCsvColumns([]);
+          break;
+        }
+        case EXCEL_EXTRACTOR: {
+          const value = extractor.params[0].value;
+          if (value) setExcelSheet(value);
+          else setExcelSheet("");
+
+          const columnValue = extractor.params[1].value;
+          if (columnValue) setExcelColumns(columnValue.split(","));
+          else setExcelColumns([]);
+          break;
+        }
+        default: {
+          throw new Error("Extractor not supported:" + extractor.extractorId);
+        }
+      }
+    }
+  }, [extractor]);
+
+  // when remove columns, we should remove all dateFormats that relies on remove columns
   useEffect(() => {
     while (
       dateFormats.findIndex(df => !columns.includes(df.columnName)) !== -1
@@ -114,6 +188,13 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
       }
     }
   }, [columns]);
+
+  // when we change csv/excel columns (tag input component), we should save form
+  useEffect(() => {
+    if (extractConfig) {
+      saveExtractConfigChange(extractConfig);
+    }
+  }, [csvColumns, excelColumns]);
 
   function renderColumnCountTag(left: number, right: number, suffix: string) {
     let intent: Intent = Intent.NONE;
@@ -137,7 +218,7 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
     );
   }
 
-  function renderExtractorForm(ex: string) {
+  function renderExtractorForm() {
     function countCaptureGroup(regex: string) {
       try {
         const captureGroups = new RegExp(regex + "|").exec("");
@@ -150,7 +231,7 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
       return 0;
     }
 
-    if (ex === "Regex Content Body") {
+    if (extractor && extractor.extractorId === TIKA_CONTENT_EXTRACTOR) {
       return (
         <FormGroup
           label="Regex Expression"
@@ -166,11 +247,14 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
               setRegexExpression(e.target.value)
             }
+            onBlur={() => {
+              if (extractConfig) saveExtractConfigChange(extractConfig);
+            }}
             style={{ fontFamily: "Consolas" }}
           />
         </FormGroup>
       );
-    } else if (ex === "CSV Content") {
+    } else if (extractor && extractor.extractorId === CSV_EXTRACTOR) {
       return (
         <FormGroup
           label="CSV Headers"
@@ -188,11 +272,20 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
           />
         </FormGroup>
       );
-    } else if (ex === "Excel Content") {
+    } else if (extractor && extractor.extractorId === EXCEL_EXTRACTOR) {
       return (
         <div>
           <FormGroup label="Sheetname">
-            <InputGroup placeholder="e.g Sheet1, Sheet2" />
+            <InputGroup
+              placeholder="e.g Sheet1, Sheet2"
+              value={excelSheet}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setExcelSheet(e.target.value)
+              }
+              onBlur={() => {
+                if (extractConfig) saveExtractConfigChange(extractConfig);
+              }}
+            />
           </FormGroup>
           <FormGroup
             label="Excel Headers"
@@ -382,18 +475,24 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
               </H6>
               <FormGroup>
                 <HTMLSelect
-                  value={extractor}
+                  value={extractor?.extractorId}
                   onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-                    setExtractor(e.target.value)
+                    setExtractor(
+                      extractorTemplate.find(
+                        ex => ex.extractorId === e.target.value
+                      )
+                    )
                   }
                 >
-                  <option>Regex Content Body</option>
-                  <option>CSV Content</option>
-                  <option>Excel Content</option>
+                  <option value={TIKA_CONTENT_EXTRACTOR}>
+                    Regex Content Body
+                  </option>
+                  <option value={CSV_EXTRACTOR}>CSV Content</option>
+                  <option value={EXCEL_EXTRACTOR}>Excel Content</option>
                 </HTMLSelect>
               </FormGroup>
 
-              {renderExtractorForm(extractor)}
+              {renderExtractorForm()}
             </Card>
 
             {renderTimestampForm()}
@@ -433,7 +532,7 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
         </div>
       );
 
-    return <div>Fail renderGroupForm (config undefined or null)</div>;
+    return <div>Loading...</div>;
   }
 
   function renderExtractDataTable() {
@@ -505,8 +604,45 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
   return render();
 
   function saveExtractConfigChange(config: ExtractConfig) {
-    if (config) {
-      extractConfigService.saveExtractConfig(config).then();
+    if (extractor) {
+      let saveExtractor = { ...extractor };
+      switch (extractor.extractorId) {
+        case TIKA_CONTENT_EXTRACTOR: {
+          const param1 = extractor.params[0];
+          saveExtractor = {
+            ...extractor,
+            params: [{ ...param1, value: regexExpression }]
+          };
+          break;
+        }
+        case CSV_EXTRACTOR: {
+          const param1 = extractor.params[0];
+          saveExtractor = {
+            ...extractor,
+            params: [{ ...param1, value: csvColumns.join(",") }]
+          };
+          break;
+        }
+        case EXCEL_EXTRACTOR: {
+          const param1 = extractor.params[0];
+          const param2 = extractor.params[1];
+          saveExtractor = {
+            ...extractor,
+            params: [
+              { ...param1, value: excelSheet },
+              { ...param2, value: excelColumns.join(",") }
+            ]
+          };
+          break;
+        }
+        default: {
+          throw new Error(
+            "Extractor not supported:" + config.extractor?.extractorId
+          );
+        }
+      }
+      const saveConfig = { ...config, extractor: saveExtractor };
+      extractConfigService.saveExtractConfig(saveConfig).then();
     }
   }
 
@@ -523,7 +659,7 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
         ...extractConfig,
         columnNames: values.map(node => (node ? node.toString() : ""))
       };
-
+      setColumns(values.map(node => (node ? node.toString() : "")));
       setExtractConfig(config);
       saveExtractConfigChange(config);
     }
@@ -533,12 +669,6 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
     const groupId: number = +tabId.toString();
     const grp = groups.find(g => g.groupId === groupId);
     if (grp) setActiveGroup(grp);
-    setRegexExpression("");
-    setExtractor("Regex Content Body");
-    setCsvColumns(["Customer ID"]);
-    setExcelColumns(["Customer ID"]);
-    setExtractDataTable([]);
-    setFiles([]);
   }
 
   function handleCsvColumnChange(values: React.ReactNode[]) {
