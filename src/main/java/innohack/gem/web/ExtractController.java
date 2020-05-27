@@ -4,6 +4,7 @@ import innohack.gem.entity.extractor.ExtractConfig;
 import innohack.gem.entity.extractor.ExtractedFile;
 import innohack.gem.entity.extractor.ExtractedRecords;
 import innohack.gem.service.ExtractService;
+import innohack.gem.service.extract.AbstractExtractor;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,5 +50,10 @@ public class ExtractController {
   @GetMapping("/config/{groupId}")
   public ExtractConfig getExtractConfig(@PathVariable int groupId) {
     return extractService.getExtractConfig(groupId);
+  }
+
+  @GetMapping("/extractorTemplates")
+  public List<AbstractExtractor> getExtractorTemplates() throws Exception {
+    return extractService.getExtractorTemplates();
   }
 }

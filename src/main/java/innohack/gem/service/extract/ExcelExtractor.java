@@ -16,12 +16,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ExcelExtractor extends AbstractExtractor {
+  private String LABEL = "Excel Extractor";
 
   public ExcelExtractor() {
     this(null, null);
   }
 
   public ExcelExtractor(String sheetName, String columnNames) {
+    setLabel(LABEL);
     Parameter param1 = new Parameter("Sheet Name", "", ParamType.STRING, sheetName);
     Parameter param2 = new Parameter("Column Names", "", ParamType.STRING_LIST, columnNames);
 
