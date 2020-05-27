@@ -35,7 +35,7 @@ import {
   Table
 } from "@blueprintjs/table";
 import { fileExtractCounts } from "./mockData";
-import { Extractor, Group } from "./api";
+import { Extractor, Group, TimestampColumn } from "./api";
 import groupRuleService from "./api/GroupRuleService";
 import extractConfigService from "./api/ExtractConfigService";
 import { AxiosResponse } from "axios";
@@ -45,13 +45,6 @@ import {
   EXCEL_EXTRACTOR,
   TIKA_CONTENT_EXTRACTOR
 } from "./extractConfigReducer";
-
-interface DateFormatMapping {
-  columnName: string;
-  dateFormat: string;
-  newColumnName: string;
-  timezone?: string;
-}
 
 interface FileExtractCount {
   filename: string;
@@ -73,13 +66,16 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
   const [csvColumns, setCsvColumns] = useState<ReactNode[]>([]);
   const [excelSheet, setExcelSheet] = useState("");
   const [excelColumns, setExcelColumns] = useState<ReactNode[]>([""]);
-  const [dateFormat, setDateFormat] = useState<DateFormatMapping>({
-    columnName: "",
-    dateFormat: "",
-    newColumnName: "",
+
+  const emptyTimestampColumn = {
+    fromColumn: "",
+    format: "",
+    name: "",
     timezone: ""
-  });
-  const [dateFormats, setDateFormats] = useState<DateFormatMapping[]>([]);
+  };
+  const [dateFormat, setDateFormat] = useState<TimestampColumn>(
+    emptyTimestampColumn
+  );
   const [extractDataTable, setExtractDataTable] = useState<string[][]>([]);
   const [files, setFiles] = useState<FileExtractCount[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -114,7 +110,7 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
     }
   }, [activeGroup]);
 
-  // when we loaded a extractConfig, we should update form
+  // when we load a extractConfig, we should update forms
   useEffect(() => {
     if (context.extractConfigState) {
       setTablename(context.extractConfigState.tableName);
@@ -133,7 +129,7 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
     }
   }, [context.extractConfigState]);
 
-  // when we set extractor, either onload or selection, we should populate the forms
+  // when we set extractor (either onload or selection) we should populate extractor forms
   useEffect(() => {
     if (extractor) {
       switch (extractor.extractorId) {
@@ -168,23 +164,8 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
 
   // when remove columns, we should remove all dateFormats that relies on remove columns
   useEffect(() => {
-    while (
-      dateFormats.findIndex(df => !columns.includes(df.columnName)) !== -1
-    ) {
-      const index = dateFormats.findIndex(
-        df => !columns.includes(df.columnName)
-      );
-      if (index >= 0) {
-        dateFormats.splice(index, 1);
-        setDateFormats([...dateFormats]);
-      }
-    }
+    context.extractConfigAction?.filterTimestampColumns(columns);
   }, [columns]);
-
-  // when we change csv/excel columns (tag input component), we should save form
-  // useEffect(() => {
-  //   saveExtractConfigChange();
-  // }, [csvColumns, excelColumns]);
 
   function renderColumnCountTag(left: number, right: number, suffix: string) {
     let intent: Intent = Intent.NONE;
@@ -307,7 +288,7 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
         <FormGroup label="From Column">
           <HTMLSelect
             options={["", ...columns.map(c => (c ? c.toString() : ""))]}
-            value={dateFormat.columnName}
+            value={dateFormat.fromColumn}
             onChange={(e: ChangeEvent<HTMLSelectElement>) =>
               handleTimestampFormSelectChange(e.target.value)
             }
@@ -317,14 +298,14 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
         <FormGroup label="New Column Name">
           <InputGroup
             placeholder=""
-            value={dateFormat.newColumnName}
+            value={dateFormat.name}
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
               setDateFormat({
                 ...dateFormat,
-                newColumnName: e.target.value
+                name: e.target.value
               })
             }
-            disabled={!dateFormat.columnName}
+            disabled={!dateFormat.name}
           />
         </FormGroup>
 
@@ -341,7 +322,7 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
                 timezone: e.target.value
               })
             }
-            disabled={!dateFormat.columnName}
+            disabled={!dateFormat.fromColumn}
           />
         </FormGroup>
 
@@ -349,19 +330,19 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
           <ControlGroup>
             <InputGroup
               placeholder="yyyyMMddHHmmss"
-              value={dateFormat.dateFormat}
+              value={dateFormat.format}
               onChange={(e: ChangeEvent<HTMLInputElement>) =>
                 setDateFormat({
                   ...dateFormat,
-                  dateFormat: e.target.value
+                  format: e.target.value
                 })
               }
-              disabled={!dateFormat.columnName}
+              disabled={!dateFormat.fromColumn}
             />
             <Button
               icon="plus"
               onClick={handleAddTimestamp}
-              disabled={!dateFormat.columnName}
+              disabled={!dateFormat.fromColumn}
             />
           </ControlGroup>
         </FormGroup>
@@ -376,18 +357,18 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
             </tr>
           </thead>
           <tbody>
-            {dateFormats.length === 0 ? (
+            {context.extractConfigState.timestampColumns.length === 0 ? (
               <tr>
                 <td colSpan={4}> No Entries </td>
               </tr>
             ) : (
-              dateFormats.map((df, index) => {
+              context.extractConfigState.timestampColumns.map((t, index) => {
                 return (
                   <tr key={index}>
-                    <td>{df.columnName}</td>
-                    <td>{df.newColumnName}</td>
-                    <td>{df.timezone}</td>
-                    <td>{df.dateFormat}</td>
+                    <td>{t.fromColumn}</td>
+                    <td>{t.name}</td>
+                    <td>{t.timezone}</td>
+                    <td>{t.format}</td>
                     <td>
                       <Button
                         icon="delete"
@@ -521,20 +502,22 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
         <Table
           numRows={extractDataTable.length}
           columnWidths={Array.from(
-            Array(columns.length + dateFormats.length)
+            Array(
+              columns.length +
+                context.extractConfigState.timestampColumns.length
+            )
           ).map(() => 120)}
         >
-          {[...columns, ...dateFormats.map(df => df.newColumnName)].map(
-            (tag, colIndex) => (
-              <Column
-                key={colIndex}
-                name={tag ? tag.toString() : ""}
-                cellRenderer={rowIndex =>
-                  renderTableDataCell(rowIndex, colIndex)
-                }
-              />
-            )
-          )}
+          {[
+            ...columns,
+            ...context.extractConfigState.timestampColumns.map(df => df.name)
+          ].map((tag, colIndex) => (
+            <Column
+              key={colIndex}
+              name={tag ? tag.toString() : ""}
+              cellRenderer={rowIndex => renderTableDataCell(rowIndex, colIndex)}
+            />
+          ))}
         </Table>
       </div>
     );
@@ -646,33 +629,24 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
   }
 
   function handleAddTimestamp() {
-    setDateFormats([
-      ...dateFormats,
-      {
-        columnName: dateFormat.columnName,
-        dateFormat: dateFormat.dateFormat,
-        newColumnName: dateFormat.newColumnName,
-        timezone: dateFormat.timezone
-      }
-    ]);
-    setDateFormat({
-      columnName: "",
-      dateFormat: "",
-      newColumnName: "",
-      timezone: ""
+    context.extractConfigAction?.addTimestampColumn({
+      fromColumn: dateFormat.fromColumn,
+      format: dateFormat.format,
+      name: dateFormat.name,
+      timezone: dateFormat.timezone
     });
+    setDateFormat(emptyTimestampColumn);
   }
 
   function handleRemoveDateFormat(index: number) {
-    dateFormats.splice(index, 1);
-    setDateFormats([...dateFormats]);
+    context.extractConfigAction?.removeTimestampColumn(index);
   }
 
   function handleTimestampFormSelectChange(str: string) {
     setDateFormat({
-      columnName: str,
-      newColumnName: str + "_ts",
-      dateFormat: dateFormat.dateFormat,
+      fromColumn: str,
+      name: str + "_ts",
+      format: dateFormat.format,
       timezone: dateFormat.timezone
     });
   }
@@ -681,9 +655,11 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
     function genTable(num: number) {
       const cols = Array.from(Array(columns.length).keys());
       const data = Array.from(Array(num).keys()).map(rowNumber => {
-        return [...cols, ...dateFormats].map((colNumber, colIndex) => {
-          return "data" + colIndex;
-        });
+        return [...cols, ...context.extractConfigState.timestampColumns].map(
+          (colNumber, colIndex) => {
+            return "data" + colIndex;
+          }
+        );
       });
       return data;
     }

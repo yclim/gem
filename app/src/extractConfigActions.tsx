@@ -1,8 +1,11 @@
-import { ExtractConfig, Extractor } from "./api";
+import { ExtractConfig, Extractor, TimestampColumn } from "./api";
 import { Dispatch } from "react";
 import {
+  ADD_TIMESTAMP_COLUMN,
   ExtractConfigDispatchType,
+  FILTER_TIMESTAMP_COLUMN_BY_COLUMNS,
   INIT_EXTRACT_CONFIG,
+  REMOVE_TIMESTAMP_COLUMN,
   UPDATE_COLUMNS,
   UPDATE_EXTRACTOR,
   UPDATE_TABLENAME
@@ -18,6 +21,9 @@ export interface ExtractConfigAction {
   updateExcelExtractor: (sheetName: string, columnNames: string[]) => void;
   updateTikaContentRegexExtractor: (regexExp: string) => void;
   updateCSVExtractor: (columnNames: string[]) => void;
+  addTimestampColumn: (timestampColumn: TimestampColumn) => void;
+  removeTimestampColumn: (index: number) => void;
+  filterTimestampColumns: (columns: string[]) => void;
 }
 
 export function useExtractConfigActions(
@@ -103,6 +109,19 @@ export function useExtractConfigActions(
             type: UPDATE_EXTRACTOR,
             payload: { extractor: resp.data.extractor }
           });
+      });
+    },
+    addTimestampColumn: (timestampColumn: TimestampColumn) => {
+      dispatch({ type: ADD_TIMESTAMP_COLUMN, payload: { timestampColumn } });
+    },
+    removeTimestampColumn: (index: number) => {
+      dispatch({ type: REMOVE_TIMESTAMP_COLUMN, payload: { index } });
+    },
+
+    filterTimestampColumns: (columns: string[]) => {
+      dispatch({
+        type: FILTER_TIMESTAMP_COLUMN_BY_COLUMNS,
+        payload: { columns }
       });
     }
   };
