@@ -2,6 +2,7 @@ import React, {
   ChangeEvent,
   FunctionComponent,
   ReactNode,
+  useContext,
   useEffect,
   useRef,
   useState
@@ -34,10 +35,16 @@ import {
   Table
 } from "@blueprintjs/table";
 import { fileExtractCounts } from "./mockData";
-import { ExtractConfig, Extractor, Group } from "./api";
+import { Extractor, Group } from "./api";
 import groupRuleService from "./api/GroupRuleService";
 import extractConfigService from "./api/ExtractConfigService";
 import { AxiosResponse } from "axios";
+import { StoreContext } from "./StoreContext";
+import {
+  CSV_EXTRACTOR,
+  EXCEL_EXTRACTOR,
+  TIKA_CONTENT_EXTRACTOR
+} from "./extractConfigReducer";
 
 interface DateFormatMapping {
   columnName: string;
@@ -53,14 +60,11 @@ interface FileExtractCount {
   extractedData: string[][];
 }
 
-// hardcoded list the extractors
-const CSV_EXTRACTOR = "innohack.gem.service.extract.CSVExtractor";
-const EXCEL_EXTRACTOR = "innohack.gem.service.extract.ExcelExtractor";
-const TIKA_CONTENT_EXTRACTOR =
-  "innohack.gem.service.extract.TikaContentExtractor";
-
 const ExtractData: FunctionComponent<RouteComponentProps> = () => {
+  const context = useContext(StoreContext);
+
   const [activeGroup, setActiveGroup] = useState<Group>();
+  const [tablename, setTablename] = useState<string>();
   const [columns, setColumns] = useState<string[]>([]);
   const [extractorTemplate, setExtractorTemplate] = useState<Extractor[]>([]);
   const [extractor, setExtractor] = useState<Extractor>();
@@ -82,7 +86,6 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
   const fileTableRef = useRef(null);
 
   const [groups, setGroups] = useState<Group[]>([]);
-  const [extractConfig, setExtractConfig] = useState<ExtractConfig>();
 
   useEffect(() => {
     const extractorTemplatePromise = extractConfigService
@@ -107,28 +110,17 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
 
   useEffect(() => {
     if (activeGroup) {
-      extractConfigService.getExtractConfig(activeGroup.groupId).then(resp => {
-        const config: ExtractConfig = resp.data
-          ? resp.data
-          : {
-              columnNames: [],
-              groupId: activeGroup.groupId,
-              tableName: activeGroup.name,
-              timestampColumns: [],
-              extractor: null
-            };
-
-        setColumns(config.columnNames);
-        setExtractConfig(config);
-      });
+      context.extractConfigAction?.init(activeGroup.groupId);
     }
   }, [activeGroup]);
 
-  // when we loaded a extractConfig, we should set extractor
+  // when we loaded a extractConfig, we should update form
   useEffect(() => {
-    if (extractConfig) {
-      if (extractConfig.extractor) {
-        setExtractor(extractConfig.extractor);
+    if (context.extractConfigState) {
+      setTablename(context.extractConfigState.tableName);
+      setColumns(context.extractConfigState.columnNames);
+      if (context.extractConfigState.extractor) {
+        setExtractor(context.extractConfigState.extractor);
       } else {
         // Use tika content extractor by default
         setExtractor(
@@ -139,7 +131,7 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
         setRegexExpression("");
       }
     }
-  }, [extractConfig]);
+  }, [context.extractConfigState]);
 
   // when we set extractor, either onload or selection, we should populate the forms
   useEffect(() => {
@@ -190,18 +182,16 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
   }, [columns]);
 
   // when we change csv/excel columns (tag input component), we should save form
-  useEffect(() => {
-    if (extractConfig) {
-      saveExtractConfigChange(extractConfig);
-    }
-  }, [csvColumns, excelColumns]);
+  // useEffect(() => {
+  //   saveExtractConfigChange();
+  // }, [csvColumns, excelColumns]);
 
   function renderColumnCountTag(left: number, right: number, suffix: string) {
     let intent: Intent = Intent.NONE;
 
-    if (columns.length === csvColumns.length) {
+    if (left === right) {
       intent = Intent.SUCCESS;
-    } else if (columns.length > csvColumns.length) {
+    } else if (right > left) {
       intent = Intent.WARNING;
     } else {
       intent = Intent.DANGER;
@@ -248,7 +238,7 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
               setRegexExpression(e.target.value)
             }
             onBlur={() => {
-              if (extractConfig) saveExtractConfigChange(extractConfig);
+              handleRegexExpressionOnBlur();
             }}
             style={{ fontFamily: "Consolas" }}
           />
@@ -283,7 +273,7 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
                 setExcelSheet(e.target.value)
               }
               onBlur={() => {
-                if (extractConfig) saveExtractConfigChange(extractConfig);
+                handleExcelExtractorChange(excelSheet, excelColumns);
               }}
             />
           </FormGroup>
@@ -416,123 +406,113 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
   }
 
   function renderGroupForm() {
-    const config = extractConfig;
-    if (config)
-      return (
-        <div className="grid2">
-          <div style={{ width: "500px" }} className="stack">
-            <div className="box">
-              <Button
-                text="Simulate Extraction"
-                icon={
-                  isLoading ? (
-                    <div className="box">
-                      <Spinner size={Spinner.SIZE_SMALL} />
-                    </div>
-                  ) : (
-                    "cut"
-                  )
-                }
-                onClick={handleSimulate}
-              />
-            </div>
-            <Card elevation={1}>
-              <H6>
-                <Icon icon="th" /> Table Details
-              </H6>
-              <div>
-                <FormGroup label="Table Name">
-                  <InputGroup
-                    placeholder="e.g Customers, Cars"
-                    value={config.tableName}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                      handleTableNameChange(e.target.value)
-                    }
-                    onBlur={() => saveExtractConfigChange(config)}
-                  />
-                </FormGroup>
-                <FormGroup
-                  label="Column Names"
-                  helperText={
-                    <span>
-                      Column count <Tag minimal={true}>{columns.length}</Tag>
-                    </span>
+    return (
+      <div className="grid2">
+        <div style={{ width: "500px" }} className="stack">
+          <div className="box">
+            <Button
+              text="Simulate Extraction"
+              icon={
+                isLoading ? (
+                  <div className="box">
+                    <Spinner size={Spinner.SIZE_SMALL} />
+                  </div>
+                ) : (
+                  "cut"
+                )
+              }
+              onClick={handleSimulate}
+            />
+          </div>
+          <Card elevation={1}>
+            <H6>
+              <Icon icon="th" /> Table Details
+            </H6>
+            <div>
+              <FormGroup label="Table Name">
+                <InputGroup
+                  placeholder="e.g Customers, Cars"
+                  value={tablename}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    setTablename(e.target.value)
                   }
-                >
-                  <TagInput
-                    values={config.columnNames}
-                    placeholder="Separate values with commas..."
-                    onChange={handleColumnNamesChange}
-                    tagProps={{ minimal: true }}
-                  />
-                </FormGroup>
-              </div>
-            </Card>
-
-            <Card elevation={1}>
-              <H6>
-                <Icon icon="cut" /> Extractor
-              </H6>
-              <FormGroup>
-                <HTMLSelect
-                  value={extractor?.extractorId}
-                  onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-                    setExtractor(
-                      extractorTemplate.find(
-                        ex => ex.extractorId === e.target.value
-                      )
-                    )
-                  }
-                >
-                  <option value={TIKA_CONTENT_EXTRACTOR}>
-                    Regex Content Body
-                  </option>
-                  <option value={CSV_EXTRACTOR}>CSV Content</option>
-                  <option value={EXCEL_EXTRACTOR}>Excel Content</option>
-                </HTMLSelect>
+                  onBlur={() => handleTableNameOnBlur()}
+                />
               </FormGroup>
-
-              {renderExtractorForm()}
-            </Card>
-
-            {renderTimestampForm()}
-          </div>
-          <div className="grid2">
-            <div className="filelist-box">
-              <Table
-                ref={fileTableRef}
-                columnWidths={[200, 50]}
-                numRows={files.length}
-                selectionModes={SelectionModes.ROWS_AND_CELLS}
-                selectedRegionTransform={e => {
-                  return {
-                    rows: e.rows
-                  };
-                }}
-                onSelection={(r: IRegion[]) => {
-                  if (r.length > 0 && r[0].rows) {
-                    setExtractDataTable(files[r[0].rows[0]].extractedData);
-                  }
-                }}
+              <FormGroup
+                label="Column Names"
+                helperText={
+                  <span>
+                    Column count <Tag minimal={true}>{columns.length}</Tag>
+                  </span>
+                }
               >
-                <Column
-                  name="Filename"
-                  cellRenderer={rowIndex => renderFileTableCell(rowIndex)}
+                <TagInput
+                  values={columns}
+                  placeholder="Separate values with commas..."
+                  onChange={handleColumnNamesChange}
+                  tagProps={{ minimal: true }}
                 />
-                <Column
-                  name="#"
-                  cellRenderer={rowIndex =>
-                    renderFileExtractCountCell(rowIndex)
-                  }
-                />
-              </Table>
+              </FormGroup>
             </div>
-            {renderExtractDataTable()}
-          </div>
-        </div>
-      );
+          </Card>
 
-    return <div>Loading...</div>;
+          <Card elevation={1}>
+            <H6>
+              <Icon icon="cut" /> Extractor
+            </H6>
+            <FormGroup>
+              <HTMLSelect
+                value={extractor?.extractorId}
+                onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                  handleExtractorChange(e.target.value)
+                }
+              >
+                <option value={TIKA_CONTENT_EXTRACTOR}>
+                  Regex Content Body
+                </option>
+                <option value={CSV_EXTRACTOR}>CSV Content</option>
+                <option value={EXCEL_EXTRACTOR}>Excel Content</option>
+              </HTMLSelect>
+            </FormGroup>
+
+            {renderExtractorForm()}
+          </Card>
+
+          {renderTimestampForm()}
+        </div>
+        <div className="grid2">
+          <div className="filelist-box">
+            <Table
+              ref={fileTableRef}
+              columnWidths={[200, 50]}
+              numRows={files.length}
+              selectionModes={SelectionModes.ROWS_AND_CELLS}
+              selectedRegionTransform={e => {
+                return {
+                  rows: e.rows
+                };
+              }}
+              onSelection={(r: IRegion[]) => {
+                if (r.length > 0 && r[0].rows) {
+                  setExtractDataTable(files[r[0].rows[0]].extractedData);
+                }
+              }}
+            >
+              <Column
+                name="Filename"
+                cellRenderer={rowIndex => renderFileTableCell(rowIndex)}
+              />
+              <Column
+                name="#"
+                cellRenderer={rowIndex => renderFileExtractCountCell(rowIndex)}
+              />
+            </Table>
+          </div>
+          {renderExtractDataTable()}
+        </div>
+      </div>
+    );
   }
 
   function renderExtractDataTable() {
@@ -603,80 +583,66 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
 
   return render();
 
-  function saveExtractConfigChange(config: ExtractConfig) {
-    if (extractor) {
-      let saveExtractor = { ...extractor };
-      switch (extractor.extractorId) {
-        case TIKA_CONTENT_EXTRACTOR: {
-          const param1 = extractor.params[0];
-          saveExtractor = {
-            ...extractor,
-            params: [{ ...param1, value: regexExpression }]
-          };
-          break;
-        }
-        case CSV_EXTRACTOR: {
-          const param1 = extractor.params[0];
-          saveExtractor = {
-            ...extractor,
-            params: [{ ...param1, value: csvColumns.join(",") }]
-          };
-          break;
-        }
-        case EXCEL_EXTRACTOR: {
-          const param1 = extractor.params[0];
-          const param2 = extractor.params[1];
-          saveExtractor = {
-            ...extractor,
-            params: [
-              { ...param1, value: excelSheet },
-              { ...param2, value: excelColumns.join(",") }
-            ]
-          };
-          break;
-        }
-        default: {
-          throw new Error(
-            "Extractor not supported:" + config.extractor?.extractorId
-          );
-        }
-      }
-      const saveConfig = { ...config, extractor: saveExtractor };
-      extractConfigService.saveExtractConfig(saveConfig).then();
-    }
-  }
-
-  function handleTableNameChange(value: string) {
-    const config = extractConfig;
-    if (config) {
-      setExtractConfig({ ...config, tableName: value });
-    }
-  }
-
-  function handleColumnNamesChange(values: React.ReactNode[]) {
-    if (extractConfig) {
-      const config: ExtractConfig = {
-        ...extractConfig,
-        columnNames: values.map(node => (node ? node.toString() : ""))
-      };
-      setColumns(values.map(node => (node ? node.toString() : "")));
-      setExtractConfig(config);
-      saveExtractConfigChange(config);
-    }
-  }
-
   function handleNavbarTabChange(tabId: TabId) {
     const groupId: number = +tabId.toString();
     const grp = groups.find(g => g.groupId === groupId);
     if (grp) setActiveGroup(grp);
   }
 
+  function handleTableNameOnBlur() {
+    if (activeGroup && tablename)
+      context.extractConfigAction?.updateTablename(
+        activeGroup.groupId,
+        tablename
+      );
+  }
+
+  function handleColumnNamesChange(values: React.ReactNode[]) {
+    const strs = values.map(node => (node ? node.toString() : ""));
+    console.log(strs);
+    setColumns(strs);
+    context.extractConfigAction?.updateColumns(strs);
+  }
+
+  function handleRegexExpressionOnBlur() {
+    if (activeGroup && regexExpression)
+      context.extractConfigAction?.updateTikaContentRegexExtractor(
+        regexExpression
+      );
+  }
+
   function handleCsvColumnChange(values: React.ReactNode[]) {
     setCsvColumns(values);
+    context.extractConfigAction?.updateCSVExtractor(
+      values.map(v => (v ? v.toString() : ""))
+    );
   }
 
   function handleExcelColumnChange(values: React.ReactNode[]) {
     setExcelColumns(values);
+    handleExcelExtractorChange(excelSheet, values);
+  }
+
+  function handleExcelExtractorChange(
+    sheetName: string,
+    values: React.ReactNode[]
+  ) {
+    setExcelSheet(sheetName);
+    setExcelColumns(values);
+    context.extractConfigAction?.updateExcelExtractor(
+      sheetName,
+      values.map(v => (v ? v.toString() : ""))
+    );
+  }
+
+  function handleExtractorChange(extractorId: string) {
+    const foundExtractor = extractorTemplate.find(
+      ex => ex.extractorId === extractorId
+    );
+    if (foundExtractor) {
+      setExtractor(foundExtractor);
+      context.extractConfigAction?.changeExtractor(foundExtractor);
+    }
   }
 
   function handleAddTimestamp() {
