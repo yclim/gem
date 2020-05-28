@@ -10,7 +10,8 @@
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
     "lint": "tslint --project . src/**/*.{ts,tsx}",
     "test": "echo \"Error: no test specified\"",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "build-no-cache": "parcel build src/index.html --no-cache"
   },
   "author": "",
   "license": "ISC",
