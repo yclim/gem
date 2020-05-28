@@ -340,7 +340,7 @@
                 </goals>
                 <phase>compile</phase>
                 <configuration>
-                  <arguments>build</arguments>
+                  <arguments>build-no-cache</arguments>
                 </configuration>
               </execution>
             </executions>
