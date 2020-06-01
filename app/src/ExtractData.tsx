@@ -201,19 +201,19 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
     );
   }
 
-  function renderExtractorForm() {
-    function countCaptureGroup(regex: string) {
-      try {
-        const captureGroups = new RegExp(regex + "|").exec("");
-        if (captureGroups) {
-          return captureGroups.length - 1;
-        }
-      } catch (err) {
-        return 0;
+  function countCaptureGroup(regex: string) {
+    try {
+      const captureGroups = new RegExp(regex + "|").exec("");
+      if (captureGroups) {
+        return captureGroups.length - 1;
       }
+    } catch (err) {
       return 0;
     }
+    return 0;
+  }
 
+  function renderExtractorForm() {
     if (extractor && extractor.extractorId === TIKA_CONTENT_EXTRACTOR) {
       return (
         <FormGroup
@@ -416,6 +416,7 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
                   "cut"
                 )
               }
+              disabled={!canSimulate()}
               onClick={handleSimulate}
             />
           </div>
@@ -512,6 +513,45 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
   }
 
   return render();
+
+  function canSimulate() {
+    const ext = context.extractConfigState.extractor;
+    if (ext) {
+      switch (ext.extractorId) {
+        case TIKA_CONTENT_EXTRACTOR: {
+          const reg = ext.params[0].value;
+          if (reg && countCaptureGroup(reg) === columns.length) {
+            return true;
+          }
+          break;
+        }
+        case CSV_EXTRACTOR: {
+          const cols = ext.params[0].value;
+          if (cols && cols.split(",").length === columns.length) {
+            return true;
+          }
+          break;
+        }
+        case EXCEL_EXTRACTOR: {
+          const sheet = ext.params[0].value;
+          const cols = ext.params[1].value;
+          if (
+            sheet &&
+            cols &&
+            sheet.trim() !== "" &&
+            cols.split(",").length === columns.length
+          ) {
+            return true;
+          }
+          break;
+        }
+        default: {
+          throw new Error("Extractor not supported:" + ext.extractorId);
+        }
+      }
+    }
+    return false;
+  }
 
   function handleNavbarTabChange(tabId: TabId) {
     const groupId: number = +tabId.toString();

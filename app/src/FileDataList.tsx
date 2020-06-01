@@ -34,7 +34,7 @@ const FileDataList: FunctionComponent<IFileDataListProps> = ({
       extractConfigService
         .getExtractedRecords(context.extractConfigState.groupId, absolutePath)
         .then(resp => {
-          setExtractedData(resp.data);
+          if (resp.data) setExtractedData(resp.data);
         });
     }
   };
@@ -63,7 +63,7 @@ const FileCountList: FunctionComponent<IFileCountProps> = ({
   fileCounts
 }) => {
   const columnDef: ColDef[] = [
-    { headerName: "Filename", field: "filename", width: 230 },
+    { headerName: "Filename", field: "filename", width: 220 },
     { headerName: "Cnt", field: "count", width: 60 }
   ];
   return (
