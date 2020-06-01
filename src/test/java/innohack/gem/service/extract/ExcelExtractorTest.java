@@ -21,7 +21,7 @@ public class ExcelExtractorTest {
     config.addColumnNames("Message");
     config.addColumnNames("Time");
     config.addColumnTimestamp(new TimestampColumn("Time (ms)", "Time", "yyyyMMdd HHmmss"));
-
+    file.extract();
     ExtractedRecords results = excelExtractor.extract(file, config);
     assertEquals(5, results.getRecords().size());
     assertEquals("Super Good", results.getRecords().get(2).get(1));

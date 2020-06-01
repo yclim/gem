@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.beust.jcommander.internal.Lists;
 import innohack.gem.dao.IExtractDao;
+import innohack.gem.dao.IGEMFileDao;
 import innohack.gem.entity.GEMFile;
 import innohack.gem.entity.extractor.ExtractConfig;
 import innohack.gem.entity.extractor.ExtractedFile;
@@ -32,7 +33,11 @@ public class ExtractServiceTest {
 
   private static final String FILENAME = "reviews.csv";
 
+  private static final GEMFile GEM_FILE = new GEMFile(FILENAME, "src/test/resources");
+
   @MockBean private GroupService groupService;
+
+  @MockBean private IGEMFileDao gemFileDao;
 
   @Autowired private IExtractDao extractDao;
 
@@ -50,8 +55,12 @@ public class ExtractServiceTest {
     extractDao.saveConfig(GROUP_ID, config);
 
     Group group = new Group();
-    group.setMatchedFile(Lists.newArrayList(new GEMFile(FILENAME, "src/test/resources")));
+
+    GEMFile gemFile = GEM_FILE.extract();
+    group.setMatchedFile(Lists.newArrayList(gemFile));
+
     Mockito.when(groupService.getGroup(Mockito.anyInt())).thenReturn(group);
+    Mockito.when(gemFileDao.getFile(Mockito.anyString(), Mockito.anyString())).thenReturn(gemFile);
   }
 
   @Test
@@ -74,7 +83,8 @@ public class ExtractServiceTest {
   @Test
   public void testGetExtractedRecords() throws Exception {
     extractService.extract(GROUP_ID);
-    ExtractedRecords results = extractService.getExtractedRecords(GROUP_ID, FILENAME);
+    ExtractedRecords results =
+        extractService.getExtractedRecords(GROUP_ID, GEM_FILE.getAbsolutePath());
     assertEquals(4, results.getHeaders().size());
     assertEquals("[Identifier, Name, RawTime, Time (ms)]", results.getHeaders().toString());
 

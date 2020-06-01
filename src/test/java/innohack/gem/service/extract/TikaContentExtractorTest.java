@@ -19,7 +19,7 @@ public class TikaContentExtractorTest {
     // what should we set for the config here for tika content? as there is no row or header in
     // tika extraction
     config.setExtractor(tikaContentExtractor);
-
+    pdfFile.extract();
     ExtractedRecords results = tikaContentExtractor.extract(pdfFile, config);
 
     assertEquals(2, results.getRecords().size());
@@ -37,7 +37,7 @@ public class TikaContentExtractorTest {
     // what should we set for the config here for tika content? as there is no row or header in
     // tika extraction
     config.setExtractor(tikaContentExtractor);
-
+    pdfFile.extract();
     ExtractedRecords results = tikaContentExtractor.extract(pdfFile, config);
 
     assertEquals(1, results.getRecords().size());
@@ -50,7 +50,7 @@ public class TikaContentExtractorTest {
     ExtractConfig config = new ExtractConfig();
     TikaContentExtractor tikaContentExtractor = new TikaContentExtractor("(Nada)");
     config.setExtractor(tikaContentExtractor);
-
+    pdfFile.extract();
     ExtractedRecords results = tikaContentExtractor.extract(pdfFile, config);
     assertEquals(0, results.getRecords().size());
   }
@@ -61,7 +61,7 @@ public class TikaContentExtractorTest {
     ExtractConfig config = new ExtractConfig();
     TikaContentExtractor tikaContentExtractor = new TikaContentExtractor("(.*?),(.*?),(.*?),(.*)");
     config.setExtractor(tikaContentExtractor);
-
+    pdfFile.extract();
     ExtractedRecords results = tikaContentExtractor.extract(pdfFile, config);
     assertEquals(6, results.getRecords().size()); // rows
     assertEquals(4, results.getRecords().get(0).size()); // columns
