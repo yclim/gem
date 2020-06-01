@@ -91,13 +91,15 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
         setActiveGroup(grps[0]);
       }
     );
-
-    // TODO: load FileCounts from api
   }, []);
 
   useEffect(() => {
     if (activeGroup) {
       context.extractConfigAction?.init(activeGroup.groupId);
+
+      extractConfigService
+        .getFileCounts(activeGroup.groupId)
+        .then(resp => setFileCounts(resp.data));
     }
   }, [activeGroup]);
 

@@ -80,23 +80,17 @@ const FileCountList: FunctionComponent<IFileCountProps> = ({
       >
         <Column
           name="Filename"
-          cellRenderer={rowIndex => renderFileTableCell(rowIndex)}
+          cellRenderer={rowIndex => (
+            <Cell>{fileCounts[rowIndex].filename}</Cell>
+          )}
         />
         <Column
-          name="#"
-          cellRenderer={rowIndex => renderFileExtractCountCell(rowIndex)}
+          name=""
+          cellRenderer={rowIndex => <Cell>{fileCounts[rowIndex].count}</Cell>}
         />
       </Table>
     </div>
   );
-
-  const renderFileTableCell = (rowIndex: number) => {
-    return <Cell>{fileCounts[rowIndex].filename}</Cell>;
-  };
-
-  const renderFileExtractCountCell = (rowIndex: number) => {
-    return <Cell>{fileCounts[rowIndex].count}</Cell>;
-  };
 };
 
 const DataList: FunctionComponent<IDataListProps> = ({

@@ -78,6 +78,7 @@ export interface TimestampColumn {
 
 export interface FileCount {
   filename: string;
+  absolutePath: string;
   count: number;
 }
 
