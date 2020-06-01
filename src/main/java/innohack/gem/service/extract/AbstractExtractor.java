@@ -1,12 +1,27 @@
 package innohack.gem.service.extract;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import innohack.gem.entity.GEMFile;
 import innohack.gem.entity.extractor.ExtractConfig;
 import innohack.gem.entity.extractor.ExtractedRecords;
 import innohack.gem.entity.rule.Parameter;
 import java.util.List;
 
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.CLASS,
+    include = JsonTypeInfo.As.PROPERTY,
+    property = "extractorId")
 public abstract class AbstractExtractor {
+
+  public String getLabel() {
+    return label;
+  }
+
+  public void setLabel(String label) {
+    this.label = label;
+  }
+
+  private String label;
 
   private List<Parameter> params;
 

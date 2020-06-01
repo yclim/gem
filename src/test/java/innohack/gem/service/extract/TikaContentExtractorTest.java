@@ -26,7 +26,7 @@ public class TikaContentExtractorTest {
     assertEquals("WHITE", results.getRecords().get(0).get(0));
     assertEquals("Black", results.getRecords().get(1).get(0));
   }
-  
+
   @Test
   public void testExtractNoGroup() throws Exception {
     GEMFile pdfFile = new GEMFile("story_0.pdf", "src/test/resources/extract");

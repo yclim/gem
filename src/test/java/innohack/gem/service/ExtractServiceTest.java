@@ -1,6 +1,7 @@
 package innohack.gem.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.beust.jcommander.internal.Lists;
 import innohack.gem.dao.IExtractDao;
@@ -10,7 +11,9 @@ import innohack.gem.entity.extractor.ExtractedFile;
 import innohack.gem.entity.extractor.ExtractedRecords;
 import innohack.gem.entity.extractor.TimestampColumn;
 import innohack.gem.entity.rule.Group;
+import innohack.gem.service.extract.AbstractExtractor;
 import innohack.gem.service.extract.CSVExtractor;
+import innohack.gem.service.extract.ExcelExtractor;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -80,5 +83,48 @@ public class ExtractServiceTest {
     assertEquals("Sam", results.getRecords().get(0).get(1));
     assertEquals("20200511 164523", results.getRecords().get(0).get(2));
     assertEquals("2020/05/11 16:45:23+0800", results.getRecords().get(0).get(3));
+  }
+
+  @Test
+  public void testGetExtractorTemplates() throws Exception {
+    List<AbstractExtractor> extractorList = extractService.getExtractorTemplates();
+    assertEquals(extractorList.size(), 3, "expect 3 extractors");
+  }
+
+  @Test
+  void testUpdateExtractConfig() {
+    int csvGroup = 1;
+    CSVExtractor csvExtractor = new CSVExtractor("a,b,c");
+    ExtractConfig csvConfig = new ExtractConfig();
+    csvConfig.setGroupId(csvGroup);
+    csvConfig.setExtractor(csvExtractor);
+
+    int excelGroup = 2;
+    ExcelExtractor excelExtractor = new ExcelExtractor("sheet1", "x,y,z");
+    ExtractConfig excelConfig = new ExtractConfig();
+    excelConfig.setGroupId(excelGroup);
+    excelConfig.setExtractor(excelExtractor);
+
+    extractService.updateExtractConfig(csvGroup, csvConfig);
+    extractService.updateExtractConfig(excelGroup, excelConfig);
+
+    assertTrue(
+        extractService.getExtractConfig(csvGroup).getExtractor() instanceof CSVExtractor,
+        "csv extractor saved");
+    assertEquals(
+        extractService.getExtractConfig(csvGroup).getExtractor().getParams().get(0).getValue(),
+        "a,b,c",
+        "csv extractor's param saved");
+    assertTrue(
+        extractService.getExtractConfig(excelGroup).getExtractor() instanceof ExcelExtractor,
+        "excel extractor saved");
+    assertEquals(
+        extractService.getExtractConfig(excelGroup).getExtractor().getParams().get(0).getValue(),
+        "sheet1",
+        "excel extractor's param1 saved");
+    assertEquals(
+        extractService.getExtractConfig(excelGroup).getExtractor().getParams().get(1).getValue(),
+        "x,y,z",
+        "excel extractor's param2 saved");
   }
 }

@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
  * @author TC
  */
 public class TikaContentExtractor extends AbstractExtractor {
-
+  private String LABEL = "Tika Content Regex Extractor";
   private static final Logger LOGGER = LoggerFactory.getLogger(TikaContentExtractor.class);
 
   public TikaContentExtractor() {
@@ -29,6 +29,7 @@ public class TikaContentExtractor extends AbstractExtractor {
   }
 
   public TikaContentExtractor(String regex) {
+    setLabel(LABEL);
     setParams(Lists.newArrayList(new Parameter("Content", "", ParamType.STRING, regex)));
   }
 
@@ -54,10 +55,8 @@ public class TikaContentExtractor extends AbstractExtractor {
             LOGGER.trace("Text: {}", matchText);
             foundResults.add(matchText);
           }
-          if(matcher.groupCount()==0)
-            foundResults.add(matcher.group(0));
-          if(!foundResults.isEmpty())
-            results.getRecords().add(foundResults);
+          if (matcher.groupCount() == 0) foundResults.add(matcher.group(0));
+          if (!foundResults.isEmpty()) results.getRecords().add(foundResults);
         }
         return results;
       }

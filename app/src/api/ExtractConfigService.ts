@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import Api from "./Api";
-import { ExtractConfig } from ".";
+import { ExtractConfig, Extractor } from ".";
 
 class ExtractConfigService extends Api {
   public constructor() {
@@ -24,6 +24,10 @@ class ExtractConfigService extends Api {
         headers: { "Content-Type": "application/json" }
       }
     );
+  }
+
+  public getExtractorTemplates(): Promise<AxiosResponse<Extractor[]>> {
+    return this.get("extract/extractorTemplates");
   }
 }
 
