@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import Api from "./Api";
-import { ExtractConfig, Extractor, FileCount } from ".";
+import { ExtractConfig, ExtractedData, Extractor, FileCount } from ".";
 
 class ExtractConfigService extends Api {
   public constructor() {
@@ -32,6 +32,23 @@ class ExtractConfigService extends Api {
 
   public getFileCounts(groupId: number): Promise<AxiosResponse<FileCount[]>> {
     return this.get("extract/" + groupId);
+  }
+
+  public extract(groupId: number): Promise<AxiosResponse<FileCount[]>> {
+    return this.post("extract/" + groupId);
+  }
+
+  public getExtractedRecords(
+    groupId: number,
+    absolutePath: string
+  ): Promise<AxiosResponse<ExtractedData>> {
+    const form = new FormData();
+    return this.post(
+      "extract/?groupId=" +
+        groupId +
+        "&absolutePath=" +
+        encodeURIComponent(absolutePath)
+    );
   }
 }
 

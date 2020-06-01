@@ -42,7 +42,7 @@ public class ExtractService {
     List<ExtractedFile> results = Lists.newArrayList();
     for (GEMFile file : files) {
       ExtractedRecords records = extractor.extract(file, config);
-      extractDao.saveExtractedRecords(groupId, file.getFileName(), records);
+      extractDao.saveExtractedRecords(groupId, file.getAbsolutePath(), records);
       results.add(new ExtractedFile(file.getFileName(), file.getAbsolutePath(), records.size()));
     }
     LOGGER.info("Completed extraction of group {}", groupId);
@@ -76,7 +76,7 @@ public class ExtractService {
         .map(
             file -> {
               ExtractedRecords records =
-                  extractDao.getExtractedRecords(groupId, file.getFileName());
+                  extractDao.getExtractedRecords(groupId, file.getAbsolutePath());
               return new ExtractedFile(
                   file.getFileName(), file.getAbsolutePath(), records != null ? records.size() : 0);
             })

@@ -595,7 +595,10 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
   }
 
   function handleSimulate() {
-    // TODO
+    if (activeGroup)
+      extractConfigService
+        .extract(activeGroup.groupId)
+        .then(resp => setFileCounts(resp.data));
   }
 };
 

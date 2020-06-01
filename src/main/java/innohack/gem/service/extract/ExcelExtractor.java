@@ -43,8 +43,6 @@ public class ExcelExtractor extends AbstractExtractor {
         String[] paramValues = getParams().get(1).getValue().split(",");
         List<String> extractColumns = Arrays.stream(paramValues).collect(Collectors.toList());
 
-        results.setSheetName(excelSheetName);
-
         Map<String, List<List<String>>> sheetTables = ((ExcelFeature) feature).getSheetTableData();
 
         if (sheetTables.containsKey(excelSheetName)) {

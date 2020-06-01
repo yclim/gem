@@ -1,13 +1,11 @@
-import React, { FunctionComponent, useContext, useRef, useState } from "react";
-import {
-  Cell,
-  Column,
-  IRegion,
-  SelectionModes,
-  Table
-} from "@blueprintjs/table";
+import React, { FunctionComponent, useContext, useState } from "react";
 import { StoreContext } from "./StoreContext";
 import { ExtractedData, FileCount } from "./api";
+import extractConfigService from "./api/ExtractConfigService";
+import { AgGridReact } from "ag-grid-react";
+import "ag-grid-community/dist/styles/ag-grid.css";
+import "ag-grid-community/dist/styles/ag-theme-alpine.css";
+import { ColDef } from "ag-grid-community";
 
 interface IFileDataListProps {
   fileCounts: FileCount[];
@@ -27,9 +25,18 @@ const FileDataList: FunctionComponent<IFileDataListProps> = ({
   fileCounts
 }) => {
   const context = useContext(StoreContext);
-  const [extractedData, setExtractedData] = useState<ExtractedData>();
-  const onFileSelection = (filePath: string) => {
-    // TODO call api to get extracted data from given path
+  const [extractedData, setExtractedData] = useState<ExtractedData>({
+    headers: [],
+    records: []
+  });
+  const onFileSelection = (absolutePath: string) => {
+    if (context.extractConfigState) {
+      extractConfigService
+        .getExtractedRecords(context.extractConfigState.groupId, absolutePath)
+        .then(resp => {
+          setExtractedData(resp.data);
+        });
+    }
   };
 
   const timestampColumns = context.extractConfigState.timestampColumns
@@ -46,10 +53,7 @@ const FileDataList: FunctionComponent<IFileDataListProps> = ({
         fileCounts={fileCounts}
         onFileSelection={onFileSelection}
       />
-      <DataList
-        columns={columns}
-        extractedData={extractedData ? extractedData : { header: [], data: [] }}
-      />
+      <DataList columns={columns} extractedData={extractedData} />
     </div>
   );
 };
@@ -58,37 +62,20 @@ const FileCountList: FunctionComponent<IFileCountProps> = ({
   onFileSelection,
   fileCounts
 }) => {
-  const context = useContext(StoreContext);
-  const fileTableRef = useRef(null);
+  const columnDef: ColDef[] = [
+    { headerName: "Filename", field: "filename", width: 230 },
+    { headerName: "Cnt", field: "count", width: 60 }
+  ];
   return (
-    <div className="filelist-box">
-      <Table
-        ref={fileTableRef}
-        columnWidths={[200, 50]}
-        numRows={fileCounts.length}
-        selectionModes={SelectionModes.ROWS_AND_CELLS}
-        selectedRegionTransform={e => {
-          return {
-            rows: e.rows
-          };
-        }}
-        onSelection={(r: IRegion[]) => {
-          if (r.length > 0 && r[0].rows) {
-            onFileSelection(fileCounts[r[0].rows[0]].filename);
-          }
-        }}
-      >
-        <Column
-          name="Filename"
-          cellRenderer={rowIndex => (
-            <Cell>{fileCounts[rowIndex].filename}</Cell>
-          )}
-        />
-        <Column
-          name=""
-          cellRenderer={rowIndex => <Cell>{fileCounts[rowIndex].count}</Cell>}
-        />
-      </Table>
+    <div className="filelist-box ag-theme-alpine">
+      <AgGridReact
+        columnDefs={columnDef}
+        rowData={fileCounts}
+        rowHeight={35}
+        headerHeight={35}
+        onRowClicked={e => onFileSelection(fileCounts[e.rowIndex].absolutePath)}
+        suppressCellSelection={true}
+      />
     </div>
   );
 };
@@ -97,22 +84,22 @@ const DataList: FunctionComponent<IDataListProps> = ({
   columns,
   extractedData
 }) => {
+  const columnDef: ColDef[] = columns.map((c, i) => {
+    return { headerName: c, field: i + "" };
+  });
+  const rowData = extractedData.records.map(r => {
+    return { ...r };
+  });
   return (
-    <div className="extractDataTable">
-      <Table
-        numRows={extractedData.data.length}
-        columnWidths={Array.from(Array(columns.length)).map(() => 120)}
-      >
-        {columns.map((tag, colIndex) => (
-          <Column
-            key={colIndex}
-            name={tag ? tag.toString() : ""}
-            cellRenderer={rowIndex => (
-              <Cell>{extractedData.data[rowIndex][colIndex]}</Cell>
-            )}
-          />
-        ))}
-      </Table>
+    <div className="extractDataTable ag-theme-alpine">
+      <AgGridReact
+        columnDefs={columnDef}
+        rowData={rowData}
+        rowHeight={35}
+        headerHeight={35}
+        maxColWidth={150}
+        suppressCellSelection={true}
+      />
     </div>
   );
 };

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -35,10 +36,10 @@ public class ExtractController {
     return extractService.getExtractedFiles(groupId);
   }
 
-  @PostMapping("/{groupId}/{filename}")
+  @PostMapping("/")
   public ExtractedRecords getExtractedRecords(
-      @PathVariable int groupId, @PathVariable String filename) {
-    return extractService.getExtractedRecords(groupId, filename);
+      @RequestParam Integer groupId, @RequestParam String absolutePath) {
+    return extractService.getExtractedRecords(groupId, absolutePath);
   }
 
   @PutMapping("/config/{groupId}")

@@ -83,6 +83,6 @@ export interface FileCount {
 }
 
 export interface ExtractedData {
-  header: string[];
-  data: string[][];
+  headers: string[];
+  records: string[][];
 }
