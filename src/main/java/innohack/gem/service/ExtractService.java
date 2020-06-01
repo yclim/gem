@@ -2,6 +2,7 @@ package innohack.gem.service;
 
 import com.beust.jcommander.internal.Lists;
 import innohack.gem.dao.IExtractDao;
+import innohack.gem.dao.IGEMFileDao;
 import innohack.gem.entity.GEMFile;
 import innohack.gem.entity.extractor.ExtractConfig;
 import innohack.gem.entity.extractor.ExtractedFile;
@@ -25,6 +26,8 @@ public class ExtractService {
 
   @Autowired private IExtractDao extractDao;
 
+  @Autowired private IGEMFileDao gemFileDao;
+
   /**
    * Perform an extraction
    *
@@ -36,7 +39,10 @@ public class ExtractService {
     LOGGER.info("Performing extraction of group {}...", groupId);
     Group group = groupService.getGroup(groupId);
     ExtractConfig config = extractDao.getConfig(groupId);
-    List<GEMFile> files = group.getMatchedFile();
+    List<GEMFile> files =
+        group.getMatchedFile().stream()
+            .map(f -> gemFileDao.getFile(f.getFileName(), f.getDirectory()))
+            .collect(Collectors.toList());
     AbstractExtractor extractor = config.getExtractor();
 
     List<ExtractedFile> results = Lists.newArrayList();

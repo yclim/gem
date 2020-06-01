@@ -32,7 +32,6 @@ public class ExcelExtractor extends AbstractExtractor {
 
   @Override
   public ExtractedRecords extract(GEMFile f, ExtractConfig extractConfig) throws Exception {
-    f.extract();
 
     for (AbstractFeature feature : f.getData()) {
 

@@ -29,7 +29,7 @@ public class CSVExtractor extends AbstractExtractor {
 
   @Override
   public ExtractedRecords extract(GEMFile f, ExtractConfig extractConfig) throws Exception {
-    f.extract();
+
     for (AbstractFeature feature : f.getData()) {
       if (feature instanceof CsvFeature) {
         String[] paramValues = getParams().get(0).getValue().split(",");
