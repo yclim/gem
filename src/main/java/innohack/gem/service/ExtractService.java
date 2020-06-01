@@ -59,6 +59,17 @@ public class ExtractService {
     return extractDao.saveConfig(groupId, config);
   }
 
+  public ExtractConfig createExtractConfig(int groupId) throws Exception {
+    if (groupService.getGroups().stream().anyMatch(g -> g.getGroupId() == groupId)) {
+      ExtractConfig config = new ExtractConfig();
+      config.setGroupId(groupId);
+      config.setExtractor(getExtractorTemplates().get(0));
+      return extractDao.saveConfig(groupId, config);
+    } else {
+      throw new IllegalStateException("Given groupId " + groupId + " not found");
+    }
+  }
+
   /**
    * Obtain the results of the previous extraction
    *

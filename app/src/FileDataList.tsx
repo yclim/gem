@@ -97,7 +97,6 @@ const DataList: FunctionComponent<IDataListProps> = ({
         rowData={rowData}
         rowHeight={35}
         headerHeight={35}
-        maxColWidth={150}
         suppressCellSelection={true}
       />
     </div>

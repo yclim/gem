@@ -12,6 +12,7 @@ public class ExtractConfig {
   private AbstractExtractor extractor;
 
   public ExtractConfig() {
+    tableName = "";
     columnNames = Lists.newArrayList();
     timestampColumns = Lists.newArrayList();
   }

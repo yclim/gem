@@ -49,8 +49,12 @@ public class ExtractController {
   }
 
   @GetMapping("/config/{groupId}")
-  public ExtractConfig getExtractConfig(@PathVariable int groupId) {
-    return extractService.getExtractConfig(groupId);
+  public ExtractConfig getExtractConfig(@PathVariable int groupId) throws Exception {
+    ExtractConfig config = extractService.getExtractConfig(groupId);
+    if (config == null) {
+      config = extractService.createExtractConfig(groupId);
+    }
+    return config;
   }
 
   @GetMapping("/extractorTemplates")
