@@ -22,7 +22,7 @@ public class TikaContentRegexTest {
 
     GEMFile pdfFile = new GEMFile("story_0.pdf", "src/test/resources/extract");
     pdfFile.extract();
-    TikaContentRegex contentRegexCheck = new TikaContentRegex("[white|black]");
+    TikaContentRegex contentRegexCheck = new TikaContentRegex("(?:white|black)");
     assertTrue(contentRegexCheck.check(pdfFile));
 
     TikaContentRegex contentRegexCheck2 = new TikaContentRegex("white");

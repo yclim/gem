@@ -60,9 +60,15 @@ const App = () => {
             </StoreProvider>
           }
         />
-
         <BrowseFiles path="/" />
-        <ExtractData path="/extract" />
+        <RouterPage
+          path="/extract"
+          pageComponent={
+            <StoreProvider>
+              <ExtractData />
+            </StoreProvider>
+          }
+        />
         <ExportSpec path="/export" />
       </Router>
     </div>

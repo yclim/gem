@@ -28,6 +28,23 @@ public class TikaContentExtractorTest {
   }
 
   @Test
+  public void testExtractNoGroup() throws Exception {
+    GEMFile pdfFile = new GEMFile("story_0.pdf", "src/test/resources/extract");
+
+    ExtractConfig config = new ExtractConfig();
+    TikaContentExtractor tikaContentExtractor = new TikaContentExtractor("\\bwhite\\b|\\bblack\\b");
+
+    // what should we set for the config here for tika content? as there is no row or header in
+    // tika extraction
+    config.setExtractor(tikaContentExtractor);
+
+    ExtractedRecords results = tikaContentExtractor.extract(pdfFile, config);
+
+    assertEquals(1, results.getRecords().size());
+    assertEquals("WHITE", results.getRecords().get(0).get(0));
+  }
+
+  @Test
   public void testExtractEmpty() throws Exception {
     GEMFile pdfFile = new GEMFile("story_0.pdf", "src/test/resources/extract");
     ExtractConfig config = new ExtractConfig();

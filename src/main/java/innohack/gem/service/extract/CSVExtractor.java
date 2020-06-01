@@ -15,12 +15,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class CSVExtractor extends AbstractExtractor {
+  private String LABEL = "CSV Extractor";
 
   public CSVExtractor() {
     this(null);
   }
 
   public CSVExtractor(String headers) {
+    setLabel(LABEL);
     setParams(
         Lists.newArrayList(new Parameter("Column Names", "", ParamType.STRING_LIST, headers)));
   }

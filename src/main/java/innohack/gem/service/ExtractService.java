@@ -8,6 +8,7 @@ import innohack.gem.entity.extractor.ExtractedFile;
 import innohack.gem.entity.extractor.ExtractedRecords;
 import innohack.gem.entity.rule.Group;
 import innohack.gem.service.extract.AbstractExtractor;
+import innohack.gem.service.extract.ExtractorFactory;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -89,5 +90,15 @@ public class ExtractService {
    */
   public ExtractConfig getExtractConfig(int groupId) {
     return extractDao.getConfig(groupId);
+  }
+
+  /**
+   * Get all extractors templates
+   *
+   * @return list of extractors
+   * @throws Exception
+   */
+  public List<AbstractExtractor> getExtractorTemplates() throws Exception {
+    return ExtractorFactory.createAllInstance();
   }
 }

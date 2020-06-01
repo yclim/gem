@@ -60,6 +60,13 @@ export interface ExtractConfig {
   columnNames: string[];
   timestampColumns: TimestampColumn[];
   groupId: number;
+  extractor: Extractor | null;
+}
+
+export interface Extractor {
+  extractorId: string;
+  label: string;
+  params: Parameter[];
 }
 
 export interface TimestampColumn {
