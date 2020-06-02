@@ -34,17 +34,9 @@ export function useExtractConfigActions(
     init: groupId => {
       extractConfigService.getExtractConfig(groupId).then(resp => {
         if (!resp.data) {
-          const config: ExtractConfig = {
-            columnNames: [],
-            extractor: null,
-            groupId,
-            tableName: "",
-            timestampColumns: []
-          };
-          dispatch({
-            type: INIT_EXTRACT_CONFIG,
-            payload: { extractConfig: config }
-          });
+          throw new Error(
+            "backend should create ExtractConfig if it's missing"
+          );
         } else {
           dispatch({
             type: INIT_EXTRACT_CONFIG,

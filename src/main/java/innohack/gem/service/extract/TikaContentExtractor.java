@@ -35,7 +35,7 @@ public class TikaContentExtractor extends AbstractExtractor {
 
   @Override
   public ExtractedRecords extract(GEMFile f, ExtractConfig extractConfig) throws Exception {
-    f.extract();
+
     for (AbstractFeature feature : f.getData()) {
       if (feature instanceof TikaFeature) {
         String regexString = getParams().get(0).getValue();

@@ -22,6 +22,7 @@ public class CSVExtractorTest {
     config.addColumnNames("Time");
     config.addColumnTimestamp(new TimestampColumn("Time (ms)", "Time", "yyyyMMdd HHmmss"));
 
+    file.extract();
     ExtractedRecords results = csvExtractor.extract(file, config);
     assertEquals(5, results.getRecords().size());
     assertEquals("Maybe", results.getRecords().get(3).get(1));

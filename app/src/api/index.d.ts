@@ -75,3 +75,14 @@ export interface TimestampColumn {
   format: string;
   timezone?: string;
 }
+
+export interface FileCount {
+  filename: string;
+  absolutePath: string;
+  count: number;
+}
+
+export interface ExtractedData {
+  headers: string[];
+  records: string[][];
+}

@@ -4,7 +4,6 @@ import React, {
   ReactNode,
   useContext,
   useEffect,
-  useRef,
   useState
 } from "react";
 import { RouteComponentProps } from "@reach/router";
@@ -28,14 +27,12 @@ import {
 } from "@blueprintjs/core";
 import { Intent } from "@blueprintjs/core/lib/esm/common/intent";
 import {
-  Cell,
-  Column,
-  IRegion,
-  SelectionModes,
-  Table
-} from "@blueprintjs/table";
-import { fileExtractCounts } from "./mockData";
-import { ExtractConfig, Extractor, Group, TimestampColumn } from "./api";
+  ExtractConfig,
+  Extractor,
+  FileCount,
+  Group,
+  TimestampColumn
+} from "./api";
 import groupRuleService from "./api/GroupRuleService";
 import extractConfigService from "./api/ExtractConfigService";
 import { AxiosResponse } from "axios";
@@ -46,13 +43,7 @@ import {
   TIKA_CONTENT_EXTRACTOR
 } from "./extractConfigReducer";
 import produce from "immer";
-
-interface FileExtractCount {
-  filename: string;
-  count: number;
-  absolutePath: string;
-  extractedData: string[][];
-}
+import FileDataList from "./FileDataList";
 
 const ExtractData: FunctionComponent<RouteComponentProps> = () => {
   const context = useContext(StoreContext);
@@ -66,6 +57,7 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
   const [csvColumns, setCsvColumns] = useState<ReactNode[]>([]);
   const [excelSheet, setExcelSheet] = useState("");
   const [excelColumns, setExcelColumns] = useState<ReactNode[]>([""]);
+  const [fileCounts, setFileCounts] = useState<FileCount[]>([]);
   const emptyTimestampColumn = {
     fromColumn: "",
     format: "",
@@ -75,10 +67,9 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
   const [dateFormat, setDateFormat] = useState<TimestampColumn>(
     emptyTimestampColumn
   );
-  const [extractDataTable, setExtractDataTable] = useState<string[][]>([]);
-  const [files, setFiles] = useState<FileExtractCount[]>([]);
+
   const [isLoading, setIsLoading] = useState(false);
-  const fileTableRef = useRef(null);
+
   const [groups, setGroups] = useState<Group[]>([]);
 
   useEffect(() => {
@@ -105,6 +96,10 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
   useEffect(() => {
     if (activeGroup) {
       context.extractConfigAction?.init(activeGroup.groupId);
+
+      extractConfigService
+        .getFileCounts(activeGroup.groupId)
+        .then(resp => setFileCounts(resp.data));
     }
   }, [activeGroup]);
 
@@ -206,19 +201,19 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
     );
   }
 
-  function renderExtractorForm() {
-    function countCaptureGroup(regex: string) {
-      try {
-        const captureGroups = new RegExp(regex + "|").exec("");
-        if (captureGroups) {
-          return captureGroups.length - 1;
-        }
-      } catch (err) {
-        return 0;
+  function countCaptureGroup(regex: string) {
+    try {
+      const captureGroups = new RegExp(regex + "|").exec("");
+      if (captureGroups) {
+        return captureGroups.length - 1;
       }
+    } catch (err) {
       return 0;
     }
+    return 0;
+  }
 
+  function renderExtractorForm() {
     if (extractor && extractor.extractorId === TIKA_CONTENT_EXTRACTOR) {
       return (
         <FormGroup
@@ -405,6 +400,7 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
   }
 
   function renderGroupForm() {
+    if (!activeGroup) return <div />;
     return (
       <div className="grid2">
         <div style={{ width: "500px" }} className="stack">
@@ -420,6 +416,7 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
                   "cut"
                 )
               }
+              disabled={!canSimulate()}
               onClick={handleSimulate}
             />
           </div>
@@ -480,79 +477,11 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
 
           {renderTimestampForm()}
         </div>
-        <div className="grid2">
-          <div className="filelist-box">
-            <Table
-              ref={fileTableRef}
-              columnWidths={[200, 50]}
-              numRows={files.length}
-              selectionModes={SelectionModes.ROWS_AND_CELLS}
-              selectedRegionTransform={e => {
-                return {
-                  rows: e.rows
-                };
-              }}
-              onSelection={(r: IRegion[]) => {
-                if (r.length > 0 && r[0].rows) {
-                  setExtractDataTable(files[r[0].rows[0]].extractedData);
-                }
-              }}
-            >
-              <Column
-                name="Filename"
-                cellRenderer={rowIndex => renderFileTableCell(rowIndex)}
-              />
-              <Column
-                name="#"
-                cellRenderer={rowIndex => renderFileExtractCountCell(rowIndex)}
-              />
-            </Table>
-          </div>
-          {renderExtractDataTable()}
-        </div>
+
+        <FileDataList fileCounts={fileCounts} />
       </div>
     );
   }
-
-  function renderExtractDataTable() {
-    const timestampColumns = context.extractConfigState.timestampColumns
-      ? context.extractConfigState.timestampColumns
-      : [];
-    return (
-      <div className="extractDataTable">
-        <Table
-          numRows={extractDataTable.length}
-          columnWidths={Array.from(
-            Array(columns.length + timestampColumns.length)
-          ).map(() => 120)}
-        >
-          {[...columns, ...timestampColumns.map(df => df.name)].map(
-            (tag, colIndex) => (
-              <Column
-                key={colIndex}
-                name={tag ? tag.toString() : ""}
-                cellRenderer={rowIndex =>
-                  renderTableDataCell(rowIndex, colIndex)
-                }
-              />
-            )
-          )}
-        </Table>
-      </div>
-    );
-  }
-
-  const renderFileTableCell = (rowIndex: number) => {
-    return <Cell>{files[rowIndex].filename}</Cell>;
-  };
-
-  const renderFileExtractCountCell = (rowIndex: number) => {
-    return <Cell>{files[rowIndex].count}</Cell>;
-  };
-
-  const renderTableDataCell = (rowIndex: number, colIndex: number) => {
-    return <Cell>{extractDataTable[rowIndex][colIndex]}</Cell>;
-  };
 
   function render() {
     return (
@@ -584,6 +513,45 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
   }
 
   return render();
+
+  function canSimulate() {
+    const ext = context.extractConfigState.extractor;
+    if (ext) {
+      switch (ext.extractorId) {
+        case TIKA_CONTENT_EXTRACTOR: {
+          const reg = ext.params[0].value;
+          if (reg && countCaptureGroup(reg) === columns.length) {
+            return true;
+          }
+          break;
+        }
+        case CSV_EXTRACTOR: {
+          const cols = ext.params[0].value;
+          if (cols && cols.split(",").length === columns.length) {
+            return true;
+          }
+          break;
+        }
+        case EXCEL_EXTRACTOR: {
+          const sheet = ext.params[0].value;
+          const cols = ext.params[1].value;
+          if (
+            sheet &&
+            cols &&
+            sheet.trim() !== "" &&
+            cols.split(",").length === columns.length
+          ) {
+            return true;
+          }
+          break;
+        }
+        default: {
+          throw new Error("Extractor not supported:" + ext.extractorId);
+        }
+      }
+    }
+    return false;
+  }
 
   function handleNavbarTabChange(tabId: TabId) {
     const groupId: number = +tabId.toString();
@@ -667,31 +635,10 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
   }
 
   function handleSimulate() {
-    function genTable(num: number) {
-      const cols = Array.from(Array(columns.length).keys());
-      const data = Array.from(Array(num).keys()).map(rowNumber => {
-        return [...cols, ...context.extractConfigState.timestampColumns].map(
-          (colNumber, colIndex) => {
-            return "data" + colIndex;
-          }
-        );
-      });
-      return data;
-    }
-
-    // @ts-ignore
-    fileTableRef.current.clearSelection();
-
-    const newFile = fileExtractCounts.map(f => {
-      const num = Math.floor(Math.random() * 20);
-      return { ...f, count: num, extractedData: genTable(num) };
-    });
-    setIsLoading(true);
-    setTimeout(() => {
-      setFiles([...newFile]);
-      setExtractDataTable([]);
-      setIsLoading(false);
-    }, 1000);
+    if (activeGroup)
+      extractConfigService
+        .extract(activeGroup.groupId)
+        .then(resp => setFileCounts(resp.data));
   }
 };
 
