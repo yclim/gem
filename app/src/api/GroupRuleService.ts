@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import Api from "./Api";
-import { Group, Rule } from ".";
+import { ProjectSpec, Group, Rule, FileGroupStat } from ".";
 
 class GroupRuleService extends Api {
   public constructor() {

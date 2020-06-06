@@ -28,13 +28,26 @@ public class GroupController {
   }
 
   @GetMapping("/export")
-  public void exportProject(HttpServletRequest request, HttpServletResponse response)
+  public void exportProject(
+      @RequestParam(name = "name") String name,
+      @RequestParam(name = "version") String version,
+      HttpServletRequest request,
+      HttpServletResponse response)
       throws IOException {
-    byte[] project = groupService.exportProject();
+    byte[] project = groupService.exportProject(name, version);
     response.setContentType("application/json");
     response.addHeader("Content-Disposition", "attachment; filename=export.json");
     IOUtils.copy(new ByteArrayInputStream(project), response.getOutputStream());
     response.getOutputStream().flush();
+  }
+
+  @GetMapping("/export/spec")
+  public byte[] getSpec(
+      @RequestParam(name = "name", required = false) String name,
+      @RequestParam(name = "version", required = false) String version)
+      throws IOException {
+    byte[] project = groupService.exportProject(name, version);
+    return project;
   }
 
   // get all group
