@@ -130,6 +130,14 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
                 <td>{currentFile?.mimeType}</td>
               </tr>
               <tr>
+                <td>Modified Time</td>
+                <td>{currentFile?.lastModifiedTime}</td>
+              </tr>
+              <tr>
+                <td>Created Time</td>
+                <td>{currentFile?.creationTime}</td>
+              </tr>
+              <tr>
                 <td>Matched Group(s)</td>
                 <td>
                   {currentFile?.matchedGroupNames?.map((object, i) => (
