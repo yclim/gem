@@ -48,6 +48,8 @@ export interface File {
   matchedGroupNames?: string[];
   matchedGroupIds?: number[];
   groupMatchedCount?: number;
+  lastModifiedTime?: string;
+  creationTime?: string;
 }
 
 export interface FileGroupStat {

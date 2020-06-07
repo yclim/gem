@@ -8,6 +8,12 @@ import innohack.gem.entity.feature.TikaFeature;
 import innohack.gem.entity.feature.common.FeatureExtractorUtil;
 import innohack.gem.example.tika.TikaMimeEnum;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import org.apache.commons.io.FilenameUtils;
@@ -27,10 +33,16 @@ public class GEMFile implements Comparable<GEMFile> {
   private String extension;
   private List<AbstractFeature> data;
   private String mimeType;
+  private String lastModifiedTime;
+  private String creationTime;
 
   private transient boolean extracted;
 
   public GEMFile() {}
+
+  public GEMFile(String fileName, String directory) {
+    this(new File(directory, fileName).getAbsolutePath());
+  }
 
   public GEMFile(String filePath) {
     File file = new File(filePath);
@@ -38,14 +50,20 @@ public class GEMFile implements Comparable<GEMFile> {
     this.fileName = file.getName();
     this.extension = FilenameUtils.getExtension(fileName);
     this.size = file.length();
-  }
-
-  public GEMFile(String fileName, String directory) {
-    File file = new File(directory, fileName);
-    this.directory = file.getParentFile().getAbsolutePath();
-    this.fileName = file.getName();
-    this.extension = FilenameUtils.getExtension(fileName);
-    this.size = file.length();
+    try {
+      BasicFileAttributes attributes =
+          Files.readAttributes(file.toPath(), BasicFileAttributes.class);
+      this.creationTime =
+          DateTimeFormatter.ISO_DATE_TIME.format(
+              LocalDateTime.ofInstant(
+                  attributes.creationTime().toInstant(), ZoneId.systemDefault()));
+      this.lastModifiedTime =
+          DateTimeFormatter.ISO_DATE_TIME.format(
+              LocalDateTime.ofInstant(
+                  attributes.lastModifiedTime().toInstant(), ZoneId.systemDefault()));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   /* Start of getter setter */
@@ -97,6 +115,21 @@ public class GEMFile implements Comparable<GEMFile> {
     this.data = data;
   }
 
+  public String getLastModifiedTime() {
+    return lastModifiedTime;
+  }
+
+  public void setLastModifiedTime(String lastModifiedTime) {
+    this.lastModifiedTime = lastModifiedTime;
+  }
+
+  public String getCreationTime() {
+    return creationTime;
+  }
+
+  public void setCreationTime(String creationTime) {
+    this.creationTime = creationTime;
+  }
   /* End of getter setter */
 
   public String getAbsolutePath() {
