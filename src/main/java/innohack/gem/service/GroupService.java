@@ -10,10 +10,7 @@ import innohack.gem.entity.rule.GroupExportMixin;
 import innohack.gem.entity.rule.rules.FileExtension;
 import innohack.gem.entity.rule.rules.Rule;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,16 +95,38 @@ public class GroupService {
   public List<Group> importProject(byte[] data) throws IOException {
     LOGGER.debug("Importing project...");
     ObjectMapper mapper = new ObjectMapper();
-    return mapper.readValue(data, Project.class).getGroups();
+    List<Group> groups = mapper.readValue(data, Project.class).getGroups();
+    List<Group> existingGroups = groupDao.getGroups();
+    groupDao.deleteAll();
+    existingGroups.stream()
+        .forEach(
+            group -> {
+              matchService.onUpdateEvent(group);
+            });
+    Map<String, Group> map = new HashMap<String, Group>();
+    groups.stream()
+        .forEach(
+            group -> {
+              map.put(group.getName(), group);
+            });
+    groupDao.saveGroups(map);
+    groups.stream()
+        .forEach(
+            group -> {
+              matchService.onUpdateEvent(group);
+            });
+    return groups;
   }
 
-  public byte[] exportProject() throws IOException {
+  public byte[] exportProject(String version, String name) throws IOException {
     LOGGER.debug("Exporting the project as json...");
     try {
       List<Group> groups = groupDao.getGroups();
       Project project = new Project();
       project.setGroups(groups);
       project.setSpecVersion(Project.SPEC_VERSION);
+      if (version != null && version.length() > 0) project.setSpecVersion(version);
+      if (name != null && name.length() > 0) project.setProjectName(name);
       ObjectMapper mapper = new ObjectMapper();
       return mapper
           .addMixIn(Group.class, GroupExportMixin.class)
