@@ -38,12 +38,6 @@ const GroupList: FunctionComponent<IProps> = ({
     context.groupsAction?.newGroup();
   }
 
-  function handleFileSelected(file: string) {
-    const selectedFile = file;
-    const data = new FormData();
-    data.append("file", selectedFile);
-  }
-
   function handleNoMatchGroupSelected() {
     setSelectedCard("no_match");
     setCurrentGroup(null);
@@ -94,20 +88,6 @@ const GroupList: FunctionComponent<IProps> = ({
           text="Create Group"
           onClick={() => handleCreateGroup()}
           className="add-right-margin"
-        />
-        <AnchorButton
-          icon="export"
-          text="Export Spec"
-          href="/api/group/export"
-        />
-      </div>
-      <div>
-        <FileInput
-          text="Choose spec file..."
-          buttonText="Import"
-          onInputChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            handleFileSelected(e.target.value)
-          }
         />
       </div>
       <div className="stack">

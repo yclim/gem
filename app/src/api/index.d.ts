@@ -88,3 +88,7 @@ export interface ExtractedData {
   headers: string[];
   records: string[][];
 }
+
+export interface ProjectSpec {
+  [key: string]: any
+}
