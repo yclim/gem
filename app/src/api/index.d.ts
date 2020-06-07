@@ -90,5 +90,5 @@ export interface ExtractedData {
 }
 
 export interface ProjectSpec {
-  [key: string]: any
+  [key: string]: any;
 }

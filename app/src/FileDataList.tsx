@@ -75,6 +75,7 @@ const FileCountList: FunctionComponent<IFileCountProps> = ({
         headerHeight={35}
         onRowClicked={e => onFileSelection(fileCounts[e.rowIndex].absolutePath)}
         suppressCellSelection={true}
+        rowSelection={"single"}
       />
     </div>
   );
@@ -98,6 +99,8 @@ const DataList: FunctionComponent<IDataListProps> = ({
         rowHeight={35}
         headerHeight={35}
         suppressCellSelection={true}
+        pagination={true}
+        paginationAutoPageSize={true}
       />
     </div>
   );
