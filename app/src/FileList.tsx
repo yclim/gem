@@ -24,10 +24,6 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
   const [currentFile, setCurrentFile] = useState<File | null>(null);
   const [activeExcelTab, setActiveExcelTab] = useState<string | undefined>();
 
-  const cellRenderer = (rowIndex: number) => {
-    return <Cell>{`${files[rowIndex].fileName}`}</Cell>;
-  };
-
   function handleNavbarTabChange(tabId: TabId) {
     setActiveTab(tabId.toString());
   }
@@ -263,6 +259,7 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
           id="DetailsTab"
           selectedTabId={activeTab}
           onChange={handleNavbarTabChange}
+          renderActiveTabPanelOnly={true}
         >
           <Tab id="raw" title="File Details" panel={renderFileDetailTab()} />
           <Tab
