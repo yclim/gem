@@ -488,24 +488,25 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
       <div className="grid2">
         <div className="stack">
           <Tabs
-              id="TabsExample"
-              selectedTabId={activeGroup?.groupId}
-              onChange={handleNavbarTabChange}
-              renderActiveTabPanelOnly={true}
+            id="TabsExample"
+            selectedTabId={activeGroup?.groupId}
+            onChange={handleNavbarTabChange}
+            renderActiveTabPanelOnly={true}
           >
-            {groups.filter(g => (g.matchedCount !== undefined && g.matchedCount>0))
-                .map(g => (
-                    <Tab
-                        key={g.name}
-                        id={g.groupId}
-                        title={
-                          <div className="box">
-                            {g.name} <Tag> {g.matchedCount} </Tag>
-                          </div>
-                        }
-                        panel={renderGroupForm()}
-                    />
-                ))}
+            {groups
+              .filter(g => g.matchedCount !== undefined && g.matchedCount > 0)
+              .map(g => (
+                <Tab
+                  key={g.name}
+                  id={g.groupId}
+                  title={
+                    <div className="box">
+                      {g.name} <Tag> {g.matchedCount} </Tag>
+                    </div>
+                  }
+                  panel={renderGroupForm()}
+                />
+              ))}
             <Tabs.Expander />
           </Tabs>
         </div>

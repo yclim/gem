@@ -1,10 +1,4 @@
-import {
-  Cell,
-  Column,
-  IRegion,
-  SelectionModes,
-  Table
-} from "@blueprintjs/table";
+import { Cell } from "@blueprintjs/table";
 import {
   Blockquote,
   Card,
@@ -17,6 +11,8 @@ import {
 import React, { FunctionComponent, useState } from "react";
 import { CsvFeature, ExcelFeature, File, TikaFeature } from "./api";
 import fileService from "./api/FileService";
+import { ColDef } from "ag-grid-community";
+import { AgGridReact } from "ag-grid-react";
 
 interface IProps {
   files: File[];
@@ -28,10 +24,6 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
   const [currentFile, setCurrentFile] = useState<File | null>(null);
   const [activeExcelTab, setActiveExcelTab] = useState<string | undefined>();
 
-  const cellRenderer = (rowIndex: number) => {
-    return <Cell>{`${files[rowIndex].fileName}`}</Cell>;
-  };
-
   function handleNavbarTabChange(tabId: TabId) {
     setActiveTab(tabId.toString());
   }
@@ -40,37 +32,33 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
     setActiveExcelTab(tabId.toString());
   }
 
-  function handleSection(region: IRegion[]) {
-    const reg = region[0];
-    if (reg && reg.rows) {
-      const r = reg.rows[0];
-      fileService.getFile(files[r].fileName, files[r].directory).then(f => {
-        setCurrentFile(f.data);
-      });
-    }
+  function handleFileSelection(filename: string, directory: string) {
+    fileService.getFile(filename, directory).then(f => {
+      setCurrentFile(f.data);
+    });
   }
 
   function renderTable(tableData: string[][]) {
+    if (!tableData || !tableData[0]) {
+      return <div />;
+    }
+    const columnDef: ColDef[] = tableData[0].map((c, i) => {
+      return { headerName: c, field: i + "" };
+    });
+    const rowData = tableData.slice(1).map(r => {
+      return { ...r };
+    });
     return (
-      <div className="vertical-scroll-only">
-        <table className="bp3-html-table bp3-html-table-striped bp3-small">
-          <thead>
-            <tr>
-              {tableData[0].map((cell, i) => (
-                <th key={`header-${i}`}>{cell}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {tableData.slice(1).map((row, i) => (
-              <tr key={`row-${i}`}>
-                {row.map((cell, j) => (
-                  <td key={`cell-${i}-${j}`}> {cell}</td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="vertical-scroll-only ag-theme-alpine">
+        <AgGridReact
+          columnDefs={columnDef}
+          rowData={rowData}
+          rowHeight={35}
+          headerHeight={35}
+          suppressCellSelection={true}
+          pagination={true}
+          paginationAutoPageSize={true}
+        />
       </div>
     );
   }
@@ -246,21 +234,35 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
 
   return (
     <div className="grid2">
-      <div className="box filelist-box">
-        <Table
-          numRows={files.length}
-          defaultColumnWidth={320}
-          selectionModes={SelectionModes.ROWS_AND_CELLS}
-          onSelection={handleSection}
-        >
-          <Column name="Matched filenames" cellRenderer={cellRenderer} />
-        </Table>
+      <div className="box filelist-box ag-theme-alpine">
+        <AgGridReact
+          columnDefs={[
+            {
+              headerName: "#",
+              valueGetter: "node.rowIndex + 1",
+              width: 30
+            },
+            { headerName: "Matched filenames", field: "fileName", width: 250 }
+          ]}
+          rowData={files}
+          rowHeight={35}
+          headerHeight={35}
+          onRowClicked={e =>
+            handleFileSelection(
+              files[e.rowIndex].fileName,
+              files[e.rowIndex].directory
+            )
+          }
+          suppressCellSelection={true}
+          rowSelection={"single"}
+        />
       </div>
       <div className="grid1">
         <Tabs
           id="DetailsTab"
           selectedTabId={activeTab}
           onChange={handleNavbarTabChange}
+          renderActiveTabPanelOnly={true}
         >
           <Tab id="raw" title="File Details" panel={renderFileDetailTab()} />
           <Tab
