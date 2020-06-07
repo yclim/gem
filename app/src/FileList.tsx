@@ -39,6 +39,9 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
   }
 
   function renderTable(tableData: string[][]) {
+    if (!tableData || !tableData[0]) {
+      return <div />;
+    }
     const columnDef: ColDef[] = tableData[0].map((c, i) => {
       return { headerName: c, field: i + "" };
     });
