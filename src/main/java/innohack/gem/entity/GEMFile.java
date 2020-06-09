@@ -14,6 +14,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import org.apache.commons.io.FilenameUtils;
@@ -45,6 +46,7 @@ public class GEMFile implements Comparable<GEMFile> {
   }
 
   public GEMFile(String filePath) {
+    data = new ArrayList<>();
     File file = new File(filePath);
     this.directory = file.getParentFile().getAbsolutePath();
     this.fileName = file.getName();
