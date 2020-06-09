@@ -67,10 +67,9 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
   const [dateFormat, setDateFormat] = useState<TimestampColumn>(
     emptyTimestampColumn
   );
-
   const [isLoading, setIsLoading] = useState(false);
-
   const [groups, setGroups] = useState<Group[]>([]);
+  const [isGroupLoaded, setIsGroupLoaded] = useState(false);
 
   useEffect(() => {
     const extractorTemplatePromise = extractConfigService
@@ -89,6 +88,7 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
     Promise.all<void, Group[]>([extractorTemplatePromise, groupsPromise]).then(
       ([nothing, grps]) => {
         setActiveGroup(grps[0]);
+        setIsGroupLoaded(true);
       }
     );
   }, []);
@@ -484,6 +484,11 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
   }
 
   function render() {
+    if (isGroupLoaded && groups.length === 0) {
+      return (
+        <div>No groups yet. Add some groups in 'Configure Group' page</div>
+      );
+    }
     return (
       <div className="grid2">
         <div className="stack">
