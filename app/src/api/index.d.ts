@@ -50,6 +50,7 @@ export interface File {
   groupMatchedCount?: number;
   lastModifiedTime?: string;
   creationTime?: string;
+  errorMessage?: string;
 }
 
 export interface FileGroupStat {

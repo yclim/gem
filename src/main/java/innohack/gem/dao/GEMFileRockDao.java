@@ -119,12 +119,14 @@ public class GEMFileRockDao implements IGEMFileDao {
    */
   @Override
   public List<GEMFile> getFiles() {
-    List<String> l = gemFileDb.getKeys();
-    List<GEMFile> list = Lists.newArrayList();
-    for (String path : l) {
-      list.add(new GEMFile(path));
+    List<String> keys = gemFileDb.getKeys();
+    List<GEMFile> resultList = Lists.newArrayList();
+    for (String path : keys) {
+      GEMFile file = new GEMFile(path);
+      file.setErrorMessage(gemFileDb.get(path).getErrorMessage());
+      resultList.add(file);
     }
-    return list;
+    return resultList;
   }
 
   // Get list of local files from directory
