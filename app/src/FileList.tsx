@@ -15,11 +15,12 @@ import { ColDef } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 
 interface IProps {
+  title?: string;
   files: File[];
   setFiles: (fs: File[]) => void;
 }
 
-const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
+const FileList: FunctionComponent<IProps> = ({ files, setFiles, title }) => {
   const [activeTab, setActiveTab] = useState("raw");
   const [currentFile, setCurrentFile] = useState<File | null>(null);
   const [activeExcelTab, setActiveExcelTab] = useState<string | undefined>();
@@ -242,7 +243,11 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles }) => {
               valueGetter: "node.rowIndex + 1",
               width: 30
             },
-            { headerName: "Matched filenames", field: "fileName", width: 250 }
+            {
+              headerName: title ? title : "File names",
+              field: "fileName",
+              width: 250
+            }
           ]}
           rowData={files}
           rowHeight={35}
