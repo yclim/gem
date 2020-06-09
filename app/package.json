@@ -49,8 +49,7 @@
     "immer": "^6.0.9",
     "moment-timezone": "^0.5.31",
     "react": "^16.13.0",
-    "react-dom": "^16.13.0",
-    "react-top-loading-bar": "^1.2.0"
+    "react-dom": "^16.13.0"
   },
   "browserslist": [
     "last 2 Chrome versions",

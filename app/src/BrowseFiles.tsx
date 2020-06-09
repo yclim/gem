@@ -5,7 +5,6 @@ import { Intent } from "@blueprintjs/core/lib/esm/common/intent";
 import { File } from "./api";
 import fileService from "./api/FileService";
 import FileList from "./FileList";
-import LoadingBar from "react-top-loading-bar";
 
 const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
   const ALL = "All";
@@ -26,7 +25,7 @@ const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
       fileService.getSyncStatus().then(response => {
         setSyncStatus(response.data);
       });
-    }, 5000);
+    }, 1000);
     return () => clearInterval(interval);
   }, []);
 
@@ -71,21 +70,28 @@ const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
     });
   }
 
+  function renderSyncCount() {
+    const perc = (syncStatus * 100) % 100;
+    if (perc > 0 && perc < 100) {
+      return (
+        <span style={{ marginLeft: "10px" }}>
+          {(syncStatus * 100).toFixed(0)} %
+        </span>
+      );
+    }
+    return <span />;
+  }
+
   return (
     <div className="stack">
       <div>
-        <LoadingBar
-          progress={(syncStatus * 100) % 100}
-          height={3}
-          color="red"
-          onLoaderFinished={() => this.onLoaderFinished()}
-        />
         <label className="editable-label"> Directory: </label>
         <EditableText
           className="editable-text"
           value={directory}
           placeholder="/usr/share/gem/files"
           onChange={e => setDirectory(e)}
+          selectAllOnFocus={true}
         />
         <Button
           icon={
@@ -95,6 +101,7 @@ const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
           onClick={() => handleSynchronize()}
           disabled={syncStatus < 1}
         />
+        {renderSyncCount()}
       </div>
       <div className="grid2">
         <div className="box">
