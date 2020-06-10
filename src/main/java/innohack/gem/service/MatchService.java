@@ -50,7 +50,7 @@ public class MatchService {
     }
     filesWithConflictMatch = null;
     filesWithoutMatch = null;
-    backupMatchFile();
+    // backupMatchFile();
   }
 
   private static Thread backupProcessThread;
