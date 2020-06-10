@@ -1,17 +1,20 @@
 package innohack.gem.entity.feature;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import innohack.gem.entity.GEMFile;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 class CSVFeatureTests {
 
   @Test
-  void TestCSVContentParser() throws Exception {
+  void testCSVContentParser() throws Exception {
     String path = "src/test/resources";
 
     String filenamePrefix = "customer_";
@@ -28,12 +31,12 @@ class CSVFeatureTests {
     while (iterator.hasNext()) {
       AbstractFeature abs = iterator.next();
       if (abs.getClass().getName().equals(CsvFeature.class.getName())) {
-        TestCSVContents((CsvFeature) abs);
+        testCSVContents((CsvFeature) abs);
       }
     }
   }
 
-  void TestCSVContents(CsvFeature abs) {
+  void testCSVContents(CsvFeature abs) {
     CsvFeature csvFeature = abs;
     List<List<String>> dataTable = csvFeature.getTableData();
     int rowCount = 0;
@@ -111,5 +114,62 @@ class CSVFeatureTests {
       }
       rowCount++;
     }
+  }
+
+  static final String TEST_FILE_DIRECTORY = "src/test/resources/csvfeature";
+
+  static CsvFeature getCsvFeature(String filename) {
+    GEMFile gemFile = new GEMFile(filename, TEST_FILE_DIRECTORY).extract();
+    Optional<CsvFeature> csvFeatureOpt =
+        gemFile.getData().stream()
+            .filter(f -> f instanceof CsvFeature)
+            .map(f -> (CsvFeature) f)
+            .findAny();
+    assertTrue(csvFeatureOpt.isPresent());
+    return csvFeatureOpt.get();
+  }
+
+  @Test
+  void testOneColumnCsv() {
+    CsvFeature feature = getCsvFeature("one-column.csv");
+    assertEquals(4, feature.getTableData().size(), "number of row match");
+    assertEquals(1, feature.getTableData().get(0).size(), "number of column match");
+    assertEquals("c1", feature.getTableData().get(0).get(0), "first row value match");
+    assertEquals("c1", feature.getHeaders().get(0), "first header value match");
+    assertEquals("f", feature.getTableData().get(1).get(2), "last data value match");
+  }
+
+  @Test
+  void testSemiColonSeperated() {
+    CsvFeature feature = getCsvFeature("semi-colon-seperated.csv");
+    assertEquals(3, feature.getTableData().size(), "number of row match");
+    assertEquals(3, feature.getTableData().get(0).size(), "number of column match");
+    assertEquals(
+        Arrays.asList("c1", "c2", "c3"), feature.getTableData().get(0), "first row value match");
+    assertEquals(Arrays.asList("c1", "c2", "c3"), feature.getHeaders(), "header value match");
+    assertEquals("a", feature.getTableData().get(1).get(0), "first data value match");
+    assertEquals("f", feature.getTableData().get(2).get(2), "last data value match");
+  }
+
+  @Test
+  void testTabSeperated() {
+    CsvFeature feature = getCsvFeature("tab-seperated.csv");
+    assertEquals(3, feature.getTableData().size(), "number of row match");
+    assertEquals(3, feature.getTableData().get(0).size(), "number of column match");
+    assertEquals(
+        Arrays.asList("c1", "c2", "c3"), feature.getTableData().get(0), "first row value match");
+    assertEquals(Arrays.asList("c1", "c2", "c3"), feature.getHeaders(), "header value match");
+    assertEquals("a", feature.getTableData().get(1).get(0), "first data value match");
+    assertEquals("f", feature.getTableData().get(2).get(2), "last data value match");
+  }
+
+  @Test
+  void testSpaceSeperated() {
+    CsvFeature feature = getCsvFeature("space-seperated.csv");
+    assertEquals(3, feature.getTableData().size(), "number of row match");
+    assertEquals(1, feature.getTableData().get(0).size(), "number of column match");
+    assertEquals(Arrays.asList("c1 c2 c3"), feature.getTableData().get(0), "first row value match");
+    assertEquals(Arrays.asList("c1 c2 c3"), feature.getHeaders(), "header value match");
+    assertEquals("a b c", feature.getTableData().get(1).get(0), "first data value match");
   }
 }
