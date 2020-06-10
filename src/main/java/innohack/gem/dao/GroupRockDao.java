@@ -5,7 +5,6 @@ import innohack.gem.entity.rule.Group;
 import java.util.*;
 import org.springframework.stereotype.Repository;
 
-@Repository
 public class GroupRockDao implements IGroupDao {
   private static final String DB_NAME = "Group";
   private RocksDatabase<String, Group> groupDb;

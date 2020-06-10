@@ -4,9 +4,7 @@ import innohack.gem.database.RocksDatabase;
 import innohack.gem.entity.match.MatchFileGroup;
 import innohack.gem.entity.match.MatchFileRule;
 import java.util.Map;
-import org.springframework.stereotype.Repository;
 
-@Repository
 public class MatchFileRockDao implements IMatchFileDao {
 
   private static final String DB_NAME = "MatchFile";

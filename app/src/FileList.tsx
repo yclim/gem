@@ -275,7 +275,7 @@ const FileList: FunctionComponent<IProps> = ({ files, setFiles, title }) => {
           suppressCellSelection={true}
           rowSelection={"single"}
           rowClassRules={{
-            "error-row": params => params.data.errorMessage
+            "error-row": params => params.data && params.data.errorMessage
           }}
         />
       </div>
