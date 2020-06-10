@@ -36,7 +36,7 @@ const EditGroups: FunctionComponent<RouteComponentProps> = () => {
         newGroupRuleName={newGroupRuleName}
         setFiles={setFiles}
       />
-      <FileList files={files} setFiles={setFiles} />
+      <FileList title="Matched Files" files={files} setFiles={setFiles} />
     </div>
   );
 };

@@ -136,7 +136,7 @@
   margin-top: 5px;
   margin-left: 10px;
   margin-right: 10px;
-  width: 120px;
+  width: 275px;
 }
 
 .highlight-effect {
@@ -175,4 +175,23 @@
   to {
     background-color: $white;
   }
+}
+
+.ag-row-hover {
+  background-color: $light-gray5 !important;
+}
+
+.ag-row-selected {
+  background-color: $light-gray3 !important;
+}
+
+.error-message-box {
+  overflow-y: auto;
+  font-family: Consolas;
+  background-color: $light-gray5 !important;
+  font-size: 11px;
+}
+
+.error-row {
+  background-color: $orange5 !important;
 }
