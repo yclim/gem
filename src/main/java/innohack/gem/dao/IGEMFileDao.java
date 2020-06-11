@@ -1,6 +1,6 @@
 package innohack.gem.dao;
 
-import innohack.gem.entity.GEMFile;
+import innohack.gem.core.entity.GEMFile;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;

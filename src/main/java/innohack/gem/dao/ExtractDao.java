@@ -1,8 +1,8 @@
 package innohack.gem.dao;
 
 import com.google.common.collect.Maps;
-import innohack.gem.entity.extractor.ExtractConfig;
-import innohack.gem.entity.extractor.ExtractedRecords;
+import innohack.gem.core.entity.extractor.ExtractConfig;
+import innohack.gem.core.entity.extractor.ExtractedRecords;
 import java.util.Map;
 import org.springframework.stereotype.Repository;
 

@@ -1,13 +1,13 @@
 package innohack.gem.service.extract;
 
 import com.beust.jcommander.internal.Lists;
-import innohack.gem.entity.GEMFile;
-import innohack.gem.entity.extractor.ExtractConfig;
-import innohack.gem.entity.extractor.ExtractedRecords;
-import innohack.gem.entity.feature.AbstractFeature;
-import innohack.gem.entity.feature.TikaFeature;
-import innohack.gem.entity.rule.ParamType;
-import innohack.gem.entity.rule.Parameter;
+import innohack.gem.core.entity.GEMFile;
+import innohack.gem.core.entity.extractor.ExtractConfig;
+import innohack.gem.core.entity.extractor.ExtractedRecords;
+import innohack.gem.core.entity.feature.AbstractFeature;
+import innohack.gem.core.entity.feature.TikaFeature;
+import innohack.gem.core.entity.rule.ParamType;
+import innohack.gem.core.entity.rule.Parameter;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

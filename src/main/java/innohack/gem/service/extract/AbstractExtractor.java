@@ -1,10 +1,10 @@
 package innohack.gem.service.extract;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import innohack.gem.entity.GEMFile;
-import innohack.gem.entity.extractor.ExtractConfig;
-import innohack.gem.entity.extractor.ExtractedRecords;
-import innohack.gem.entity.rule.Parameter;
+import innohack.gem.core.entity.GEMFile;
+import innohack.gem.core.entity.extractor.ExtractConfig;
+import innohack.gem.core.entity.extractor.ExtractedRecords;
+import innohack.gem.core.entity.rule.Parameter;
 import java.util.List;
 
 @JsonTypeInfo(

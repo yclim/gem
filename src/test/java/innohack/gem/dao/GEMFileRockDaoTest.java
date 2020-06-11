@@ -2,8 +2,8 @@ package innohack.gem.dao;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import innohack.gem.core.entity.GEMFile;
 import innohack.gem.database.RocksDatabase;
-import innohack.gem.entity.GEMFile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

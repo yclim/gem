@@ -1,6 +1,6 @@
 package innohack.gem.example.tika;
 
-import innohack.gem.entity.GEMFile;
+import innohack.gem.core.entity.GEMFile;
 import innohack.gem.example.util.FileUtil;
 import java.io.IOException;
 import java.nio.file.Path;

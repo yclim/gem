@@ -1,13 +1,13 @@
 package innohack.gem.service;
 
 import com.beust.jcommander.internal.Lists;
+import innohack.gem.core.entity.GEMFile;
+import innohack.gem.core.entity.extractor.ExtractConfig;
+import innohack.gem.core.entity.extractor.ExtractedFile;
+import innohack.gem.core.entity.extractor.ExtractedRecords;
+import innohack.gem.core.entity.rule.Group;
 import innohack.gem.dao.IExtractDao;
 import innohack.gem.dao.IGEMFileDao;
-import innohack.gem.entity.GEMFile;
-import innohack.gem.entity.extractor.ExtractConfig;
-import innohack.gem.entity.extractor.ExtractedFile;
-import innohack.gem.entity.extractor.ExtractedRecords;
-import innohack.gem.entity.rule.Group;
 import innohack.gem.service.extract.AbstractExtractor;
 import innohack.gem.service.extract.ExtractorFactory;
 import java.util.List;

@@ -1,16 +1,16 @@
 package innohack.gem.service;
 
 import com.google.common.collect.Lists;
+import innohack.gem.core.entity.GEMFile;
+import innohack.gem.core.entity.match.MatchFileGroup;
+import innohack.gem.core.entity.match.MatchFileRule;
+import innohack.gem.core.entity.rule.Group;
+import innohack.gem.core.entity.rule.rules.FileExtension;
+import innohack.gem.core.entity.rule.rules.FilenamePrefix;
+import innohack.gem.core.entity.rule.rules.Rule;
 import innohack.gem.dao.IGEMFileDao;
 import innohack.gem.dao.IGroupDao;
 import innohack.gem.dao.IMatchFileDao;
-import innohack.gem.entity.GEMFile;
-import innohack.gem.entity.match.MatchFileGroup;
-import innohack.gem.entity.match.MatchFileRule;
-import innohack.gem.entity.rule.Group;
-import innohack.gem.entity.rule.rules.FileExtension;
-import innohack.gem.entity.rule.rules.FilenamePrefix;
-import innohack.gem.entity.rule.rules.Rule;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

@@ -1,8 +1,8 @@
 package innohack.gem.web;
 
-import innohack.gem.entity.extractor.ExtractConfig;
-import innohack.gem.entity.extractor.ExtractedFile;
-import innohack.gem.entity.extractor.ExtractedRecords;
+import innohack.gem.core.entity.extractor.ExtractConfig;
+import innohack.gem.core.entity.extractor.ExtractedFile;
+import innohack.gem.core.entity.extractor.ExtractedRecords;
 import innohack.gem.service.ExtractService;
 import innohack.gem.service.extract.AbstractExtractor;
 import java.util.List;

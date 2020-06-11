@@ -1,8 +1,8 @@
 package innohack.gem.dao;
 
 import com.google.common.collect.Lists;
+import innohack.gem.core.entity.GEMFile;
 import innohack.gem.database.RocksDatabase;
-import innohack.gem.entity.GEMFile;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.Collection;

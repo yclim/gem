@@ -2,9 +2,9 @@ package innohack.gem.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import innohack.gem.core.entity.GEMFile;
 import innohack.gem.dao.IGEMFileDao;
 import innohack.gem.dao.IGroupDao;
-import innohack.gem.entity.GEMFile;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

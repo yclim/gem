@@ -1,14 +1,14 @@
 package innohack.gem.service.extract;
 
 import com.beust.jcommander.internal.Lists;
-import innohack.gem.entity.GEMFile;
-import innohack.gem.entity.extractor.ExtractConfig;
-import innohack.gem.entity.extractor.ExtractedRecords;
-import innohack.gem.entity.extractor.TimestampColumn;
-import innohack.gem.entity.feature.AbstractFeature;
-import innohack.gem.entity.feature.ExcelFeature;
-import innohack.gem.entity.rule.ParamType;
-import innohack.gem.entity.rule.Parameter;
+import innohack.gem.core.entity.GEMFile;
+import innohack.gem.core.entity.extractor.ExtractConfig;
+import innohack.gem.core.entity.extractor.ExtractedRecords;
+import innohack.gem.core.entity.extractor.TimestampColumn;
+import innohack.gem.core.entity.feature.AbstractFeature;
+import innohack.gem.core.entity.feature.ExcelFeature;
+import innohack.gem.core.entity.rule.ParamType;
+import innohack.gem.core.entity.rule.Parameter;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;

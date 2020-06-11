@@ -1,7 +1,7 @@
 package innohack.gem.example;
 
-import innohack.gem.entity.GEMFile;
-import innohack.gem.entity.feature.AbstractFeature;
+import innohack.gem.core.entity.GEMFile;
+import innohack.gem.core.entity.feature.AbstractFeature;
 import innohack.gem.example.tika.TikaUtil;
 import innohack.gem.example.util.FileUtil;
 import java.nio.file.Path;

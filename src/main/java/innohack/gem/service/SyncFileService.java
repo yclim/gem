@@ -1,8 +1,8 @@
 package innohack.gem.service;
 
 import com.beust.jcommander.internal.Maps;
+import innohack.gem.core.entity.GEMFile;
 import innohack.gem.dao.IGEMFileDao;
-import innohack.gem.entity.GEMFile;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;

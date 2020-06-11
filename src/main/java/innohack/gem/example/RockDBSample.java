@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import innohack.gem.entity.feature.CsvFeature;
+import innohack.gem.core.entity.feature.CsvFeature;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
