@@ -9,11 +9,14 @@ import innohack.gem.core.entity.feature.common.FeatureExtractorUtil;
 import innohack.gem.example.tika.TikaMimeEnum;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import org.apache.commons.io.FilenameUtils;
@@ -35,6 +38,7 @@ public class GEMFile implements Comparable<GEMFile> {
   private String mimeType;
   private String lastModifiedTime;
   private String creationTime;
+  private String errorMessage;
 
   private transient boolean extracted;
 
@@ -45,6 +49,7 @@ public class GEMFile implements Comparable<GEMFile> {
   }
 
   public GEMFile(String filePath) {
+    data = new ArrayList<>();
     File file = new File(filePath);
     this.directory = file.getParentFile().getAbsolutePath();
     this.fileName = file.getName();
@@ -150,6 +155,14 @@ public class GEMFile implements Comparable<GEMFile> {
     this.data.add(data);
   }
 
+  public String getErrorMessage() {
+    return errorMessage;
+  }
+
+  public void setErrorMessage(String errorMessage) {
+    this.errorMessage = errorMessage;
+  }
+
   // Perform extraction
   // TODO move this to service? Ideally entities do not perform logic
   public GEMFile extract() {
@@ -170,6 +183,10 @@ public class GEMFile implements Comparable<GEMFile> {
         extractTika();
         extracted = true;
       } catch (Exception e) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        e.printStackTrace(pw);
+        this.errorMessage = sw.toString();
         LOGGER.error("Error in extract", e);
       }
     }

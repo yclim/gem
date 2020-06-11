@@ -189,6 +189,7 @@ public class MatchService {
         // it
         if (checkMatching(storedGroupRule, gemFile)) {
           if (!storedGroupRule.getMatchedFile().contains(fileKey)) {
+            fileKey.setErrorMessage(gemFile.getErrorMessage());
             storedGroupRule.getMatchedFile().add(fileKey);
             groupUpdated = true;
           }

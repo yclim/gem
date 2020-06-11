@@ -9,16 +9,15 @@ import groupRuleService from "./api/GroupRuleService";
 import { ProjectSpec } from "./api";
 import {
   AnchorButton,
-  Button,
   Card,
+  Divider,
   Elevation,
   FileInput,
   FormGroup,
+  H5,
   InputGroup
 } from "@blueprintjs/core";
-import extractConfigService from "./api/ExtractConfigService";
 import { AxiosResponse } from "axios";
-import { Group } from "./api";
 
 const ExportSpec: FunctionComponent<RouteComponentProps> = () => {
   const [projectName, setProjectName] = useState<string>("");
@@ -50,17 +49,20 @@ const ExportSpec: FunctionComponent<RouteComponentProps> = () => {
   }
 
   function handleFileSelected(event: ChangeEvent<HTMLInputElement>) {
-    const selectedFile = event.target.files[0];
-    const data = new FormData();
-    data.append("file", selectedFile);
+    if (event.target.files) {
+      const selectedFile = event.target.files[0];
+      const data = new FormData();
+      data.append("file", selectedFile);
 
-    groupRuleService.importGroupsFile(data).then(response => {
-      console.log(response.data);
-    });
+      groupRuleService.importGroupsFile(data).then(response => {
+        console.log(response.data);
+      });
+    }
   }
   return (
     <div className="grid2">
       <Card>
+        <H5>Export Spec File</H5>
         <FormGroup label="Project Name" labelFor="text-input1">
           <InputGroup
             id="text-input1"
@@ -99,15 +101,18 @@ const ExportSpec: FunctionComponent<RouteComponentProps> = () => {
               projectVersion
             }
           />
-
-          <FileInput
-            text="Choose spec file..."
-            buttonText="Import"
-            onInputChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              handleFileSelected(e)
-            }
-          />
         </div>
+
+        <Divider style={{ marginTop: "30px", marginBottom: "30px" }} />
+        <H5> Import Spec File</H5>
+        <FileInput
+          text="Choose spec file..."
+          buttonText="Import"
+          onInputChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            handleFileSelected(e)
+          }
+        />
+        <Divider />
       </Card>
       <Card elevation={Elevation.ZERO} className="detail-box">
         <pre>{JSON.stringify(projectSpec, null, 2)}</pre>

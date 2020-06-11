@@ -25,7 +25,7 @@ public class GEMFileRockDaoTest {
     db.put(f.getAbsolutePath(), f);
     GEMFile file = db.get(f.getAbsolutePath());
     assertTrue(file.equals(f));
-    assertTrue(file.getData() == null);
+    assertTrue(file.getData().size() == 0);
     db.deleteAll();
   }
 

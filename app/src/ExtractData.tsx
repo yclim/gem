@@ -67,10 +67,9 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
   const [dateFormat, setDateFormat] = useState<TimestampColumn>(
     emptyTimestampColumn
   );
-
   const [isLoading, setIsLoading] = useState(false);
-
   const [groups, setGroups] = useState<Group[]>([]);
+  const [isGroupLoaded, setIsGroupLoaded] = useState(false);
 
   useEffect(() => {
     const extractorTemplatePromise = extractConfigService
@@ -89,6 +88,7 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
     Promise.all<void, Group[]>([extractorTemplatePromise, groupsPromise]).then(
       ([nothing, grps]) => {
         setActiveGroup(grps[0]);
+        setIsGroupLoaded(true);
       }
     );
   }, []);
@@ -297,49 +297,33 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
         <H6>
           <Icon icon="calendar" /> Add Timestamp Columns (Optional)
         </H6>
-        <FormGroup label="From Column">
-          <HTMLSelect
-            options={["", ...columns.map(c => (c ? c.toString() : ""))]}
-            value={dateFormat.fromColumn}
-            onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-              handleTimestampFormSelectChange(e.target.value)
-            }
-          />
-        </FormGroup>
-
-        <FormGroup label="New Column Name">
-          <InputGroup
-            placeholder=""
-            value={dateFormat.name}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setDateFormat({
-                ...dateFormat,
-                name: e.target.value
-              })
-            }
-            disabled={!dateFormat.name}
-          />
-        </FormGroup>
-
-        <FormGroup label="Timezone">
-          <HTMLSelect
-            options={[
-              "",
-              ...moment.tz.names().map(c => (c ? c.toString() : ""))
-            ]}
-            value={dateFormat.timezone}
-            onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-              setDateFormat({
-                ...dateFormat,
-                timezone: e.target.value
-              })
-            }
-            disabled={!dateFormat.fromColumn}
-          />
-        </FormGroup>
-
-        <FormGroup label="Date Format">
-          <ControlGroup>
+        <div className="grid2">
+          <FormGroup label="From Column">
+            <HTMLSelect
+              options={["", ...columns.map(c => (c ? c.toString() : ""))]}
+              value={dateFormat.fromColumn}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                handleTimestampFormSelectChange(e.target.value)
+              }
+              style={{ minWidth: "200px" }}
+            />
+          </FormGroup>
+          <FormGroup label="New Column Name">
+            <InputGroup
+              placeholder=""
+              value={dateFormat.name}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setDateFormat({
+                  ...dateFormat,
+                  name: e.target.value
+                })
+              }
+              disabled={!dateFormat.name}
+            />
+          </FormGroup>
+        </div>
+        <div className="grid3">
+          <FormGroup label="Date Format">
             <InputGroup
               placeholder="yyyyMMddHHmmss"
               value={dateFormat.format}
@@ -350,14 +334,34 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
                 })
               }
               disabled={!dateFormat.fromColumn}
+              style={{ minWidth: "200px" }}
             />
+          </FormGroup>
+          <FormGroup label="Timezone">
+            <HTMLSelect
+              options={[
+                "",
+                ...moment.tz.names().map(c => (c ? c.toString() : ""))
+              ]}
+              value={dateFormat.timezone}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                setDateFormat({
+                  ...dateFormat,
+                  timezone: e.target.value
+                })
+              }
+              disabled={!dateFormat.fromColumn}
+            />
+          </FormGroup>
+          <FormGroup label="&nbsp;">
             <Button
               icon="plus"
               onClick={handleAddTimestamp}
               disabled={!dateFormat.fromColumn}
             />
-          </ControlGroup>
-        </FormGroup>
+          </FormGroup>
+        </div>
+
         <table className="bp3-html-table bp3-small bp3-html-table-striped bp3-html-table-bordered">
           <thead>
             <tr>
@@ -436,10 +440,9 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
                 />
               </FormGroup>
               <FormGroup
-                label="Column Names"
-                helperText={
+                label={
                   <span>
-                    Column count <Tag minimal={true}>{columns.length}</Tag>
+                    Column Names <Tag minimal={true}>{columns.length}</Tag>
                   </span>
                 }
               >
@@ -484,6 +487,11 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
   }
 
   function render() {
+    if (isGroupLoaded && groups.length === 0) {
+      return (
+        <div>No groups yet. Add some groups in 'Configure Group' page</div>
+      );
+    }
     return (
       <div className="grid2">
         <div className="stack">

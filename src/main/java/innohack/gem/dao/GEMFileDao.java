@@ -122,11 +122,13 @@ public class GEMFileDao implements IGEMFileDao {
    */
   @Override
   public List<GEMFile> getFiles() {
-    List<GEMFile> l = Lists.newArrayList();
+    List<GEMFile> resultList = Lists.newArrayList();
     for (GEMFile f : featureStore.values()) {
-      l.add(new GEMFile(f.getFileName(), f.getDirectory()));
+      GEMFile file = new GEMFile(f.getFileName(), f.getDirectory());
+      file.setErrorMessage(f.getErrorMessage());
+      resultList.add(file);
     }
-    return l;
+    return resultList;
   }
 
   // Get list of local files from directory
