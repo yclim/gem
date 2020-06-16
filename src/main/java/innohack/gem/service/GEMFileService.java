@@ -1,7 +1,7 @@
 package innohack.gem.service;
 
+import innohack.gem.core.entity.GEMFile;
 import innohack.gem.dao.IGEMFileDao;
-import innohack.gem.entity.GEMFile;
 import java.io.File;
 import java.util.Collections;
 import java.util.List;

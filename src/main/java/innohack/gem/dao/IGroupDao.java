@@ -1,6 +1,6 @@
 package innohack.gem.dao;
 
-import innohack.gem.entity.rule.Group;
+import innohack.gem.core.entity.rule.Group;
 import java.util.List;
 import java.util.Map;
 

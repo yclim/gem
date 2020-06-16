@@ -1,8 +1,8 @@
 package innohack.gem.dao;
 
 import com.google.common.collect.Maps;
-import innohack.gem.entity.match.MatchFileGroup;
-import innohack.gem.entity.match.MatchFileRule;
+import innohack.gem.core.entity.match.MatchFileGroup;
+import innohack.gem.core.entity.match.MatchFileRule;
 import java.util.Map;
 
 public class MatchFileDao implements IMatchFileDao {

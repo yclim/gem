@@ -2,14 +2,14 @@ package innohack.gem.service;
 
 import com.beust.jcommander.internal.Maps;
 import com.beust.jcommander.internal.Sets;
+import innohack.gem.core.entity.GEMFile;
+import innohack.gem.core.entity.match.MatchFileGroup;
+import innohack.gem.core.entity.match.MatchFileRule;
+import innohack.gem.core.entity.rule.Group;
+import innohack.gem.core.rules.Rule;
 import innohack.gem.dao.IGEMFileDao;
 import innohack.gem.dao.IGroupDao;
 import innohack.gem.dao.IMatchFileDao;
-import innohack.gem.entity.GEMFile;
-import innohack.gem.entity.match.MatchFileGroup;
-import innohack.gem.entity.match.MatchFileRule;
-import innohack.gem.entity.rule.Group;
-import innohack.gem.entity.rule.rules.Rule;
 import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,13 +50,13 @@ public class MatchService {
     }
     filesWithConflictMatch = null;
     filesWithoutMatch = null;
-    backupMatchFile();
+    // backupMatchFile();
   }
 
   private static Thread backupProcessThread;
-  private static final long BACKUP_WAIT_TIME = 1000 * 1 * 1;
+  private static final long BACKUP_WAIT_TIME = 3000 * 1 * 1;
 
-  private void backupMatchFile() {
+  public void backupMatchFile() {
     Runnable backupProcess =
         () -> {
           try {

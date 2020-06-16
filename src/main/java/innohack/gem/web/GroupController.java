@@ -1,6 +1,6 @@
 package innohack.gem.web;
 
-import innohack.gem.entity.rule.Group;
+import innohack.gem.core.entity.rule.Group;
 import innohack.gem.service.GroupService;
 import innohack.gem.service.MatchService;
 import java.io.ByteArrayInputStream;
@@ -38,6 +38,7 @@ public class GroupController {
     response.setContentType("application/json");
     response.addHeader("Content-Disposition", "attachment; filename=export.json");
     IOUtils.copy(new ByteArrayInputStream(project), response.getOutputStream());
+    matchService.backupMatchFile();
     response.getOutputStream().flush();
   }
 
