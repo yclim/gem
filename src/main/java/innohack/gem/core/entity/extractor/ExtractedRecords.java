@@ -9,6 +9,8 @@ public class ExtractedRecords {
 
   private List<List<String>> records;
 
+  private List<String> groups;
+
   public ExtractedRecords() {
     headers = Lists.newArrayList();
     records = Lists.newArrayList();
@@ -32,5 +34,13 @@ public class ExtractedRecords {
 
   public int size() {
     return records.size();
+  }
+
+  public List<String> getGroups() {
+    return groups;
+  }
+
+  public void setGroups(List<String> groups) {
+    this.groups = groups;
   }
 }

@@ -1,6 +1,7 @@
 package innohack.gem.core;
 
 import com.beust.jcommander.internal.Lists;
+import com.google.common.base.Throwables;
 import innohack.gem.core.entity.GEMFile;
 import innohack.gem.core.entity.Project;
 import innohack.gem.core.entity.extractor.ExtractConfig;
@@ -19,6 +20,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.mime.MediaType;
 import org.slf4j.Logger;
@@ -66,41 +68,25 @@ public class GEMMain {
   }
 
   private static List<Group> classifyGroup(GEMFile file, Project project) {
-    List<Group> matchedGroup = new ArrayList<Group>();
-    project.getGroups().stream()
-        .forEach(
-            group -> {
-              boolean match = true;
-              List<Rule> rules = group.getRules();
-              for (Rule rule : rules) {
-                if (!rule.check(file)) {
-                  match = false;
-                  break;
-                }
-              }
-              if (match) {
-                matchedGroup.add(group);
-              }
-            });
-    return matchedGroup;
+    return project.getGroups().stream()
+        .filter(group -> group.getRules().stream().allMatch(r -> r.check(file)))
+        .collect(Collectors.toList());
   }
 
   private static List<ExtractedRecords> extract(GEMFile file, List<Group> matchedGroup) {
-
-    List<ExtractedRecords> results = Lists.newArrayList();
-    matchedGroup.stream()
-        .forEach(
+    return matchedGroup.stream()
+        .map(
             group -> {
               ExtractConfig config = group.getExtractConfig();
-              AbstractExtractor extractor = config.getExtractor();
-              ExtractedRecords records = null;
               try {
-                records = extractor.extract(file, config);
+                ExtractedRecords records = config.getExtractor().extract(file, config);
+                records.setGroups(
+                    matchedGroup.stream().map(Group::getName).collect(Collectors.toList()));
+                return records;
               } catch (Exception e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
               }
-              results.add(records);
-            });
-    return results;
+            })
+        .collect(Collectors.toList());
   }
 }
