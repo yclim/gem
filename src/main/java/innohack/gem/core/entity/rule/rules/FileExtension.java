@@ -31,7 +31,6 @@ public class FileExtension extends Rule {
   @Override
   public boolean check(GEMFile gemFile) {
     final String ext = Util.first(getParams()).getValue();
-    LOGGER.debug("File Extension {} rule: {}", ext, gemFile.getExtension());
     return ext.equalsIgnoreCase(gemFile.getExtension());
   }
 }

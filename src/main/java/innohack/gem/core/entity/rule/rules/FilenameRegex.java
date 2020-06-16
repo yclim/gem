@@ -38,8 +38,6 @@ public class FilenameRegex extends Rule {
     Matcher matcher = pattern.matcher(gemFile.getFileName());
 
     while (matcher.find()) {
-      String matchString = matcher.group();
-      LOGGER.debug("The  match string is " + matchString);
       return true;
     }
     return false;

@@ -52,7 +52,6 @@ public class TikaContentRegex extends Rule {
       Matcher matcher = pattern.matcher(tikaContent);
 
       if (matcher.find()) {
-        LOGGER.info("The match string is {}", matcher.group(0));
         return true;
       }
     }

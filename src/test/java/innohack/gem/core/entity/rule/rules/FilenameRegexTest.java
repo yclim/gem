@@ -15,7 +15,7 @@ public class FilenameRegexTest {
     FilenameRegex addressRegex = new FilenameRegex("address");
 
     GEMFile chatsFile = new GEMFile("reviews.csv", "src/test/resources");
-    GEMFile dataFile = new GEMFile("data.data", "src/test/resources");
+    GEMFile dataFile = new GEMFile("data.dat", "src/test/resources");
 
     assertTrue(chatsRegex.check(chatsFile));
     assertTrue(dataRegex.check(dataFile));

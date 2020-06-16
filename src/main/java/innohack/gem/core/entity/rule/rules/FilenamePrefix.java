@@ -36,8 +36,6 @@ public class FilenamePrefix extends Rule {
   @Override
   public boolean check(GEMFile gemFile) {
     final String prefix = Util.first(getParams()).getValue();
-    LOGGER.debug(
-        "{} {} rule: {}", FilenamePrefix.class.getSimpleName(), prefix, gemFile.getExtension());
     return gemFile.getFileName().startsWith(prefix);
   }
 }
