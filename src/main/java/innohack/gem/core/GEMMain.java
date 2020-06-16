@@ -4,12 +4,12 @@ import innohack.gem.core.entity.GEMFile;
 import innohack.gem.core.entity.Project;
 import innohack.gem.core.entity.extractor.ExtractConfig;
 import innohack.gem.core.entity.extractor.ExtractedRecords;
-import innohack.gem.core.entity.feature.AbstractFeature;
-import innohack.gem.core.entity.feature.CsvFeature;
-import innohack.gem.core.entity.feature.ExcelFeature;
-import innohack.gem.core.entity.feature.TikaFeature;
-import innohack.gem.core.entity.feature.common.FeatureExtractorUtil;
 import innohack.gem.core.entity.rule.Group;
+import innohack.gem.core.feature.AbstractFeature;
+import innohack.gem.core.feature.CsvFeature;
+import innohack.gem.core.feature.ExcelFeature;
+import innohack.gem.core.feature.TikaFeature;
+import innohack.gem.core.feature.common.FeatureExtractorUtil;
 import innohack.gem.example.tika.TikaMimeEnum;
 import java.io.File;
 import java.io.PrintWriter;
@@ -74,8 +74,9 @@ public class GEMMain {
       PrintWriter pw = new PrintWriter(sw);
       pw.println(feature.getClass().getSimpleName());
       e.printStackTrace(pw);
-      gemFile.setErrorMessage(gemFile.getErrorMessage() + sw.toString());
-      LOGGER.warn("Error in extracting Feature", e.getMessage());
+      String prevError = gemFile.getErrorMessage() != null ? gemFile.getErrorMessage() : "";
+      gemFile.setErrorMessage(prevError + sw.toString());
+      LOGGER.warn("Error in extracting Feature: " + e.getMessage());
     }
   }
 

@@ -1,7 +1,7 @@
 package innohack.gem.core.entity;
 
 import com.google.common.collect.Lists;
-import innohack.gem.core.entity.feature.AbstractFeature;
+import innohack.gem.core.feature.AbstractFeature;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;

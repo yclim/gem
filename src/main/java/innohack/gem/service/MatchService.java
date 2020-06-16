@@ -6,7 +6,7 @@ import innohack.gem.core.entity.GEMFile;
 import innohack.gem.core.entity.match.MatchFileGroup;
 import innohack.gem.core.entity.match.MatchFileRule;
 import innohack.gem.core.entity.rule.Group;
-import innohack.gem.core.entity.rule.rules.Rule;
+import innohack.gem.core.rules.Rule;
 import innohack.gem.dao.IGEMFileDao;
 import innohack.gem.dao.IGroupDao;
 import innohack.gem.dao.IMatchFileDao;

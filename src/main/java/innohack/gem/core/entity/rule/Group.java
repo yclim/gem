@@ -2,7 +2,7 @@ package innohack.gem.core.entity.rule;
 
 import innohack.gem.core.entity.GEMFile;
 import innohack.gem.core.entity.extractor.ExtractConfig;
-import innohack.gem.core.entity.rule.rules.Rule;
+import innohack.gem.core.rules.Rule;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import innohack.gem.core.GEMMain;
 import innohack.gem.core.entity.GEMFile;
+import innohack.gem.core.rules.TikaMetaValue;
 import java.io.File;
 import org.junit.jupiter.api.Test;
 

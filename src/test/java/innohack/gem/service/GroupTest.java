@@ -3,9 +3,9 @@ package innohack.gem.service;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import innohack.gem.core.entity.rule.Group;
-import innohack.gem.core.entity.rule.rules.FileExtension;
-import innohack.gem.core.entity.rule.rules.FilenamePrefix;
-import innohack.gem.core.entity.rule.rules.Rule;
+import innohack.gem.core.rules.FileExtension;
+import innohack.gem.core.rules.FilenamePrefix;
+import innohack.gem.core.rules.Rule;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;

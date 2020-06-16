@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import innohack.gem.core.GEMMain;
 import innohack.gem.core.entity.GEMFile;
+import innohack.gem.core.feature.AbstractFeature;
+import innohack.gem.core.feature.TikaFeature;
 import java.io.File;
 import java.util.Collection;
 import java.util.Iterator;
@@ -28,7 +30,7 @@ class TikaFeatureTests {
     while (iterator.hasNext()) {
       AbstractFeature abs = iterator.next();
       if (abs.getClass().getName().equals(TikaFeature.class.getName())) {
-        testMetadata((innohack.gem.core.entity.feature.TikaFeature) abs);
+        testMetadata((TikaFeature) abs);
       }
     }
   }

@@ -1,4 +1,4 @@
-package innohack.gem.core.entity.feature;
+package innohack.gem.core.feature;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 

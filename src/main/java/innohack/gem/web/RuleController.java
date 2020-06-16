@@ -1,6 +1,6 @@
 package innohack.gem.web;
 
-import innohack.gem.core.entity.rule.rules.Rule;
+import innohack.gem.core.rules.Rule;
 import innohack.gem.service.RuleService;
 import java.util.HashMap;
 import java.util.List;

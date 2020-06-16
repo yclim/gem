@@ -1,11 +1,11 @@
-package innohack.gem.core.entity.rule.rules;
+package innohack.gem.core.rules;
 
 import com.google.common.collect.Lists;
 import innohack.gem.core.entity.GEMFile;
-import innohack.gem.core.entity.feature.TikaFeature;
 import innohack.gem.core.entity.rule.ParamType;
 import innohack.gem.core.entity.rule.Parameter;
 import innohack.gem.core.entity.rule.RuleType;
+import innohack.gem.core.feature.TikaFeature;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.slf4j.Logger;

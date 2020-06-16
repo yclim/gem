@@ -1,4 +1,4 @@
-package innohack.gem.core.entity.feature.common;
+package innohack.gem.core.feature.common;
 
 public enum TikaMimeEnum {
   PDF("pdf"),

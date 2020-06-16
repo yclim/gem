@@ -1,6 +1,6 @@
 package innohack.gem.core.entity.rule;
 
-import innohack.gem.core.entity.rule.rules.Rule;
+import innohack.gem.core.rules.Rule;
 import java.util.*;
 import org.reflections.Reflections;
 import org.slf4j.Logger;

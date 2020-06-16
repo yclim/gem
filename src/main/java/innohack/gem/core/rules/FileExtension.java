@@ -1,11 +1,11 @@
-package innohack.gem.core.entity.rule.rules;
+package innohack.gem.core.rules;
 
 import com.google.common.collect.Lists;
 import innohack.gem.core.entity.GEMFile;
 import innohack.gem.core.entity.rule.ParamType;
 import innohack.gem.core.entity.rule.Parameter;
 import innohack.gem.core.entity.rule.RuleType;
-import innohack.gem.util.Util;
+import innohack.gem.core.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

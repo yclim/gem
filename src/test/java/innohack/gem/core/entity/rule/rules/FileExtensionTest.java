@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import innohack.gem.core.entity.GEMFile;
+import innohack.gem.core.rules.FileExtension;
 import org.junit.jupiter.api.Test;
 
 public class FileExtensionTest {

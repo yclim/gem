@@ -1,4 +1,4 @@
-package innohack.gem.core.entity.feature;
+package innohack.gem.core.feature;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
