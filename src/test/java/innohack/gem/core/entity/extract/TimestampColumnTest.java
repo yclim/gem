@@ -1,4 +1,4 @@
-package innohack.gem.core.entity.extractor;
+package innohack.gem.core.entity.extract;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

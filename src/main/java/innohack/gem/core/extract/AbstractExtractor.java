@@ -1,9 +1,9 @@
-package innohack.gem.service.extract;
+package innohack.gem.core.extract;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import innohack.gem.core.entity.GEMFile;
-import innohack.gem.core.entity.extractor.ExtractConfig;
-import innohack.gem.core.entity.extractor.ExtractedRecords;
+import innohack.gem.core.entity.extract.ExtractConfig;
+import innohack.gem.core.entity.extract.ExtractedRecords;
 import innohack.gem.core.entity.rule.Parameter;
 import java.util.List;
 

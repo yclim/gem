@@ -1,4 +1,4 @@
-package innohack.gem.core.entity.extractor;
+package innohack.gem.core.entity.extract;
 
 import com.beust.jcommander.internal.Lists;
 import java.util.List;

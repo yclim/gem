@@ -1,7 +1,7 @@
-package innohack.gem.core.entity.extractor;
+package innohack.gem.core.entity.extract;
 
 import com.beust.jcommander.internal.Lists;
-import innohack.gem.service.extract.AbstractExtractor;
+import innohack.gem.core.extract.AbstractExtractor;
 import java.util.List;
 
 public class ExtractConfig {

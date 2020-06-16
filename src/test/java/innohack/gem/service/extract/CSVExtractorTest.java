@@ -4,9 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import innohack.gem.core.GEMMain;
 import innohack.gem.core.entity.GEMFile;
-import innohack.gem.core.entity.extractor.ExtractConfig;
-import innohack.gem.core.entity.extractor.ExtractedRecords;
-import innohack.gem.core.entity.extractor.TimestampColumn;
+import innohack.gem.core.entity.extract.ExtractConfig;
+import innohack.gem.core.entity.extract.ExtractedRecords;
+import innohack.gem.core.entity.extract.TimestampColumn;
+import innohack.gem.core.extract.CSVExtractor;
 import java.io.File;
 import org.junit.jupiter.api.Test;
 

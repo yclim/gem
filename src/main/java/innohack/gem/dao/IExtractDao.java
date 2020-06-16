@@ -1,7 +1,7 @@
 package innohack.gem.dao;
 
-import innohack.gem.core.entity.extractor.ExtractConfig;
-import innohack.gem.core.entity.extractor.ExtractedRecords;
+import innohack.gem.core.entity.extract.ExtractConfig;
+import innohack.gem.core.entity.extract.ExtractedRecords;
 
 public interface IExtractDao {
 

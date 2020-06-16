@@ -1,4 +1,4 @@
-package innohack.gem.service.extract;
+package innohack.gem.core.extract;
 
 import java.util.ArrayList;
 import java.util.Iterator;

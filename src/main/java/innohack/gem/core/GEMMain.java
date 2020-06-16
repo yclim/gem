@@ -2,8 +2,8 @@ package innohack.gem.core;
 
 import innohack.gem.core.entity.GEMFile;
 import innohack.gem.core.entity.Project;
-import innohack.gem.core.entity.extractor.ExtractConfig;
-import innohack.gem.core.entity.extractor.ExtractedRecords;
+import innohack.gem.core.entity.extract.ExtractConfig;
+import innohack.gem.core.entity.extract.ExtractedRecords;
 import innohack.gem.core.entity.rule.Group;
 import innohack.gem.core.feature.AbstractFeature;
 import innohack.gem.core.feature.CsvFeature;
@@ -25,7 +25,15 @@ public class GEMMain {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(GEMMain.class);
 
-  public static List<ExtractedRecords> process(File file, Project project) throws Exception {
+  /**
+   * Extract feature from file, determine the group, and extract structured data from it Function
+   * will produce ExtractedRecords for each group the file is classified to
+   *
+   * @param file
+   * @param project
+   * @return ExtractedRecords for each group the file is classified to
+   */
+  public static List<ExtractedRecords> process(File file, Project project) {
     GEMFile gemFile = extractFeature(file);
     List<Group> matchedGroup = classifyGroup(gemFile, project);
     return extract(gemFile, matchedGroup);
