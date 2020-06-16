@@ -2,7 +2,9 @@ package innohack.gem.core.entity.feature;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import innohack.gem.core.GEMMain;
 import innohack.gem.core.entity.GEMFile;
+import java.io.File;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -56,8 +58,8 @@ public class ExcelFeatureTests {
     String filenamePrefix = "manual_cars_";
     String filename = filenamePrefix + 0 + ".xls";
 
-    GEMFile gFile = new GEMFile(filename, path);
-    gFile.extract();
+    File file = new File(path + "/" + filename);
+    GEMFile gFile = GEMMain.extractFeature(file);
     Collection<AbstractFeature> abstractFeatureC = gFile.getData();
 
     Iterator<AbstractFeature> iterator = abstractFeatureC.iterator();
@@ -82,8 +84,8 @@ public class ExcelFeatureTests {
     String filenamePrefix = "manual2_cars_";
     String filename = filenamePrefix + 0 + ".xls";
 
-    GEMFile gFile = new GEMFile(filename, path);
-    gFile.extract();
+    File file = new File(path + "/" + filename);
+    GEMFile gFile = GEMMain.extractFeature(file);
     Collection<AbstractFeature> abstractFeatureC = gFile.getData();
 
     Iterator<AbstractFeature> iterator = abstractFeatureC.iterator();
@@ -241,8 +243,8 @@ public class ExcelFeatureTests {
     // ExcelFileGenerator.generateFixedCarsExcelFiles(
     //    XLSX, false, 100, 1, Paths.get(path), filenamePrefix);
 
-    GEMFile gFile = new GEMFile(filename, path);
-    gFile.extract();
+    File file = new File(path + "/" + filename);
+    GEMFile gFile = GEMMain.extractFeature(file);
     Collection<AbstractFeature> abstractFeatureC = gFile.getData();
 
     Iterator<AbstractFeature> iterator = abstractFeatureC.iterator();
@@ -268,8 +270,8 @@ public class ExcelFeatureTests {
     // ExcelFileGenerator.generateFixedCarsExcelFiles(
     //    XLSX, true, 100, 1, Paths.get(path), filenamePrefix);
 
-    GEMFile gFile = new GEMFile(filename, path);
-    gFile.extract();
+    File file = new File(path + "/" + filename);
+    GEMFile gFile = GEMMain.extractFeature(file);
     Collection<AbstractFeature> abstractFeatureC = gFile.getData();
 
     Iterator<AbstractFeature> iterator = abstractFeatureC.iterator();

@@ -2,7 +2,9 @@ package innohack.gem.core.entity.feature;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import innohack.gem.core.GEMMain;
 import innohack.gem.core.entity.GEMFile;
+import java.io.File;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -17,9 +19,9 @@ class CSVFeatureTests {
     String filenamePrefix = "customer_";
     String filename = filenamePrefix + 0 + ".csv";
 
-    GEMFile gFile = new GEMFile(filename, path);
-    gFile.extract();
-    Collection<AbstractFeature> abstractFeatureC = gFile.getData();
+    File f = new File(path + "/" + filename);
+    GEMFile gemFile = GEMMain.extractFeature(f);
+    Collection<AbstractFeature> abstractFeatureC = gemFile.getData();
 
     Iterator<AbstractFeature> iterator = abstractFeatureC.iterator();
 

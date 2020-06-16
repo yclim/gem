@@ -2,24 +2,25 @@ package innohack.gem.service.extract;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import innohack.gem.core.GEMMain;
 import innohack.gem.core.entity.GEMFile;
 import innohack.gem.core.entity.extractor.ExtractConfig;
 import innohack.gem.core.entity.extractor.ExtractedRecords;
+import java.io.File;
 import org.junit.jupiter.api.Test;
 
 public class TikaContentExtractorTest {
 
   @Test
   public void testExtract() throws Exception {
-    GEMFile pdfFile = new GEMFile("story_0.pdf", "src/test/resources/extract");
-
+    File f = new File("src/test/resources/extract/story_0.pdf");
     ExtractConfig config = new ExtractConfig();
     TikaContentExtractor tikaContentExtractor = new TikaContentExtractor("(white|black)");
 
     // what should we set for the config here for tika content? as there is no row or header in
     // tika extraction
     config.setExtractor(tikaContentExtractor);
-    pdfFile.extract();
+    GEMFile pdfFile = GEMMain.extractFeature(f);
     ExtractedRecords results = tikaContentExtractor.extract(pdfFile, config);
 
     assertEquals(2, results.getRecords().size());
@@ -29,7 +30,7 @@ public class TikaContentExtractorTest {
 
   @Test
   public void testExtractNoGroup() throws Exception {
-    GEMFile pdfFile = new GEMFile("story_0.pdf", "src/test/resources/extract");
+    File f = new File("src/test/resources/extract/story_0.pdf");
 
     ExtractConfig config = new ExtractConfig();
     TikaContentExtractor tikaContentExtractor = new TikaContentExtractor("\\bwhite\\b|\\bblack\\b");
@@ -37,7 +38,7 @@ public class TikaContentExtractorTest {
     // what should we set for the config here for tika content? as there is no row or header in
     // tika extraction
     config.setExtractor(tikaContentExtractor);
-    pdfFile.extract();
+    GEMFile pdfFile = GEMMain.extractFeature(f);
     ExtractedRecords results = tikaContentExtractor.extract(pdfFile, config);
 
     assertEquals(1, results.getRecords().size());
@@ -46,22 +47,22 @@ public class TikaContentExtractorTest {
 
   @Test
   public void testExtractEmpty() throws Exception {
-    GEMFile pdfFile = new GEMFile("story_0.pdf", "src/test/resources/extract");
+    File f = new File("src/test/resources/extract/story_0.pdf");
     ExtractConfig config = new ExtractConfig();
     TikaContentExtractor tikaContentExtractor = new TikaContentExtractor("(Nada)");
     config.setExtractor(tikaContentExtractor);
-    pdfFile.extract();
+    GEMFile pdfFile = GEMMain.extractFeature(f);
     ExtractedRecords results = tikaContentExtractor.extract(pdfFile, config);
     assertEquals(0, results.getRecords().size());
   }
 
   @Test
   public void testExtractTable() throws Exception {
-    GEMFile pdfFile = new GEMFile("reviews.pdf", "src/test/resources/extract");
+    File f = new File("src/test/resources/extract/reviews.pdf");
     ExtractConfig config = new ExtractConfig();
     TikaContentExtractor tikaContentExtractor = new TikaContentExtractor("(.*?),(.*?),(.*?),(.*)");
     config.setExtractor(tikaContentExtractor);
-    pdfFile.extract();
+    GEMFile pdfFile = GEMMain.extractFeature(f);
     ExtractedRecords results = tikaContentExtractor.extract(pdfFile, config);
     assertEquals(6, results.getRecords().size()); // rows
     assertEquals(4, results.getRecords().get(0).size()); // columns

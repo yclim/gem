@@ -2,7 +2,9 @@ package innohack.gem.core.entity.feature;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import innohack.gem.core.GEMMain;
 import innohack.gem.core.entity.GEMFile;
+import java.io.File;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -15,8 +17,8 @@ class TikaFeatureTests {
     String path = "src/test/resources";
     String filename = "customer_0.csv";
 
-    GEMFile gFile = new GEMFile(filename, path);
-    gFile.extract();
+    File file = new File(path + "/" + filename);
+    GEMFile gFile = GEMMain.extractFeature(file);
     Collection<AbstractFeature> abstractFeatureC = gFile.getData();
 
     Iterator<AbstractFeature> iterator = abstractFeatureC.iterator();

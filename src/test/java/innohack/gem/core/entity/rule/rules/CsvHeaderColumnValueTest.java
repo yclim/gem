@@ -3,7 +3,9 @@ package innohack.gem.core.entity.rule.rules;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import innohack.gem.core.GEMMain;
 import innohack.gem.core.entity.GEMFile;
+import java.io.File;
 import org.junit.jupiter.api.Test;
 
 public class CsvHeaderColumnValueTest {
@@ -16,8 +18,8 @@ public class CsvHeaderColumnValueTest {
     String path = "src/test/resources";
     String filename = "customer_0.csv";
 
-    GEMFile gFile = new GEMFile(filename, path);
-    gFile.extract();
+    File file = new File(path + "/" + filename);
+    GEMFile gFile = GEMMain.extractFeature(file);
     assertTrue(csvHeader.check(gFile));
   }
 
@@ -29,8 +31,8 @@ public class CsvHeaderColumnValueTest {
     String path = "src/test/resources";
     String filename = "customer_0.csv";
 
-    GEMFile gFile = new GEMFile(filename, path);
-    gFile.extract();
+    File file = new File(path + "/" + filename);
+    GEMFile gFile = GEMMain.extractFeature(file);
     // Test false because customer name is customername
     assertFalse(csvHeader.check(gFile));
   }
@@ -43,8 +45,8 @@ public class CsvHeaderColumnValueTest {
     String path = "src/test/resources";
     String filename = "customer_0.csv";
 
-    GEMFile gFile = new GEMFile(filename, path);
-    gFile.extract();
+    File file = new File(path + "/" + filename);
+    GEMFile gFile = GEMMain.extractFeature(file);
     // Test false because emailAADR
     assertFalse(csvHeader.check(gFile));
   }

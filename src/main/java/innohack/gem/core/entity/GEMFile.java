@@ -2,15 +2,8 @@ package innohack.gem.core.entity;
 
 import com.google.common.collect.Lists;
 import innohack.gem.core.entity.feature.AbstractFeature;
-import innohack.gem.core.entity.feature.CsvFeature;
-import innohack.gem.core.entity.feature.ExcelFeature;
-import innohack.gem.core.entity.feature.TikaFeature;
-import innohack.gem.core.entity.feature.common.FeatureExtractorUtil;
-import innohack.gem.example.tika.TikaMimeEnum;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.LocalDateTime;
@@ -20,8 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.tika.config.TikaConfig;
-import org.apache.tika.mime.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -161,64 +152,6 @@ public class GEMFile implements Comparable<GEMFile> {
 
   public void setErrorMessage(String errorMessage) {
     this.errorMessage = errorMessage;
-  }
-
-  // Perform extraction
-  // TODO move this to service? Ideally entities do not perform logic
-  public GEMFile extract() {
-    if (!extracted) {
-      try {
-        File file = new File(directory, fileName);
-        MediaType mediaType =
-            new FeatureExtractorUtil().extractMime(new TikaConfig(), file.toPath());
-        this.mimeType = mediaType.toString();
-        String subtype = mediaType.getSubtype();
-        if (subtype.equals(TikaMimeEnum.MSEXCELXLSX.getMimeType())
-            || subtype.equals(TikaMimeEnum.MSEXCELXLS.getMimeType())) {
-          extractExcel(mediaType);
-        } else if (mediaType.getSubtype().equals(TikaMimeEnum.CSV.getMimeType())) {
-          extractCSV();
-        }
-        //  we always want to use Tika no matter what file type
-        extractTika();
-        extracted = true;
-      } catch (Exception e) {
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        e.printStackTrace(pw);
-        this.errorMessage = sw.toString();
-        LOGGER.error("Error in extract", e);
-      }
-    }
-
-    return this;
-  }
-
-  // Perform extraction on csv
-  public GEMFile extractCSV() throws Exception {
-    File file = new File(directory, fileName);
-    CsvFeature extractedData1 = new CsvFeature();
-    extractedData1.extract(file);
-    addData(extractedData1);
-    return this;
-  }
-
-  // Perform extraction on Excel
-  public GEMFile extractExcel(MediaType mediaType) throws Exception {
-    File file = new File(directory, fileName);
-    ExcelFeature extractedData1 = new ExcelFeature();
-    extractedData1.extract(file);
-    addData(extractedData1);
-    return this;
-  }
-
-  public GEMFile extractTika() throws Exception {
-    File file = new File(directory, fileName);
-    TikaFeature tikaFeature = new TikaFeature();
-    tikaFeature.extract(file);
-    addData(tikaFeature);
-
-    return this;
   }
 
   @Override

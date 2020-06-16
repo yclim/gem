@@ -1,9 +1,6 @@
 package innohack.gem.core;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import innohack.gem.GemApplication;
-import innohack.gem.core.GEMMain;
-import innohack.gem.core.entity.GEMFile;
 import innohack.gem.core.entity.Project;
 import innohack.gem.core.entity.extractor.ExtractedRecords;
 import java.io.File;

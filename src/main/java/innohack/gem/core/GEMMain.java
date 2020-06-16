@@ -1,7 +1,5 @@
 package innohack.gem.core;
 
-import com.beust.jcommander.internal.Lists;
-import com.google.common.base.Throwables;
 import innohack.gem.core.entity.GEMFile;
 import innohack.gem.core.entity.Project;
 import innohack.gem.core.entity.extractor.ExtractConfig;
@@ -11,14 +9,10 @@ import innohack.gem.core.entity.feature.ExcelFeature;
 import innohack.gem.core.entity.feature.TikaFeature;
 import innohack.gem.core.entity.feature.common.FeatureExtractorUtil;
 import innohack.gem.core.entity.rule.Group;
-import innohack.gem.core.entity.rule.rules.Rule;
 import innohack.gem.example.tika.TikaMimeEnum;
-import innohack.gem.service.ExtractService;
-import innohack.gem.service.extract.AbstractExtractor;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.tika.config.TikaConfig;
@@ -36,7 +30,7 @@ public class GEMMain {
     return extract(gemFile, matchedGroup);
   }
 
-  public static GEMFile extractFeature(File file) throws Exception {
+  public static GEMFile extractFeature(File file) {
     GEMFile gemFile = new GEMFile(file.getAbsolutePath());
     try {
       MediaType mediaType = new FeatureExtractorUtil().extractMime(new TikaConfig(), file.toPath());
@@ -62,7 +56,6 @@ public class GEMMain {
       e.printStackTrace(pw);
       gemFile.setErrorMessage(sw.toString());
       LOGGER.error("Error in extract", e);
-      throw e;
     }
     return gemFile;
   }

@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.beust.jcommander.internal.Lists;
+import innohack.gem.core.GEMMain;
 import innohack.gem.core.entity.GEMFile;
 import innohack.gem.core.entity.extractor.ExtractConfig;
 import innohack.gem.core.entity.extractor.ExtractedFile;
@@ -15,6 +16,7 @@ import innohack.gem.dao.IGEMFileDao;
 import innohack.gem.service.extract.AbstractExtractor;
 import innohack.gem.service.extract.CSVExtractor;
 import innohack.gem.service.extract.ExcelExtractor;
+import java.io.File;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +35,7 @@ public class ExtractServiceTest {
 
   private static final String FILENAME = "reviews.csv";
 
-  private static final GEMFile GEM_FILE = new GEMFile(FILENAME, "src/test/resources");
+  private static final File FILE = new File("src/test/resources/" + FILENAME);
 
   @MockBean private GroupService groupService;
 
@@ -44,7 +46,7 @@ public class ExtractServiceTest {
   @Autowired private ExtractService extractService;
 
   @BeforeEach
-  public void setup() {
+  public void setup() throws Exception {
     ExtractConfig config = new ExtractConfig();
     CSVExtractor csvExtractor = new CSVExtractor("Id,Sender,Time");
     config.setExtractor(csvExtractor);
@@ -56,7 +58,7 @@ public class ExtractServiceTest {
 
     Group group = new Group();
 
-    GEMFile gemFile = GEM_FILE.extract();
+    GEMFile gemFile = GEMMain.extractFeature(FILE);
     group.setMatchedFile(Lists.newArrayList(gemFile));
 
     Mockito.when(groupService.getGroup(Mockito.anyInt())).thenReturn(group);
@@ -83,8 +85,7 @@ public class ExtractServiceTest {
   @Test
   public void testGetExtractedRecords() throws Exception {
     extractService.extract(GROUP_ID);
-    ExtractedRecords results =
-        extractService.getExtractedRecords(GROUP_ID, GEM_FILE.getAbsolutePath());
+    ExtractedRecords results = extractService.getExtractedRecords(GROUP_ID, FILE.getAbsolutePath());
     assertEquals(4, results.getHeaders().size());
     assertEquals("[Identifier, Name, RawTime, Time (ms)]", results.getHeaders().toString());
 
