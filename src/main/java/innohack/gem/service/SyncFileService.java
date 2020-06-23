@@ -1,8 +1,10 @@
 package innohack.gem.service;
 
 import com.beust.jcommander.internal.Maps;
+import innohack.gem.core.GEMMain;
+import innohack.gem.core.entity.GEMFile;
 import innohack.gem.dao.IGEMFileDao;
-import innohack.gem.entity.GEMFile;
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -68,12 +70,14 @@ public class SyncFileService implements Runnable {
 
     // Extract data from new files and save to database
     for (GEMFile file : fileToSave.values()) {
+      GEMFile result = file;
       try {
-        file.extract();
+        File f = new File(file.getAbsolutePath());
+        result = GEMMain.extractFeature(f);
       } catch (Exception ex) {
         LOGGER.debug("{}: {}", GEMFileService.class, ex.getStackTrace());
       }
-      fileToSave.put(file.getAbsolutePath(), file);
+      fileToSave.put(file.getAbsolutePath(), result);
       totalProcessed = totalProcessed + 1;
       gemFileDao.setSyncStatus(totalProcessed / totalProcesses);
     }

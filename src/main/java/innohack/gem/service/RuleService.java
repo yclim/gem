@@ -1,7 +1,7 @@
 package innohack.gem.service;
 
-import innohack.gem.entity.rule.RuleFactory;
-import innohack.gem.entity.rule.rules.Rule;
+import innohack.gem.core.entity.rule.RuleFactory;
+import innohack.gem.core.rules.Rule;
 import java.util.List;
 import org.springframework.stereotype.Service;
 

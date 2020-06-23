@@ -2,13 +2,13 @@ package innohack.gem.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
+import innohack.gem.core.entity.GEMFile;
+import innohack.gem.core.entity.Project;
+import innohack.gem.core.entity.rule.Group;
+import innohack.gem.core.entity.rule.GroupExportMixin;
+import innohack.gem.core.rules.FileExtension;
+import innohack.gem.core.rules.Rule;
 import innohack.gem.dao.IGroupDao;
-import innohack.gem.entity.GEMFile;
-import innohack.gem.entity.Project;
-import innohack.gem.entity.rule.Group;
-import innohack.gem.entity.rule.GroupExportMixin;
-import innohack.gem.entity.rule.rules.FileExtension;
-import innohack.gem.entity.rule.rules.Rule;
 import java.io.IOException;
 import java.util.*;
 import org.slf4j.Logger;
@@ -23,6 +23,7 @@ public class GroupService {
 
   @Autowired private IGroupDao groupDao;
   @Autowired private MatchService matchService;
+  @Autowired private ExtractService extractService;
 
   public List<Group> getGroups() {
     List<Group> group = groupDao.getGroups();
@@ -114,6 +115,7 @@ public class GroupService {
         .forEach(
             group -> {
               matchService.onUpdateEvent(group);
+              extractService.updateExtractConfig(group.getGroupId(), group.getExtractConfig());
             });
     return groups;
   }
@@ -122,6 +124,11 @@ public class GroupService {
     LOGGER.debug("Exporting the project as json...");
     try {
       List<Group> groups = groupDao.getGroups();
+      groups.stream()
+          .forEach(
+              group -> {
+                group.setExtractConfig(extractService.getExtractConfig(group.getGroupId()));
+              });
       Project project = new Project();
       project.setGroups(groups);
       project.setSpecVersion(Project.SPEC_VERSION);

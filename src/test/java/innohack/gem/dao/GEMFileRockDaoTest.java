@@ -2,8 +2,10 @@ package innohack.gem.dao;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import innohack.gem.core.GEMMain;
+import innohack.gem.core.entity.GEMFile;
 import innohack.gem.database.RocksDatabase;
-import innohack.gem.entity.GEMFile;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,11 +33,11 @@ public class GEMFileRockDaoTest {
 
   @Test
   void testSaveFileWithExtractedData() throws Exception {
-    GEMFile f = new GEMFile(filename1, dir);
-    f.extract();
-    db.put(f.getAbsolutePath(), f);
-    GEMFile file = db.get(f.getAbsolutePath());
-    assertTrue(file.equals(f));
+    File f = new File(dir + "/" + filename1);
+    GEMFile gemFile = GEMMain.extractFeature(f);
+    db.put(f.getAbsolutePath(), gemFile);
+    GEMFile file = db.get(gemFile.getAbsolutePath());
+    assertTrue(file.equals(gemFile));
     assertTrue(file.getData() != null);
     db.deleteAll();
   }

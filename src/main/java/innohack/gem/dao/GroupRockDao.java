@@ -1,7 +1,7 @@
 package innohack.gem.dao;
 
+import innohack.gem.core.entity.rule.Group;
 import innohack.gem.database.RocksDatabase;
-import innohack.gem.entity.rule.Group;
 import java.util.*;
 import org.springframework.stereotype.Repository;
 

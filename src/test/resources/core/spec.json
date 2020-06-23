@@ -1,0 +1,89 @@
+{
+  "specVersion" : "1.0.0",
+  "groups" : [ {
+    "groupId" : 8,
+    "name" : "csv-customer",
+    "rules" : [ {
+      "ruleId" : "innohack.gem.core.rules.FileExtension",
+      "label" : "File Extension",
+      "ruleType" : "FILE",
+      "name" : "FE-8",
+      "params" : [ {
+        "label" : "File extension",
+        "placeholder" : "txt",
+        "value" : "csv",
+        "type" : "STRING"
+      } ]
+    }, {
+      "ruleId" : "innohack.gem.core.rules.CsvHeaderColumnValue",
+      "label" : "CSV Header Column Value",
+      "ruleType" : "CSV",
+      "name" : "CHCV-2",
+      "params" : [ {
+        "label" : "Headers",
+        "placeholder" : "aa,bb,cc",
+        "value" : "Customer ID",
+        "type" : "STRING_LIST"
+      } ]
+    } ],
+    "extractConfig" : {
+      "tableName" : "Customer",
+      "columnNames" : [ "name", "gender" ],
+      "timestampColumns" : [ ],
+      "groupId" : 8,
+      "extractor" : {
+        "extractorId" : "innohack.gem.core.extract.CSVExtractor",
+        "label" : "CSV Extractor",
+        "params" : [ {
+          "label" : "Column Names",
+          "placeholder" : "",
+          "value" : "Customer Name,Gender",
+          "type" : "STRING_LIST"
+        } ]
+      }
+    }
+  }, {
+    "groupId" : 7,
+    "name" : "csv-sender",
+    "rules" : [ {
+      "ruleId" : "innohack.gem.core.rules.FileExtension",
+      "label" : "File Extension",
+      "ruleType" : "FILE",
+      "name" : "FE-7",
+      "params" : [ {
+        "label" : "File extension",
+        "placeholder" : "txt",
+        "value" : "csv",
+        "type" : "STRING"
+      } ]
+    }, {
+      "ruleId" : "innohack.gem.core.rules.CsvHeaderColumnValue",
+      "label" : "CSV Header Column Value",
+      "ruleType" : "CSV",
+      "name" : "CHCV-1",
+      "params" : [ {
+        "label" : "Headers",
+        "placeholder" : "aa,bb,cc",
+        "value" : "sender",
+        "type" : "STRING_LIST"
+      } ]
+    } ],
+    "extractConfig" : {
+      "tableName" : "Sender",
+      "columnNames" : [ "Id", "Sender_Name" ],
+      "timestampColumns" : [ ],
+      "groupId" : 7,
+      "extractor" : {
+        "extractorId" : "innohack.gem.core.extract.CSVExtractor",
+        "label" : "CSV Extractor",
+        "params" : [ {
+          "label" : "Column Names",
+          "placeholder" : "",
+          "value" : "Id,Sender",
+          "type" : "STRING_LIST"
+        } ]
+      }
+    }
+  } ],
+  "projectName" : "1.0"
+}

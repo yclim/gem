@@ -1,10 +1,10 @@
 package innohack.gem.web;
 
-import innohack.gem.entity.extractor.ExtractConfig;
-import innohack.gem.entity.extractor.ExtractedFile;
-import innohack.gem.entity.extractor.ExtractedRecords;
+import innohack.gem.core.entity.extract.ExtractConfig;
+import innohack.gem.core.entity.extract.ExtractedFile;
+import innohack.gem.core.entity.extract.ExtractedRecords;
+import innohack.gem.core.extract.AbstractExtractor;
 import innohack.gem.service.ExtractService;
-import innohack.gem.service.extract.AbstractExtractor;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

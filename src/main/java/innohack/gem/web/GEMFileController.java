@@ -1,7 +1,7 @@
 package innohack.gem.web;
 
-import innohack.gem.entity.GEMFile;
-import innohack.gem.entity.match.MatchFileGroup;
+import innohack.gem.core.entity.GEMFile;
+import innohack.gem.core.entity.match.MatchFileGroup;
 import innohack.gem.service.GEMFileService;
 import innohack.gem.service.MatchService;
 import java.util.List;

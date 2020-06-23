@@ -2,6 +2,11 @@ package innohack.gem.service.extract;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import innohack.gem.core.extract.AbstractExtractor;
+import innohack.gem.core.extract.CSVExtractor;
+import innohack.gem.core.extract.ExcelExtractor;
+import innohack.gem.core.extract.ExtractorFactory;
+import innohack.gem.core.extract.TikaContentExtractor;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
