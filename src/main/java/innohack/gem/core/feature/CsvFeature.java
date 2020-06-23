@@ -10,9 +10,9 @@ import com.opencsv.enums.CSVReaderNullFieldIndicator;
 import com.opencsv.exceptions.CsvException;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.Reader;
-import java.nio.file.Files;
+import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -26,7 +26,6 @@ public class CsvFeature extends AbstractFeature {
 
   @Override
   public void extract(File f) throws Exception {
-
     contentParser(f);
   }
 
@@ -67,27 +66,21 @@ public class CsvFeature extends AbstractFeature {
   }
 
   /** use openCSV libraries instead of tika for better csv support */
-  private CSVReader getCsvReaderUsingOpenCsv(Path filePath) {
-    Reader reader;
-    CSVReader csvReader = null;
+  private CSVReader getCsvReaderUsingOpenCsv(Path filePath) throws IOException {
+    // read:
+    // https://stackoverflow.com/questions/26268132/all-inclusive-charset-to-avoid-java-nio-charset-malformedinputexception-input
+    BufferedReader reader =
+        new BufferedReader(new InputStreamReader(new FileInputStream(filePath.toFile()), UTF_8));
+    CSVParser parser =
+        new CSVParserBuilder()
+            .withSeparator(detectSeparators(reader))
+            .withFieldAsNull(CSVReaderNullFieldIndicator.EMPTY_QUOTES)
+            .withIgnoreLeadingWhiteSpace(true)
+            .withIgnoreQuotations(false)
+            .withStrictQuotes(false)
+            .build();
 
-    try {
-      reader = Files.newBufferedReader(filePath, UTF_8);
-      CSVParser parser =
-          new CSVParserBuilder()
-              .withSeparator(detectSeparators((BufferedReader) reader))
-              .withFieldAsNull(CSVReaderNullFieldIndicator.EMPTY_QUOTES)
-              .withIgnoreLeadingWhiteSpace(true)
-              .withIgnoreQuotations(false)
-              .withStrictQuotes(false)
-              .build();
-
-      csvReader = new CSVReaderBuilder(reader).withCSVParser(parser).build();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    return csvReader;
+    return new CSVReaderBuilder(reader).withCSVParser(parser).build();
   }
 
   /** detectSeparators to help determine the delimiters for a csv files */
