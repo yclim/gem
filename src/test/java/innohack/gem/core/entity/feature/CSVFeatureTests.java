@@ -1,9 +1,13 @@
-package innohack.gem.entity.feature;
+package innohack.gem.core.entity.feature;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import innohack.gem.entity.GEMFile;
+import innohack.gem.core.GEMMain;
+import innohack.gem.core.entity.GEMFile;
+import innohack.gem.core.feature.AbstractFeature;
+import innohack.gem.core.feature.CsvFeature;
+import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -20,8 +24,8 @@ class CSVFeatureTests {
     String filenamePrefix = "customer_";
     String filename = filenamePrefix + 0 + ".csv";
 
-    GEMFile gFile = new GEMFile(filename, path);
-    gFile.extract();
+    GEMFile gFile = GEMMain.extractFeature(new File(path + "/" + filename));
+
     Collection<AbstractFeature> abstractFeatureC = gFile.getData();
 
     Iterator<AbstractFeature> iterator = abstractFeatureC.iterator();
@@ -119,7 +123,7 @@ class CSVFeatureTests {
   static final String TEST_FILE_DIRECTORY = "src/test/resources/csvfeature";
 
   static CsvFeature getCsvFeature(String filename) {
-    GEMFile gemFile = new GEMFile(filename, TEST_FILE_DIRECTORY).extract();
+    GEMFile gemFile = GEMMain.extractFeature(new File(TEST_FILE_DIRECTORY + "/" + filename));
     Optional<CsvFeature> csvFeatureOpt =
         gemFile.getData().stream()
             .filter(f -> f instanceof CsvFeature)
@@ -136,7 +140,7 @@ class CSVFeatureTests {
     assertEquals(1, feature.getTableData().get(0).size(), "number of column match");
     assertEquals("c1", feature.getTableData().get(0).get(0), "first row value match");
     assertEquals("c1", feature.getHeaders().get(0), "first header value match");
-    assertEquals("f", feature.getTableData().get(1).get(2), "last data value match");
+    assertEquals("c", feature.getTableData().get(3).get(0), "last data value match");
   }
 
   @Test

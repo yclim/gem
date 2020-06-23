@@ -3,7 +3,6 @@ package innohack.gem.dao;
 import innohack.gem.core.entity.rule.Group;
 import innohack.gem.database.RocksDatabase;
 import java.util.*;
-import org.springframework.stereotype.Repository;
 
 public class GroupRockDao implements IGroupDao {
   private static final String DB_NAME = "Group";
