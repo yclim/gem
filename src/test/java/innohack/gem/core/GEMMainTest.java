@@ -26,4 +26,34 @@ public class GEMMainTest {
     assertEquals(5, recordsList.get(0).getRecords().size());
     assertEquals("Sam", recordsList.get(0).getRecords().get(0).get(1));
   }
+
+  @Test
+  public void testNoExtractor() throws Exception {
+    String file = "src/test/resources/reviews.csv";
+    String spec = "src/test/resources/core/spec_no_extractor.json";
+    ObjectMapper mapper = new ObjectMapper();
+    Project project = mapper.readValue(new File(spec), Project.class);
+    File f = new File(file);
+
+    List<ExtractedRecords> recordsList = GEMMain.process(f, project);
+    assertEquals(1, recordsList.size());
+    assertEquals("csv-customer", recordsList.get(0).getGroup());
+    assertEquals(0, recordsList.get(0).getRecords().size());
+    assertEquals(0, recordsList.get(0).getHeaders().size());
+  }
+
+  @Test
+  public void testNoGroup() throws Exception {
+    String file = "src/test/resources/reviews.csv";
+    String spec = "src/test/resources/core/spec_no_group.json";
+    ObjectMapper mapper = new ObjectMapper();
+    Project project = mapper.readValue(new File(spec), Project.class);
+    File f = new File(file);
+
+    List<ExtractedRecords> recordsList = GEMMain.process(f, project);
+    assertEquals(1, recordsList.size());
+    assertEquals("NIL", recordsList.get(0).getGroup());
+    assertEquals(0, recordsList.get(0).getRecords().size());
+    assertEquals(0, recordsList.get(0).getHeaders().size());
+  }
 }

@@ -1,6 +1,7 @@
 package innohack.gem.core.entity.extract;
 
 import com.beust.jcommander.internal.Lists;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ExtractedRecords {
@@ -9,11 +10,21 @@ public class ExtractedRecords {
 
   private List<List<String>> records;
 
-  private List<String> groups;
+  private String group;
 
   public ExtractedRecords() {
     headers = Lists.newArrayList();
     records = Lists.newArrayList();
+  }
+
+  public ExtractedRecords(String group, List<String> headers, List<List<String>> records) {
+    this.group = group;
+    this.headers = headers;
+    this.records = records;
+  }
+
+  public static ExtractedRecords empty(String group) {
+    return new ExtractedRecords(group, new ArrayList<>(), new ArrayList<>());
   }
 
   public List<String> getHeaders() {
@@ -36,11 +47,11 @@ public class ExtractedRecords {
     return records.size();
   }
 
-  public List<String> getGroups() {
-    return groups;
+  public String getGroup() {
+    return group;
   }
 
-  public void setGroups(List<String> groups) {
-    this.groups = groups;
+  public void setGroup(String group) {
+    this.group = group;
   }
 }
