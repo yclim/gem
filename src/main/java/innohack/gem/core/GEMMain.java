@@ -14,6 +14,7 @@ import innohack.gem.example.tika.TikaMimeEnum;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.tika.config.TikaConfig;
@@ -22,6 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class GEMMain {
+
+  static final String GROUP_NIL = "NIL";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(GEMMain.class);
 
@@ -95,17 +98,25 @@ public class GEMMain {
   }
 
   private static List<ExtractedRecords> extract(GEMFile file, List<Group> matchedGroup) {
+    if (matchedGroup.size() == 0) {
+      return Arrays.asList(ExtractedRecords.empty(GROUP_NIL));
+    }
+
     return matchedGroup.stream()
         .map(
             group -> {
-              ExtractConfig config = group.getExtractConfig();
-              try {
-                ExtractedRecords records = config.getExtractor().extract(file, config);
-                records.setGroups(
-                    matchedGroup.stream().map(Group::getName).collect(Collectors.toList()));
-                return records;
-              } catch (Exception e) {
-                throw new RuntimeException(e);
+              if (group.getExtractConfig() != null
+                  && group.getExtractConfig().getExtractor() != null) {
+                ExtractConfig config = group.getExtractConfig();
+                try {
+                  ExtractedRecords records = config.getExtractor().extract(file, config);
+                  records.setGroup(group.getName());
+                  return records;
+                } catch (Exception e) {
+                  throw new RuntimeException(e);
+                }
+              } else {
+                return ExtractedRecords.empty(group.getName());
               }
             })
         .collect(Collectors.toList());

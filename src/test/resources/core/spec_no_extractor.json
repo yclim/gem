@@ -1,0 +1,31 @@
+{
+  "specVersion" : "1.0.0",
+  "groups" : [ {
+    "groupId" : 8,
+    "name" : "csv-customer",
+    "rules" : [ {
+      "ruleId" : "innohack.gem.core.rules.FileExtension",
+      "label" : "File Extension",
+      "ruleType" : "FILE",
+      "name" : "FE-8",
+      "params" : [ {
+        "label" : "File extension",
+        "placeholder" : "txt",
+        "value" : "csv",
+        "type" : "STRING"
+      } ]
+    }, {
+      "ruleId" : "innohack.gem.core.rules.CsvHeaderColumnValue",
+      "label" : "CSV Header Column Value",
+      "ruleType" : "CSV",
+      "name" : "CHCV-2",
+      "params" : [ {
+        "label" : "Headers",
+        "placeholder" : "aa,bb,cc",
+        "value" : "Sender",
+        "type" : "STRING_LIST"
+      } ]
+    } ]
+  }],
+  "projectName" : "1.0"
+}
