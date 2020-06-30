@@ -48,10 +48,10 @@ export const extractConfigInitialState: ExtractConfig = {
 };
 
 // hardcoded list the extractors
-export const CSV_EXTRACTOR = "innohack.gem.service.extract.CSVExtractor";
-export const EXCEL_EXTRACTOR = "innohack.gem.service.extract.ExcelExtractor";
+export const CSV_EXTRACTOR = "innohack.gem.core.extract.CSVExtractor";
+export const EXCEL_EXTRACTOR = "innohack.gem.core.extract.ExcelExtractor";
 export const TIKA_CONTENT_EXTRACTOR =
-  "innohack.gem.service.extract.TikaContentExtractor";
+  "innohack.gem.core.extract.TikaContentExtractor";
 
 export default function extractConfigReducer(
   state: ExtractConfig,
