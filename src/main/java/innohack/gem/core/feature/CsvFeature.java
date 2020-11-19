@@ -1,28 +1,30 @@
 package innohack.gem.core.feature;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import com.opencsv.CSVParser;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.enums.CSVReaderNullFieldIndicator;
 import com.opencsv.exceptions.CsvException;
+import innohack.gem.core.feature.common.FeatureExtractorUtil;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.apache.tika.exception.TikaException;
 
 /** Object to hold wrap csv data */
 public class CsvFeature extends AbstractFeature {
 
   private List<List<String>> tableData = new ArrayList<>();
   private List<String> headers = new ArrayList<>();
+  private Charset charSet;
 
   @Override
   public void extract(File f) throws Exception {
@@ -45,9 +47,12 @@ public class CsvFeature extends AbstractFeature {
     this.headers = headers;
   }
 
-  private void contentParser(File f) throws IOException, CsvException {
+  private void contentParser(File f) throws IOException, CsvException, TikaException {
 
-    CSVReader csvReader = getCsvReaderUsingOpenCsv(f.toPath());
+    FeatureExtractorUtil util = new FeatureExtractorUtil();
+    charSet = util.detectEncoding(f);
+
+    CSVReader csvReader = getCsvReaderUsingOpenCsv(f.toPath(), charSet);
 
     List<String[]> records = null;
     records = csvReader.readAll();
@@ -55,7 +60,8 @@ public class CsvFeature extends AbstractFeature {
     for (String[] record : records) {
       List<String> recordBuilder = new ArrayList<>();
       for (String cell : record) {
-        recordBuilder.add(cell);
+
+        recordBuilder.add(util.removeByteOrder(cell, charSet));
       }
       tableData.add(recordBuilder);
     }
@@ -66,11 +72,10 @@ public class CsvFeature extends AbstractFeature {
   }
 
   /** use openCSV libraries instead of tika for better csv support */
-  private CSVReader getCsvReaderUsingOpenCsv(Path filePath) throws IOException {
-    // read:
-    // https://stackoverflow.com/questions/26268132/all-inclusive-charset-to-avoid-java-nio-charset-malformedinputexception-input
+  private CSVReader getCsvReaderUsingOpenCsv(Path filePath, Charset charSet) throws IOException {
+
     BufferedReader reader =
-        new BufferedReader(new InputStreamReader(new FileInputStream(filePath.toFile()), UTF_8));
+        new BufferedReader(new InputStreamReader(new FileInputStream(filePath.toFile()), charSet));
     CSVParser parser =
         new CSVParserBuilder()
             .withSeparator(detectSeparators(reader))
