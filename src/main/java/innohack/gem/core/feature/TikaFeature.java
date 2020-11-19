@@ -1,7 +1,6 @@
 package innohack.gem.core.feature;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.*;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.parser.ParseContext;
@@ -25,10 +24,13 @@ public class TikaFeature extends AbstractFeature {
   public void extract(File f) throws Exception {
     Parser parser = new AutoDetectParser();
     Metadata metadata = new Metadata();
+
     try (FileInputStream inputStream = new FileInputStream(f)) {
       ParseContext context = new ParseContext();
+
       BodyContentHandler handler = new BodyContentHandler(-1);
       parser.parse(inputStream, handler, metadata, context);
+
       this.content = handler.toString();
     }
 

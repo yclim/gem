@@ -13,23 +13,6 @@ import org.junit.jupiter.api.Test;
 public class TikaContentExtractorTest {
 
   @Test
-  public void testExtract() throws Exception {
-    File f = new File("src/test/resources/extract/story_0.pdf");
-    ExtractConfig config = new ExtractConfig();
-    TikaContentExtractor tikaContentExtractor = new TikaContentExtractor("(white|black)");
-
-    // what should we set for the config here for tika content? as there is no row or header in
-    // tika extraction
-    config.setExtractor(tikaContentExtractor);
-    GEMFile pdfFile = GEMMain.extractFeature(f);
-    ExtractedRecords results = tikaContentExtractor.extract(pdfFile, config);
-
-    assertEquals(2, results.getRecords().size());
-    assertEquals("WHITE", results.getRecords().get(0).get(0));
-    assertEquals("Black", results.getRecords().get(1).get(0));
-  }
-
-  @Test
   public void testExtractNoGroup() throws Exception {
     File f = new File("src/test/resources/extract/story_0.pdf");
 
