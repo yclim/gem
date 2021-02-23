@@ -21,11 +21,14 @@ const BrowseFiles: FunctionComponent<RouteComponentProps> = () => {
     fileService.getSyncStatus().then(response => {
       setSyncStatus(response.data);
     });
+    //this basically means an endless progress check after render...
     const interval = setInterval(() => {
       fileService.getSyncStatus().then(response => {
-        setSyncStatus(response.data);
+        const progress = response.data
+        setSyncStatus(progress);
       });
-    }, 1000);
+    }, 3000);
+    
     return () => clearInterval(interval);
   }, []);
 
