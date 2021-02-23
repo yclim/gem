@@ -74,6 +74,7 @@ public class GroupService {
   public static final String DEFAULT_FILEEXT_RULENAME_PREFIX = "FE";
 
   public void createDefaultGroup(Collection<GEMFile> files) {
+	  LOGGER.info("Create default groups");
     int counter = 1;
     for (GEMFile file : files) {
       String extension = file.getExtension();
@@ -86,11 +87,13 @@ public class GroupService {
         Rule rule = new FileExtension(file.getExtension());
         rule.setName(defaultRuleName);
         default_extension_group.setRules(Lists.newArrayList(rule));
+        LOGGER.info("Create default group: {}", default_extension_group);
         groupDao.saveGroup(default_extension_group);
         matchService.onUpdateEvent(default_extension_group);
         counter++;
       }
     }
+    LOGGER.info("Completed Create default groups");
   }
 
   public List<Group> importProject(byte[] data) throws IOException {

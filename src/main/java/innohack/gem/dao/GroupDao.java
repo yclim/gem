@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
  *
  * @author TC
  */
-@Repository
+//@Repository
 public class GroupDao implements IGroupDao {
   public static int maxKey = 0;
   public static ConcurrentHashMap<String, Group> featureStore =

@@ -61,6 +61,7 @@ public class SyncFileService implements Runnable {
         totalProcesses + fileToDelete.size() + fileToSave.size() + fileToSave.size() + 1;
 
     // Delete files in database and notify matchservice
+    LOGGER.info("Clear previous state...");
     gemFileDao.deleteFiles(fileToDelete.keySet());
     for (GEMFile file : fileToDelete.values()) {
       matcheService.onUpdateEvent(file);
@@ -69,6 +70,7 @@ public class SyncFileService implements Runnable {
     }
 
     // Extract data from new files and save to database
+    LOGGER.info("Extracting files...");
     for (GEMFile file : fileToSave.values()) {
       GEMFile result = file;
       try {
@@ -81,6 +83,7 @@ public class SyncFileService implements Runnable {
       totalProcessed = totalProcessed + 1;
       gemFileDao.setSyncStatus(totalProcessed / totalProcesses);
     }
+    LOGGER.info("Saving files...");
     gemFileDao.saveFiles(fileToSave);
 
     // Notify matchservice on the extracted files.
@@ -91,6 +94,7 @@ public class SyncFileService implements Runnable {
     }
 
     // Create default groups based on the newly added files
+    LOGGER.info("Saving groups...");
     groupService.createDefaultGroup(fileToSave.values());
 
     // set status to complete

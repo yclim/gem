@@ -6,7 +6,7 @@ import innohack.gem.core.entity.match.MatchFileRule;
 import java.util.Map;
 import org.springframework.stereotype.Repository;
 
-@Repository
+//@Repository
 public class MatchFileDao implements IMatchFileDao {
 
   private Map<String, MatchFileGroup> matchFileGroupDb = Maps.newConcurrentMap();

@@ -2,9 +2,19 @@ package innohack.gem.dao;
 
 import innohack.gem.core.entity.rule.Group;
 import innohack.gem.database.RocksDatabase;
+import innohack.gem.service.GEMFileService;
+
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
+
+@Repository
 public class GroupRockDao implements IGroupDao {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(GroupRockDao.class);
+	
   private static final String DB_NAME = "Group";
   private RocksDatabase<String, Group> groupDb;
   private RocksDatabase<Integer, String> groupIdDb;
@@ -97,6 +107,7 @@ public class GroupRockDao implements IGroupDao {
 
   @Override
   public Group saveGroup(Group group) {
+	  LOGGER.info("saving group: {}", group.getName());
     Group existingGroup = getGroup(group.getName());
     if (existingGroup != null) {
       group.setGroupId(existingGroup.getGroupId());
