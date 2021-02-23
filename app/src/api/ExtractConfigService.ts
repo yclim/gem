@@ -38,6 +38,10 @@ class ExtractConfigService extends Api {
     return this.post("extract/" + groupId);
   }
 
+  public export(groupId: number): Promise<AxiosResponse<FileCount[]>> {
+    return this.get("extract/export/" + groupId, {responseType: 'blob'});
+  }
+
   public getExtractedRecords(
     groupId: number,
     absolutePath: string

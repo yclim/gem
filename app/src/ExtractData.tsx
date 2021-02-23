@@ -36,6 +36,7 @@ import {
 import groupRuleService from "./api/GroupRuleService";
 import extractConfigService from "./api/ExtractConfigService";
 import { AxiosResponse } from "axios";
+import FileDownload from 'js-file-download';
 import { StoreContext } from "./StoreContext";
 import {
   CSV_EXTRACTOR,
@@ -422,6 +423,20 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
               }
               disabled={!canSimulate()}
               onClick={handleSimulate}
+            />&nbsp;
+            <Button
+              text="Export Results"
+              icon={
+                isLoading ? (
+                  <div className="box">
+                    <Spinner size={Spinner.SIZE_SMALL} />
+                  </div>
+                ) : (
+                  "export"
+                )
+              }
+              disabled={!canSimulate()}
+              onClick={handleExport}
             />
           </div>
           <Card elevation={1}>
@@ -649,6 +664,15 @@ const ExtractData: FunctionComponent<RouteComponentProps> = () => {
       extractConfigService
         .extract(activeGroup.groupId)
         .then(resp => setFileCounts(resp.data));
+  }
+
+  function handleExport() {
+    if (activeGroup)
+      extractConfigService
+        .export(activeGroup.groupId)
+        .then(response => {
+           FileDownload(response.data, 'export.zip');
+        });
   }
 };
 

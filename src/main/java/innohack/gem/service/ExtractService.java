@@ -1,6 +1,20 @@
 package innohack.gem.service;
 
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.beust.jcommander.internal.Lists;
+import com.opencsv.CSVWriter;
+
 import innohack.gem.core.entity.GEMFile;
 import innohack.gem.core.entity.extract.ExtractConfig;
 import innohack.gem.core.entity.extract.ExtractedFile;
@@ -10,12 +24,6 @@ import innohack.gem.core.extract.AbstractExtractor;
 import innohack.gem.core.extract.ExtractorFactory;
 import innohack.gem.dao.IExtractDao;
 import innohack.gem.dao.IGEMFileDao;
-import java.util.List;
-import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 @Service
 public class ExtractService {
@@ -118,5 +126,31 @@ public class ExtractService {
    */
   public List<AbstractExtractor> getExtractorTemplates() throws Exception {
     return ExtractorFactory.createAllInstance();
+  }
+
+  public void export(int groupId, OutputStream output) throws Exception {
+	  List<ExtractedFile> extractions = extract(groupId);
+	  try(ZipOutputStream out = new ZipOutputStream(output);) {
+		  for(ExtractedFile extraction: extractions) {
+			  //write each result as a file inside the zip
+			  LOGGER.info("Extracting and exporting {}", extraction.getFilename());
+			  ExtractedRecords records = getExtractedRecords(groupId, extraction.getAbsolutePath());
+			  
+			  ZipEntry e = new ZipEntry(extraction.getFilename()+".txt");
+			  out.putNextEntry(e);
+			  
+			  CSVWriter writer = new CSVWriter(new OutputStreamWriter(out));
+		      writer.writeNext(toArray(records.getHeaders())); //write header
+		      for(List<String> row: records.getRecords()) {
+		    	  writer.writeNext(toArray(row));
+		      }
+		      writer.flush();
+			  out.closeEntry();
+		  }
+	  }
+  }
+  
+  private String[] toArray(List<String> values) {
+	  return values.toArray(new String[values.size()]);
   }
 }
