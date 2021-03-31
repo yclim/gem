@@ -23,7 +23,7 @@
     <frontend-maven-plugin.version>1.7.6</frontend-maven-plugin.version>
     <node.version>v12.16.1</node.version>
     <yarn.version>v1.22.4</yarn.version>
-    <guava.version>28.2-jre</guava.version>
+    <guava.version>29.0-jre</guava.version>
   </properties>
 
   <dependencies>
